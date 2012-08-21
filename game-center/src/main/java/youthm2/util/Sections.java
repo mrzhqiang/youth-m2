@@ -1,4 +1,4 @@
-package com.github.mrzhqiang.util;
+package youthm2.util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -1,12 +1,12 @@
-package com.github.mrzhqiang.models;
+package youthm2.models;
 
-import com.github.mrzhqiang.util.Sections;
+import youthm2.util.Sections;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.ini4j.Profile;
 
-import static com.github.mrzhqiang.GameShare.MAX_RUN_GATE_COUNT;
+import static youthm2.GameShare.MAX_RUN_GATE_COUNT;
 
 public class RunGateConfig extends ProgramConfig {
   public static final String GET_START = "GetStart";

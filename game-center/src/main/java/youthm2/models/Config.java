@@ -1,4 +1,4 @@
-package com.github.mrzhqiang.models;
+package youthm2.models;
 
 public class Config {
   public final DBServerConfig dbServer = new DBServerConfig();

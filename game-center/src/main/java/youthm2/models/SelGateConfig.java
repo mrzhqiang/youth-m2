@@ -1,6 +1,6 @@
-package com.github.mrzhqiang.models;
+package youthm2.models;
 
-import com.github.mrzhqiang.util.Sections;
+import youthm2.util.Sections;
 import javax.annotation.Nullable;
 import org.ini4j.Profile;
 

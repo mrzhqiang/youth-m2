@@ -1,9 +1,9 @@
-package com.github.mrzhqiang;
+package youthm2;
 
-import com.github.mrzhqiang.models.Config;
-import com.github.mrzhqiang.models.DataListInfo;
-import com.github.mrzhqiang.models.Program;
-import com.github.mrzhqiang.util.Sections;
+import youthm2.models.Config;
+import youthm2.models.DataListInfo;
+import youthm2.models.Program;
+import youthm2.util.Sections;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;

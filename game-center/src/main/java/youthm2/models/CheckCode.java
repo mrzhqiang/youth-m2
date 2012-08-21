@@ -1,4 +1,4 @@
-package com.github.mrzhqiang.models;
+package youthm2.models;
 
 public abstract class CheckCode {
   abstract String dwThread();

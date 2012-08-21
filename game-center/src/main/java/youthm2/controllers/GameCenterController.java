@@ -1,8 +1,7 @@
-package com.github.mrzhqiang.controllers;
+package youthm2.controllers;
 
-import com.github.mrzhqiang.GameCenter;
-import com.github.mrzhqiang.GameShare;
-import java.io.File;
+import youthm2.GameCenter;
+import youthm2.GameShare;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Collections;

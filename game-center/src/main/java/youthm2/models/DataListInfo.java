@@ -1,4 +1,4 @@
-package com.github.mrzhqiang.models;
+package youthm2.models;
 
 import java.time.LocalDate;
 import java.util.List;

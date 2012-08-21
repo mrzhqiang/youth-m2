@@ -1,12 +1,11 @@
-package com.github.mrzhqiang;
+package youthm2;
 
-import com.github.mrzhqiang.controllers.GameCenterController;
+import youthm2.controllers.GameCenterController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javax.swing.*;
 
 public final class GameCenter extends Application {
-
   public JPanel contentPanel;
   public JTabbedPane tabContent;
   public JTextField editServerDir;
