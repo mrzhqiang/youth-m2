@@ -13,8 +13,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        JFrame frame = new JFrame("RandallCenter");
-        frame.setContentPane(new RandallCenter().root);
+        JFrame frame = new JFrame("GameCenter");
+        frame.setContentPane(new GameCenter().panelRoot);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.github.mrzhqiang.RandallCenter">
-  <grid id="27dc6" layout-manager="BorderLayout" hgap="0" vgap="0">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.github.mrzhqiang.GameCenter">
+  <grid id="27dc6" binding="panelRoot" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
       <xy x="20" y="20" width="728" height="411"/>
     </constraints>
@@ -12,7 +12,7 @@
     </properties>
     <border type="etched"/>
     <children>
-      <tabbedpane id="12dd8">
+      <tabbedpane id="12dd8" binding="tabContent">
         <constraints border-constraint="Center"/>
         <properties>
           <autoscrolls value="false"/>
@@ -31,11 +31,8 @@
           <font/>
         </border>
         <children>
-          <grid id="6cade" layout-manager="FormLayout">
-            <rowspec value="center:183px:noGrow"/>
-            <rowspec value="center:d:grow"/>
-            <rowspec value="center:max(d;4px):noGrow"/>
-            <colspec value="fill:d:grow"/>
+          <grid id="6cade" binding="panelServerControl" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="服务控制">
                 <tooltip value=""/>
@@ -49,11 +46,10 @@
             </properties>
             <border type="etched" title=""/>
             <children>
-              <grid id="8d8a9" layout-manager="GridLayoutManager" row-count="5" column-count="2" same-size-horizontally="true" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="8d8a9" binding="panelStartControl" layout-manager="GridLayoutManager" row-count="5" column-count="2" same-size-horizontally="true" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
-                  <forms defaultalign-vert="false"/>
                 </constraints>
                 <properties>
                   <minimumSize width="-1" height="-1"/>
@@ -199,10 +195,9 @@
                   </grid>
                 </children>
               </grid>
-              <scrollpane id="ae531">
+              <scrollpane id="ae531" binding="panelStartInfo">
                 <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
-                  <forms defaultalign-horz="false" defaultalign-vert="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <horizontalScrollBarPolicy value="31"/>
@@ -211,7 +206,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="31329" class="javax.swing.JTextArea" binding="a1111TextArea" default-binding="true">
+                  <component id="31329" class="javax.swing.JTextArea" binding="textAreaStartInfo">
                     <constraints/>
                     <properties>
                       <name value=""/>
@@ -220,10 +215,9 @@
                   </component>
                 </children>
               </scrollpane>
-              <component id="346d6" class="javax.swing.JButton" default-binding="true">
+              <component id="346d6" class="javax.swing.JButton" binding="btnStartServer">
                 <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                  <forms defaultalign-horz="false" defaultalign-vert="false"/>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <preferredSize width="120" height="36"/>
@@ -232,7 +226,7 @@
               </component>
             </children>
           </grid>
-          <grid id="8bec7" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="8bec7" binding="panelConfig" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="参数配置">
@@ -245,15 +239,15 @@
             </properties>
             <border type="etched" title=""/>
             <children>
-              <grid id="607fe" layout-manager="GridLayoutManager" row-count="6" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="607fe" binding="panelServerDirDbSetting" layout-manager="GridLayoutManager" row-count="6" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
-                <border type="none" title="服务端目录及数据库设置"/>
+                <border type="etched" title="服务端目录及数据库设置"/>
                 <children>
-                  <component id="5180" class="javax.swing.JLabel">
+                  <component id="5180" class="javax.swing.JLabel" binding="labelServerDir">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -261,7 +255,7 @@
                       <text value="服务端所在目录："/>
                     </properties>
                   </component>
-                  <component id="67926" class="javax.swing.JTextField" binding="dMirServerTextField" default-binding="true">
+                  <component id="67926" class="javax.swing.JTextField" binding="textFiledServerDir">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="240" height="-1"/>
@@ -271,7 +265,7 @@
                       <text value="D:\MirServer\"/>
                     </properties>
                   </component>
-                  <component id="7797a" class="javax.swing.JLabel">
+                  <component id="7797a" class="javax.swing.JLabel" binding="labelDbName">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -279,7 +273,7 @@
                       <text value="数据库名称："/>
                     </properties>
                   </component>
-                  <component id="d19ea" class="javax.swing.JTextField" binding="heroDBTextField" default-binding="true">
+                  <component id="d19ea" class="javax.swing.JTextField" binding="textFiledDbName">
                     <constraints>
                       <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -289,7 +283,7 @@
                       <text value="HeroDB"/>
                     </properties>
                   </component>
-                  <component id="f1b9a" class="javax.swing.JLabel">
+                  <component id="f1b9a" class="javax.swing.JLabel" binding="labelGameName">
                     <constraints>
                       <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -297,7 +291,7 @@
                       <text value="游戏名称："/>
                     </properties>
                   </component>
-                  <component id="a6608" class="javax.swing.JTextField" binding="兰达尔TextField" default-binding="true">
+                  <component id="a6608" class="javax.swing.JTextField" binding="textFiledGameName">
                     <constraints>
                       <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="120" height="-1"/>
@@ -307,7 +301,7 @@
                       <text value="兰达尔"/>
                     </properties>
                   </component>
-                  <component id="fc048" class="javax.swing.JLabel">
+                  <component id="fc048" class="javax.swing.JLabel" binding="labelGameAddress">
                     <constraints>
                       <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -315,7 +309,7 @@
                       <text value="游戏IP地址："/>
                     </properties>
                   </component>
-                  <component id="ceac0" class="javax.swing.JTextField" binding="a127001TextField" default-binding="true">
+                  <component id="ceac0" class="javax.swing.JTextField" binding="textFiledGameAddress">
                     <constraints>
                       <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="120" height="-1"/>
@@ -325,7 +319,7 @@
                       <text value="127.0.0.1"/>
                     </properties>
                   </component>
-                  <component id="602bf" class="javax.swing.JLabel">
+                  <component id="602bf" class="javax.swing.JLabel" binding="labelPortAdd">
                     <constraints>
                       <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -333,7 +327,7 @@
                       <text value="所有端口增加："/>
                     </properties>
                   </component>
-                  <component id="2af1b" class="javax.swing.JTextField" binding="a0TextField" default-binding="true">
+                  <component id="2af1b" class="javax.swing.JTextField" binding="textFieldPortAdd">
                     <constraints>
                       <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="80" height="-1"/>
@@ -343,7 +337,7 @@
                       <text value="0"/>
                     </properties>
                   </component>
-                  <component id="39c76" class="javax.swing.JButton" binding="默认Button" default-binding="true">
+                  <component id="39c76" class="javax.swing.JButton" binding="btnDefaultSetting">
                     <constraints>
                       <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="80" height="24"/>
@@ -353,7 +347,7 @@
                       <text value="默认"/>
                     </properties>
                   </component>
-                  <component id="771af" class="javax.swing.JButton" binding="保存Button" default-binding="true">
+                  <component id="771af" class="javax.swing.JButton" binding="btnSaveSetting">
                     <constraints>
                       <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="80" height="24"/>
@@ -365,15 +359,15 @@
                   </component>
                 </children>
               </grid>
-              <grid id="5cf78" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="5cf78" binding="panelFunctionOption" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
-                <border type="none" title="服务端功能选项"/>
+                <border type="etched" title="服务端功能选项"/>
                 <children>
-                  <component id="ec25d" class="javax.swing.JCheckBox" binding="关闭服务器五行功能CheckBox" default-binding="true">
+                  <component id="ec25d" class="javax.swing.JCheckBox" binding="checkBoxCloseWuXing">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -391,7 +385,7 @@
               </grid>
             </children>
           </grid>
-          <grid id="7a3d7" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="7a3d7" binding="panelDataBackup" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="数据备份"/>
@@ -402,104 +396,82 @@
             </properties>
             <border type="etched" title=""/>
             <children>
-              <grid id="c49d2" layout-manager="FormLayout">
-                <rowspec value="center:d:noGrow"/>
-                <rowspec value="top:4dlu:noGrow"/>
-                <rowspec value="center:max(d;4px):noGrow"/>
-                <rowspec value="top:4dlu:noGrow"/>
-                <rowspec value="center:max(d;4px):noGrow"/>
-                <rowspec value="top:4dlu:noGrow"/>
-                <rowspec value="center:max(d;4px):noGrow"/>
-                <colspec value="fill:d:noGrow"/>
-                <colspec value="left:4dlu:noGrow"/>
-                <colspec value="fill:d:grow"/>
-                <colspec value="left:4dlu:noGrow"/>
-                <colspec value="fill:max(d;4px):noGrow"/>
+              <grid id="c49d2" binding="panelDirChoose" layout-manager="GridLayoutManager" row-count="4" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
-                <border type="none" title="目录选择"/>
+                <border type="etched" title="目录选择"/>
                 <children>
-                  <component id="4d907" class="javax.swing.JLabel">
+                  <component id="4d907" class="javax.swing.JLabel" binding="labelDataDir">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                      <forms/>
                     </constraints>
                     <properties>
                       <text value="数据目录："/>
                     </properties>
                   </component>
-                  <component id="e93b0" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+                  <component id="e93b0" class="javax.swing.JTextField" binding="textFieldDataDir">
                     <constraints>
-                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
-                      <forms defaultalign-horz="false"/>
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="aad5a" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+                  <component id="aad5a" class="javax.swing.JTextField" binding="textFieldBackupDir">
                     <constraints>
-                      <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
-                      <forms defaultalign-horz="false"/>
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="86a8c" class="javax.swing.JLabel">
+                  <component id="86a8c" class="javax.swing.JLabel" binding="labelBackupDir">
                     <constraints>
-                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                      <forms/>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <text value="备份目录："/>
                     </properties>
                   </component>
-                  <component id="fab36" class="javax.swing.JButton" binding="选择目录Button" default-binding="true">
+                  <component id="fab36" class="javax.swing.JButton" binding="btnChooseDataDir">
                     <constraints>
-                      <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                      <forms/>
+                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <text value="选择目录"/>
                     </properties>
                   </component>
-                  <component id="9537c" class="javax.swing.JButton" binding="选择目录Button1" default-binding="true">
+                  <component id="9537c" class="javax.swing.JButton" binding="btnChooseBackupDir">
                     <constraints>
-                      <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                      <forms/>
+                      <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <text value="选择目录"/>
                     </properties>
                   </component>
-                  <grid id="3135e" layout-manager="FormLayout">
-                    <rowspec value="center:d:noGrow"/>
-                    <rowspec value="top:4dlu:noGrow"/>
-                    <rowspec value="center:max(d;4px):noGrow"/>
-                    <colspec value="fill:d:grow"/>
+                  <grid id="3135e" binding="panelBackupMode" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
-                      <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                      <forms defaultalign-vert="false"/>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="e4428" class="javax.swing.JRadioButton" binding="每天RadioButton" default-binding="true">
+                      <component id="e4428" class="javax.swing.JRadioButton" binding="radioBtnDay">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                          <forms/>
                         </constraints>
                         <properties>
+                          <selected value="true"/>
                           <text value="每天"/>
                         </properties>
                       </component>
-                      <component id="704f0" class="javax.swing.JRadioButton" binding="每隔RadioButton" default-binding="true">
+                      <component id="704f0" class="javax.swing.JRadioButton" binding="radioBtnInterval">
                         <constraints>
-                          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                          <forms defaultalign-vert="false"/>
+                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
                           <text value="每隔"/>
@@ -507,24 +479,25 @@
                       </component>
                     </children>
                   </grid>
-                  <grid id="68999" layout-manager="GridLayoutManager" row-count="2" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                  <grid id="68999" binding="panelTime" layout-manager="GridLayoutManager" row-count="2" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
-                      <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="2" indent="0" use-parent-layout="false"/>
-                      <forms defaultalign-horz="false" defaultalign-vert="false"/>
+                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="2" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="a5e4f" class="javax.swing.JSpinner" binding="spinner1" default-binding="true">
+                      <component id="a5e4f" class="javax.swing.JSpinner" binding="spinnerDayHours">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="4" fill="0" indent="0" use-parent-layout="false">
                             <preferred-size width="50" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="true"/>
+                        </properties>
                       </component>
-                      <component id="2e8ff" class="javax.swing.JLabel">
+                      <component id="2e8ff" class="javax.swing.JLabel" binding="labelDayHours">
                         <constraints>
                           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
@@ -532,15 +505,17 @@
                           <text value="点"/>
                         </properties>
                       </component>
-                      <component id="2e1b3" class="javax.swing.JSpinner" binding="spinner2" default-binding="true">
+                      <component id="2e1b3" class="javax.swing.JSpinner" binding="spinnerDayMinute">
                         <constraints>
                           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="4" fill="0" indent="0" use-parent-layout="false">
                             <preferred-size width="50" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="true"/>
+                        </properties>
                       </component>
-                      <component id="5710d" class="javax.swing.JLabel">
+                      <component id="5710d" class="javax.swing.JLabel" binding="labelDayMinute">
                         <constraints>
                           <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
@@ -548,15 +523,17 @@
                           <text value="分"/>
                         </properties>
                       </component>
-                      <component id="36f51" class="javax.swing.JSpinner" binding="spinner3" default-binding="true">
+                      <component id="36f51" class="javax.swing.JSpinner" binding="spinnerIntervalHours">
                         <constraints>
                           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="4" fill="0" indent="0" use-parent-layout="false">
                             <preferred-size width="50" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="e7ad1" class="javax.swing.JLabel">
+                      <component id="e7ad1" class="javax.swing.JLabel" binding="labelIntervalHours">
                         <constraints>
                           <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
@@ -564,15 +541,17 @@
                           <text value="小时"/>
                         </properties>
                       </component>
-                      <component id="2eb5f" class="javax.swing.JSpinner" binding="spinner4" default-binding="true">
+                      <component id="2eb5f" class="javax.swing.JSpinner" binding="spinnerIntervalMinute">
                         <constraints>
                           <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="4" fill="0" indent="0" use-parent-layout="false">
                             <preferred-size width="50" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <enabled value="false"/>
+                        </properties>
                       </component>
-                      <component id="3f5ed" class="javax.swing.JLabel">
+                      <component id="3f5ed" class="javax.swing.JLabel" binding="labelIntervalMinute">
                         <constraints>
                           <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
@@ -582,29 +561,31 @@
                       </component>
                     </children>
                   </grid>
-                  <grid id="27d2e" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+                  <grid id="27d2e" binding="panelBackupOption" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
                     <constraints>
-                      <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                      <forms/>
+                      <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
-                    <border type="none"/>
+                    <border type="etched"/>
                     <children>
-                      <component id="e8569" class="javax.swing.JCheckBox" binding="备份CheckBox" default-binding="true">
+                      <component id="e8569" class="javax.swing.JCheckBox" binding="checkBoxBackup">
                         <constraints/>
                         <properties>
+                          <selected value="true"/>
                           <text value="备份"/>
                         </properties>
                       </component>
-                      <component id="debf2" class="javax.swing.JCheckBox" binding="压缩CheckBox" default-binding="true">
+                      <component id="debf2" class="javax.swing.JCheckBox" binding="checkBoxZip">
                         <constraints/>
                         <properties>
+                          <selected value="true"/>
                           <text value="压缩"/>
                         </properties>
                       </component>
-                      <component id="3117c" class="javax.swing.JCheckBox" binding="自动运行备份系统CheckBox" default-binding="true">
+                      <component id="3117c" class="javax.swing.JCheckBox" binding="checkBoxAutoRun">
                         <constraints/>
                         <properties>
+                          <selected value="false"/>
                           <text value="自动运行备份系统"/>
                         </properties>
                       </component>
@@ -612,42 +593,42 @@
                   </grid>
                 </children>
               </grid>
-              <grid id="6109" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+              <grid id="6109" binding="panelBackupControl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
                 <constraints>
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
-                <border type="none"/>
+                <border type="etched"/>
                 <children>
-                  <component id="729ee" class="javax.swing.JButton" binding="修改Button" default-binding="true">
+                  <component id="729ee" class="javax.swing.JButton" binding="btnModification">
                     <constraints/>
                     <properties>
                       <preferredSize width="80" height="24"/>
                       <text value="修改"/>
                     </properties>
                   </component>
-                  <component id="8f0f2" class="javax.swing.JButton" binding="删除Button" default-binding="true">
+                  <component id="8f0f2" class="javax.swing.JButton" binding="btnDelete">
                     <constraints/>
                     <properties>
                       <preferredSize width="80" height="24"/>
                       <text value="删除"/>
                     </properties>
                   </component>
-                  <component id="31c9a" class="javax.swing.JButton" binding="增加Button" default-binding="true">
+                  <component id="31c9a" class="javax.swing.JButton" binding="btnAdd">
                     <constraints/>
                     <properties>
                       <preferredSize width="80" height="24"/>
                       <text value="增加"/>
                     </properties>
                   </component>
-                  <component id="4476c" class="javax.swing.JButton" binding="保存Button1" default-binding="true">
+                  <component id="4476c" class="javax.swing.JButton" binding="btnSave">
                     <constraints/>
                     <properties>
                       <preferredSize width="80" height="24"/>
                       <text value="保存"/>
                     </properties>
                   </component>
-                  <component id="bbb3a" class="javax.swing.JButton" binding="启动Button" default-binding="true">
+                  <component id="bbb3a" class="javax.swing.JButton" binding="btnStart">
                     <constraints/>
                     <properties>
                       <preferredSize width="80" height="24"/>
@@ -656,7 +637,7 @@
                   </component>
                 </children>
               </grid>
-              <component id="50629" class="javax.swing.JList" binding="list1" default-binding="true">
+              <component id="50629" class="javax.swing.JList" binding="listBackupInfo">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="50"/>
@@ -666,7 +647,7 @@
               </component>
             </children>
           </grid>
-          <grid id="c0e10" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="c0e10" binding="panelDataClean" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="数据清理"/>
@@ -677,63 +658,69 @@
             </properties>
             <border type="etched" title=""/>
             <children>
-              <grid id="2fdca" layout-manager="GridLayoutManager" row-count="6" column-count="2" same-size-horizontally="true" same-size-vertically="true" hgap="-1" vgap="-1">
+              <grid id="2fdca" binding="panelCleanOption" layout-manager="GridLayoutManager" row-count="6" column-count="2" same-size-horizontally="true" same-size-vertically="true" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
-                <border type="none" title="清理选项"/>
+                <border type="etched" title="清理选项"/>
                 <children>
-                  <component id="5c8d2" class="javax.swing.JCheckBox" binding="人物数据CheckBox" default-binding="true">
+                  <component id="5c8d2" class="javax.swing.JCheckBox" binding="checkBoxUserData">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
+                      <selected value="true"/>
                       <text value="人物数据"/>
                     </properties>
                   </component>
-                  <component id="756e6" class="javax.swing.JCheckBox" binding="NPC打造数据CheckBox" default-binding="true">
+                  <component id="756e6" class="javax.swing.JCheckBox" binding="checkBoxNpcData">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
+                      <selected value="true"/>
                       <text value="NPC打造数据"/>
                     </properties>
                   </component>
-                  <component id="794b9" class="javax.swing.JCheckBox" binding="EMail数据CheckBox" default-binding="true">
+                  <component id="794b9" class="javax.swing.JCheckBox" binding="checkBoxEmailData">
                     <constraints>
                       <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
+                      <selected value="true"/>
                       <text value="EMail数据"/>
                     </properties>
                   </component>
-                  <component id="a4497" class="javax.swing.JCheckBox" binding="帐号数据CheckBox" default-binding="true">
+                  <component id="a4497" class="javax.swing.JCheckBox" binding="checkBoxAccountData">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
+                      <selected value="true"/>
                       <text value="帐号数据"/>
                     </properties>
                   </component>
-                  <component id="1ba0c" class="javax.swing.JCheckBox" binding="行会数据CheckBox" default-binding="true">
+                  <component id="1ba0c" class="javax.swing.JCheckBox" binding="checkBoxGuildData">
                     <constraints>
                       <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
+                      <selected value="true"/>
                       <text value="行会数据"/>
                     </properties>
                   </component>
-                  <component id="c5aa5" class="javax.swing.JCheckBox" binding="沙巴克数据CheckBox" default-binding="true">
+                  <component id="c5aa5" class="javax.swing.JCheckBox" binding="checkBoxShaBkData">
                     <constraints>
                       <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
+                      <selected value="true"/>
                       <text value="沙巴克数据"/>
                     </properties>
                   </component>
-                  <component id="9ad9c" class="javax.swing.JCheckBox" binding="全局变量CheckBox" default-binding="true">
+                  <component id="9ad9c" class="javax.swing.JCheckBox" binding="checkBoxGlobalData">
                     <constraints>
                       <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -741,49 +728,54 @@
                       <text value="全局变量"/>
                     </properties>
                   </component>
-                  <component id="85807" class="javax.swing.JCheckBox" binding="物品ID计数CheckBox" default-binding="true">
+                  <component id="85807" class="javax.swing.JCheckBox" binding="checkBoxItemIdData">
                     <constraints>
                       <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
+                      <selected value="true"/>
                       <text value="物品ID计数"/>
                     </properties>
                   </component>
-                  <component id="12f5c" class="javax.swing.JCheckBox" binding="帐号日志记录CheckBox" default-binding="true">
+                  <component id="12f5c" class="javax.swing.JCheckBox" binding="checkBoxAccountLog">
                     <constraints>
                       <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
+                      <selected value="true"/>
                       <text value="帐号日志记录"/>
                     </properties>
                   </component>
-                  <component id="f228b" class="javax.swing.JCheckBox" binding="引擎日志记录CheckBox" default-binding="true">
+                  <component id="f228b" class="javax.swing.JCheckBox" binding="checkBoxM2Log">
                     <constraints>
                       <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
+                      <selected value="true"/>
                       <text value="引擎日志记录"/>
                     </properties>
                   </component>
-                  <component id="86ad" class="javax.swing.JCheckBox" binding="游戏日志记录CheckBox" default-binding="true">
+                  <component id="86ad" class="javax.swing.JCheckBox" binding="checkBoxGameLog">
                     <constraints>
                       <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
+                      <selected value="true"/>
                       <text value="游戏日志记录"/>
                     </properties>
                   </component>
-                  <component id="8975d" class="javax.swing.JCheckBox" binding="出师离婚断交数据CheckBox" default-binding="true">
+                  <component id="8975d" class="javax.swing.JCheckBox" binding="checkBoxOtherData">
                     <constraints>
                       <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
+                      <selected value="true"/>
                       <text value="出师、离婚、断交数据"/>
                     </properties>
                   </component>
                 </children>
               </grid>
-              <component id="759ab" class="javax.swing.JButton" binding="开始清理Button" default-binding="true">
+              <component id="759ab" class="javax.swing.JButton" binding="btnStartClear">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
                     <preferred-size width="120" height="36"/>
@@ -803,6 +795,8 @@
     <group name="buttonGroup1">
       <member id="1afa6"/>
       <member id="b41b3"/>
+    </group>
+    <group name="btnGroupBackupMode">
       <member id="e4428"/>
       <member id="704f0"/>
     </group>
