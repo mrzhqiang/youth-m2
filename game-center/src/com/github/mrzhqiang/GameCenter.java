@@ -1,5 +1,7 @@
 package com.github.mrzhqiang;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class GameCenter {
@@ -73,4 +75,17 @@ public class GameCenter {
   private JPanel panelBackupControl;
   private JPanel panelDataClean;
   private JPanel panelCleanOption;
+
+  private int startStatus = 0;
+
+  public GameCenter() {
+    btnStartServer.addActionListener(new ActionListener() {
+      @Override public void actionPerformed(ActionEvent e) {
+        switch (startStatus) {
+          case 0:
+            JOptionPane.showMessageDialog(panelRoot, "1111");
+        }
+      }
+    });
+  }
 }
