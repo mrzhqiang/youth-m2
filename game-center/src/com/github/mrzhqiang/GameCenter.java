@@ -1,7 +1,5 @@
 package com.github.mrzhqiang;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class GameCenter {
@@ -77,15 +75,55 @@ public class GameCenter {
   private JPanel panelCleanOption;
 
   private int startStatus = 0;
+  private boolean isGateStop = false;
+
+  private Timer startGameTimer = new Timer(1000, e -> System.out.println("这里是在启动什么？"));
+  private Timer stopGameTimer = new Timer(1000, e -> System.out.println("这里是在停止什么？"));
+  private Timer checkRunTimer = new Timer(1000, e -> System.out.println("这里是在检查什么？"));
 
   public GameCenter() {
-    btnStartServer.addActionListener(new ActionListener() {
-      @Override public void actionPerformed(ActionEvent e) {
-        switch (startStatus) {
-          case 0:
-            JOptionPane.showMessageDialog(panelRoot, "1111");
-        }
+    btnStartServer.addActionListener(e -> {
+      switch (startStatus) {
+        case 0:
+          if (JOptionPane.showConfirmDialog(panelRoot, "确认是否启动游戏？", "确认信息",
+              JOptionPane.YES_NO_OPTION) == 0) {
+            startGame();
+          }
+          break;
+        case 1:
+        case 3:
+          if (JOptionPane.showConfirmDialog(panelRoot, "确认是否中止启动？", "确认信息",
+              JOptionPane.YES_NO_OPTION) == 0) {
+            // TimerStartGame.Enable = false 估计是取消启动线程的Run
+            startGameTimer.stop();
+            startStatus = 2;
+            btnStartServer.setText(GameShare.g_sButtonStopGame);
+          }
+          break;
+        case 2:
+          if (JOptionPane.showConfirmDialog(panelRoot, "确认是否停止启动？", "确认信息",
+              JOptionPane.YES_NO_OPTION) == 0) {
+            stopGame();
+          }
+          break;
       }
+
     });
+  }
+
+  private void startGame() {
+    // 一系列程序的初始化和相关 checkBox 按钮的状态赋值
+    btnStartServer.setText(GameShare.g_sButtonStopStartGame);
+    startStatus = 1;
+    startGameTimer.start();
+  }
+
+  private void stopGame() {
+    btnStartServer.setText(GameShare.g_sButtonStopStopGame);
+    textAreaStartInfo.append("正在开始停止服务器...\n");
+    checkRunTimer.stop();
+    stopGameTimer.start();
+    isGateStop = false;
+    startStatus = 3;
   }
 }

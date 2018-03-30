@@ -210,10 +210,10 @@ public class GameShare {
 
   public int g_nFormIdx;
   public Properties iniConf;
-  public String g_sButtonStartGame = "启动游戏服务器%s";
-  public String g_sButtonStopGame = "停止游戏服务器%s";
-  public String g_sButtonStopStartGame = "中止启动游戏服务器%s";
-  public String g_sButtonStopStopGame = "中止停止游戏服务器%s";
+  public static final String g_sButtonStartGame = "启动游戏服务器%s";
+  public static final String g_sButtonStopGame = "停止游戏服务器%s";
+  public static final String g_sButtonStopStartGame = "中止启动游戏服务器%s";
+  public static final String g_sButtonStopStopGame = "中止停止游戏服务器%s";
 
   public String g_sConfFile = ".\\Config.ini";
   public String g_sBackListFile = ".\\BackupList.txt";
