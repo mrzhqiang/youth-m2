@@ -1,11 +1,20 @@
 package com.github.mrzhqiang;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
+import com.github.mrzhqiang.models.Config;
+import com.github.mrzhqiang.models.DataListInfo;
+import com.github.mrzhqiang.models.Program;
+import com.github.mrzhqiang.util.Sections;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
+import org.ini4j.Profile;
+import org.ini4j.Wini;
 
-public class GameShare {
+public final class GameShare {
+  private GameShare() {
+    // no instance
+  }
+
   // 最大运行网关数量，通常是指游戏网关数量
   public static final int MAX_RUN_GATE_COUNT = 8;
 
@@ -79,107 +88,30 @@ public class GameShare {
 
   public static final String LOGIN_GATE_SECTION_NAME2 = "LoginGate";
 
-  public static class Program {
-    public boolean getStart;
-    public boolean reStart;
-    // 0,1,2,3 默认，正在启动，已启动，正在关闭
-    public int startStatus;
-    public String[] programFile = new String[50];
-    public String[] directory = new String[100];
-    // TProcessInformation
-    // TODO 进程信息？
-    public String processInfo;
-    // THandle
-    // TODO 进程处理？
-    public String processHandle;
-    // THandle
-    // TODO 主窗口处理？
-    public String mainFormHandle;
-    // 窗口坐标
-    public int mainFormX;
-    public int mainFormY;
-  }
+  public static Program program = new Program();
+  public static DataListInfo dataListInfo = new DataListInfo();
+  public static Config config = new Config();
 
-  public static class DataListInfo {
-    public String[] fileName = new String[255];
-    // THandle
-    public String mapFileHandle;
-    // PChar
-    public String mapFileBuffer;
-    // TDateTime
-    public LocalDate dateTime;
-    // PChar
-    public String data;
-    public long dataSize;
-    // TListItem
-    public List<String> item;
-  }
+  public static void loadConfig() {
+    Profile.Section basicSectionName = iniConf.get(BASIC_SECTION_NAME);
+    g_sGameDirectory = basicSectionName.get("GameDirectory", g_sGameDirectory);
+    g_sHeroDBName = basicSectionName.get("HeroDBName", g_sHeroDBName);
+    g_sGameName = basicSectionName.get("GameName", g_sGameName);
+    g_sExtIPaddr = basicSectionName.get("ExtIPaddr", g_sGameDirectory);
+    g_sExtIPaddr2 = basicSectionName.get("ExtIPaddr2", g_sGameDirectory);
 
-  public static abstract class CheckCode {
-    abstract String dwThread();
-    abstract String sThread();
-  }
+    g_boAutoRunBak = Sections.getBoolean(basicSectionName, "AutoRunBak", g_boAutoRunBak);
+    g_boIP2 = Sections.getBoolean(basicSectionName, "IP2", g_boIP2);
+    g_boCloseWuXin = Sections.getBoolean(basicSectionName, "CloseWuXin", g_boCloseWuXin);
 
-  public static class ServerConfig {
-    public int mainFormX;
-    public int mainFormY;
-    public int gatePort;
-    public boolean getStart;
-    public String[] programFile = new String[50];
-  }
-
-  public static class DBServerConfig extends ServerConfig {
-    public int serverPort;
-  }
-
-  public static class LoginSrvConfig extends ServerConfig {
-    public int serverPort;
-    public int monPort;
-  }
-
-  public static class M2ServerConfig extends ServerConfig {
-    public int msgSrvPort;
-  }
-
-  public static class LogServerConfig extends ServerConfig {
-    // no gatePort
-    public int port;
-  }
-
-  public static class RunGateConfig extends ServerConfig {
-    // no getStart
-    public List<Boolean> getStartList = new ArrayList<>(MAX_RUN_GATE_COUNT-1);
-    // no gatePort
-    public List<Integer> gatePortList = new ArrayList<>(MAX_RUN_GATE_COUNT - 1);
-  }
-
-  public static class SelGateConfig extends ServerConfig {
-    // no gatePort
-    public int[] gatePort = new int[2];
-    // no getStart
-    public boolean getStart1;
-    public boolean getStart2;
-  }
-
-  public static class LoginGateConfig extends ServerConfig {
-  }
-
-  public static class Config {
-    public DBServerConfig dbServer;
-    public LoginSrvConfig loginSrv;
-    public M2ServerConfig m2Server;
-    public LogServerConfig logServer;
-    public RunGateConfig runGate;
-    public SelGateConfig selGate;
-    public LoginGateConfig loginGate;
-  }
-
-  public Program program = new Program();
-  public DataListInfo dataListInfo = new DataListInfo();
-  public Config config = new Config();
-
-  public void loadConfig() {
-
+    // TODO should is getInstance mode
+    config.dbServer.readOf(iniConf.get(DB_SERVER_SECTION_NAME));
+    config.loginSrv.readOf(iniConf.get(LOGIN_SRV_SECTION_NAME));
+    config.m2Server.readOf(iniConf.get(M2_SERVER_SECTION_NAME));
+    config.logServer.readOf(iniConf.get(LOG_SERVER_SECTION_NAME));
+    config.runGate.readOf(iniConf.get(RUN_GATE_SECTION_NAME));
+    config.selGate.readOf(iniConf.get(SEL_GATE_SECTION_NAME));
+    config.loginGate.readOf(iniConf.get(LOGIN_GATE_SECTION_NAME));
   }
 
   public void saveConfig() {
@@ -199,25 +131,40 @@ public class GameShare {
 
   }
 
-  public String g_sDataListAddrs = "127.0.0.1";
-  public int g_wDataListPort = 18888;
-  public String g_sDataListPassword = "123456";
-  public boolean g_boGetDataListOK = false;
+  public static String g_sDataListAddrs = "127.0.0.1";
+  public static int g_wDataListPort = 18888;
+  public static String g_sDataListPassword = "123456";
+  public static boolean g_boGetDataListOK = false;
 
-  public String g_DataListReadBuffer;
-  public int g_nDataListReadLength;
-  public List<String> g_GetDataList;
+  public static String g_DataListReadBuffer;
+  public static int g_nDataListReadLength;
+  public static List<String> g_GetDataList;
 
-  public int g_nFormIdx;
-  public Properties iniConf;
+  public static int g_nFormIdx;
+  public static Wini iniConf = new Wini();
   public static final String g_sButtonStartGame = "启动游戏服务器%s";
   public static final String g_sButtonStopGame = "停止游戏服务器%s";
   public static final String g_sButtonStopStartGame = "中止启动游戏服务器%s";
   public static final String g_sButtonStopStopGame = "中止停止游戏服务器%s";
 
-  public String g_sConfFile = ".\\Config.ini";
-  public String g_sBackListFile = ".\\BackupList.txt";
+  public static final String g_sConfFile = ".\\Config.ini";
+  public static final String g_sBackListFile = ".\\BackupList.txt";
 
-  public String g_sGameName = "GameOfMir";
+  public static String g_sGameName = "GameOfMir";
+  public static String g_sGameDirectory = ".\\";
+  public static String g_sHeroDBName = "HeroDB";
+  public static String g_sExtIPaddr = "127.0.0.1";
+  public static String g_sExtIPaddr2 = "127.0.0.1";
+  public static Boolean g_boAutoRunBak = false;
+  public static Boolean g_boCloseWuXin = false;
+  public static Boolean g_boIP2 = false;
+
+  static {
+    try {
+      iniConf.load(new File(g_sConfFile));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 }
 

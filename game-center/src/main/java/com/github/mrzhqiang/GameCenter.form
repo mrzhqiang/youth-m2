@@ -12,7 +12,7 @@
     </properties>
     <border type="etched"/>
     <children>
-      <tabbedpane id="12dd8">
+      <tabbedpane id="12dd8" binding="tabContent">
         <constraints border-constraint="Center"/>
         <properties>
           <autoscrolls value="false"/>

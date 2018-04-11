@@ -8,6 +8,7 @@ import javax.swing.*;
 public final class GameCenter extends Application {
 
   public JPanel contentPanel;
+  public JTabbedPane tabContent;
   public JTextField editServerDir;
   public JTextField editDbName;
   public JTextField editGameName;
@@ -69,11 +70,7 @@ public final class GameCenter extends Application {
   private final GameCenterController controller = new GameCenterController();
 
   @Override public void init() {
-    controller.loadConfig(this);
-  }
-
-  @Override public void stop() {
-    controller.saveLog(this);
+    controller.init(this);
   }
 
   @Override public void start(Stage primaryStage) {
@@ -92,5 +89,9 @@ public final class GameCenter extends Application {
     frame.setLocation(x, y);*/
     frame.setLocationRelativeTo(frame.getOwner());
     frame.setVisible(true);
+  }
+
+  @Override public void stop() {
+    controller.stop(this);
   }
 }
