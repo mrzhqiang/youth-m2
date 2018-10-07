@@ -4,17 +4,33 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>youth-m2</groupId>
+  <groupId>com.github.mrzhqiang.youth-m2</groupId>
   <artifactId>parent</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
+
+  <name>Youth M2 (Parent)</name>
+  <description>Java platform game engine ported from apple-m2.</description>
+  <url>https://github.com/mrzhqiang/youth-m2</url>
+
+  <modules>
+    <!-- 引擎 -->
+    <module>engine</module>
+    <!-- 游戏控制台 -->
+    <module>game-center</module>
+    <!-- TODO more module -->
+  </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.8</java.version>
     <guava.version>23.0</guava.version>
-    <junit.version>4.12</junit.version>
     <ini4j.version>0.5.4</ini4j.version>
+    <log4j.version>2.11.1</log4j.version>
+    <jedis.version>2.9.0</jedis.version>
+
+    <!-- Test Dependencies -->
+    <junit.version>4.12</junit.version>
   </properties>
 
   <dependencyManagement>
@@ -40,6 +56,24 @@
         <groupId>org.ini4j</groupId>
         <artifactId>ini4j</artifactId>
         <version>${ini4j.version}</version>
+      </dependency>
+      <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+      <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+      <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+      <dependency>
+        <groupId>redis.clients</groupId>
+        <artifactId>jedis</artifactId>
+        <version>${jedis.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
