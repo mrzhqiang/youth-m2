@@ -4,9 +4,9 @@ import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.ini4j.Wini;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import youthm2.gamecenter.internal.AccountConfig;
 import youthm2.gamecenter.internal.BackupConfig;
 import youthm2.gamecenter.internal.DatabaseConfig;
@@ -28,7 +28,7 @@ final class GShare {
     throw new AssertionError("No instance.");
   }
 
-  private static final Logger LOGGER = LogManager.getLogger();
+  private static final Logger LOGGER = LoggerFactory.getLogger(GShare.class);
 
   private static final String CONFIG_FILE = ".\\Config.ini";
   private static final String BACKUP_CONFIG_FILE = ".\\BackupList.txt";

@@ -11,28 +11,28 @@
   </parent>
 
   <artifactId>engine</artifactId>
-  <name>Engine</name>
+  <name>Youth M2: Engine</name>
 
   <dependencies>
+    <!-- https://mvnrepository.com/artifact/junit/junit -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>provided</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
-      <scope>provided</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.ini4j/ini4j -->
     <dependency>
       <groupId>org.ini4j</groupId>
       <artifactId>ini4j</artifactId>
-      <scope>provided</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 
