@@ -7,16 +7,6 @@ import java.util.List;
 import org.ini4j.Wini;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import youthm2.gamecenter.internal.AccountConfig;
-import youthm2.gamecenter.internal.BackupConfig;
-import youthm2.gamecenter.internal.DatabaseConfig;
-import youthm2.gamecenter.internal.GameConfig;
-import youthm2.gamecenter.internal.LogConfig;
-import youthm2.gamecenter.internal.M2Config;
-import youthm2.gamecenter.internal.PlugConfig;
-import youthm2.gamecenter.internal.RunConfig;
-import youthm2.gamecenter.internal.SelConfig;
-import youthm2.gamecenter.internal.Util;
 
 /**
  * 公共逻辑。

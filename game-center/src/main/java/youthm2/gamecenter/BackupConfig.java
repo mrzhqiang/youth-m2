@@ -1,9 +1,8 @@
-package youthm2.gamecenter.internal;
+package youthm2.gamecenter;
 
 import com.google.common.base.Strings;
 import javax.annotation.Nonnull;
 import org.ini4j.Profile;
-import youthm2.gamecenter.IConfig;
 
 /**
  * 备份文件配置。

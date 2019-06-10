@@ -3,133 +3,93 @@ package youthm2.gamecenter;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javax.swing.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class GMain extends Application {
+  private static final Logger logger = LoggerFactory.getLogger(GMain.class);
+  private static final int MAX_CONSOLE_COUNT = 1000;
+
   public JPanel panelContent;
   public JTabbedPane tabContent;
-  public JTextField editServerDir;
-  public JTextField editDbName;
-  public JTextField editGameName;
-  public JTextField editGameAddress;
-  public JTextField editPortAdd;
-  public JButton btnSettingSave;
-  public JButton btnSettingDefault;
-  public JCheckBox checkCloseFiveElement;
-  public JTextField editDataDir;
-  public JButton btnChooseDataDir;
-  public JButton btnChooseBackupDir;
-  public JRadioButton radioDayMode;
-  public JRadioButton radioIntervalMode;
-  public JSpinner spinnerDayHours;
-  public JSpinner spinnerDayMinute;
-  public JCheckBox checkBackup;
-  public JCheckBox checkZip;
-  public JCheckBox checkAutoRun;
-  public JButton btnBackupModification;
-  public JButton btnBackupDelete;
-  public JButton btnBackupAdd;
-  public JButton btnBackupSave;
-  public JButton btnBackupStart;
-  public JSpinner spinnerIntervalHours;
-  public JSpinner spinnerIntervalMinute;
-  public JCheckBox checkUserData;
-  public JCheckBox checkNpcData;
-  public JCheckBox checkEmailData;
-  public JCheckBox checkAccountData;
-  public JCheckBox checkGuildData;
-  public JCheckBox checkShaBkData;
-  public JCheckBox checkGlobalData;
-  public JCheckBox checkItemIdData;
-  public JCheckBox checkAccountLog;
-  public JCheckBox checkM2Log;
-  public JCheckBox checkGameLog;
-  public JCheckBox checkOtherData;
-  public JButton btnClear;
-  public JList listBackupInfo;
-  public JButton btnStart;
-  public JLabel editBackupDir;
-  public JTextArea textStartInfo;
-  public JCheckBox checkDbServer;
-  public JCheckBox checkLoginServer;
-  public JCheckBox checkM2Server;
-  public JCheckBox checkLogServer;
-  public JCheckBox checkRunGate;
-  public JCheckBox checkSelGate;
-  public JCheckBox checkLoginGate;
-  public JCheckBox checkRankPlugIn;
-  public JComboBox comboStartMode;
-  public JSpinner spinnerHours;
-  public JSpinner spinnerMinute;
+  public JTextField gameDirInput;
+  public JTextField databaseNameInput;
+  public JTextField gameNameInput;
+  public JTextField gameAddressInput;
+  public JButton saveButton;
+  public JButton defaultButton;
+  public JCheckBox disableWuXingActionCheckBox;
+  public JTextField dataDirInput;
+  public JButton chooseDataButton;
+  public JButton chooseBackupButton;
+  public JRadioButton daysRadio;
+  public JRadioButton intervalRadio;
+  public JSpinner daysHoursSpinner;
+  public JSpinner daysMinutesSpinner;
+  public JCheckBox enableBackupCheckBox;
+  public JCheckBox enableZIPCheckBox;
+  public JCheckBox autoRunningCheckBox;
+  public JButton changeBackupButton;
+  public JButton deleteBackupButton;
+  public JButton newBackupButton;
+  public JButton saveBackupButton;
+  public JButton startBackupButton;
+  public JSpinner intervalHoursSpinner;
+  public JSpinner intervalMinuteSpinner;
+  public JCheckBox clearPlayerCheckBox;
+  public JCheckBox clearNPCCheckBox;
+  public JCheckBox clearEMailCheckBox;
+  public JCheckBox clearAccountCheckBox;
+  public JCheckBox clearGuildCheckBox;
+  public JCheckBox clearShaBaKeCheckBox;
+  public JCheckBox clearGlobalCheckBox;
+  public JCheckBox clearIndexCheckBox;
+  public JCheckBox clearAccountLoggerCheckBox;
+  public JCheckBox clearCoreLoggerCheckBox;
+  public JCheckBox clearGameLoggerCheckBox;
+  public JCheckBox clearOtherCheckBox;
+  public JButton clearAllButton;
+  public JList backupInfoList;
+  public JButton startButton;
+  public JLabel backupDirInput;
+  public JTextArea startTextArea;
+  public JCheckBox databaseCheckBox;
+  public JCheckBox accountCheckBox;
+  public JCheckBox coreCheckBox;
+  public JCheckBox loggerCheckBox;
+  public JCheckBox gameCheckBox;
+  public JCheckBox roleCheckBox;
+  public JCheckBox loginCheckBox;
+  public JCheckBox rankCheckBox;
+  public JComboBox startModeComboBox;
+  public JSpinner hoursSpinner;
+  public JSpinner minuteSpinner;
 
   public static void main(String[] args) {
+    // 获取系统默认的样式/主题
     String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
     try {
+      // 作为我们程序的皮肤
       UIManager.setLookAndFeel(lookAndFeel);
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.warn("can not set look and feel: ", e);
     }
+    // 启动程序
     launch(args);
   }
 
+  private boolean isBusy;
+  private StartState startState;
+  private int backupState;
+  private int clearConsoleLimit;
+  private int startTimestamp;
+  private int startModeHours;
+  private int startModeMinutes;
+  private long startModeDuration;
+  private boolean gateStoped;
+  private long coreStopDuration;
   /**
-   * m_boOpen
-   * 是否打开？从逻辑上来看，当执行窗体创建时，不能对配置文件进行任何操作。
-   */
-  private boolean isExecuting = false;
-  /**
-   * m_nStartStatus
-   * 启动状态？
-   * 0：初始状态，可以启动服务端；
-   * 1：启动中，可以中断；
-   * 2：已经中断，可以停止；
-   * 3：停止中，可以中断；如果停止完毕，回归初始状态。
-   */
-  private int startStatus = 0;
-  /**
-   * m_dwShowTick
-   * 系统自启动以来经历过的毫秒值，引擎中没有被使用。
-   */
-  @Deprecated
-  private long showTick = -1;
-  /**
-   * m_dwRefTick
-   * 窗体创建时获取的系统启动时间，引擎中用于数据更新，没有实际意义。
-   */
-  @Deprecated
-  private long refTick = -1;
-  /**
-   * m_btHour
-   * 延时或定时启动的小时数值。
-   */
-  private byte hour = 0;
-  /**
-   * m_btMinute
-   * 延时或定时启动的分钟数值。
-   */
-  private byte minute = 0;
-  /**
-   * m_dwRunTime
-   * 延时启动的间隔时间。
-   * TODO 应该优化为 LocalTime
-   */
-  private long runTime = -1;
-
-  /**
-   * m_dwRunTick
-   * 记录程序启动时的系统启动时间。
-   * TODO 应该优化为 Instant 瞬间
-   */
-  private long runTick = -1;
-
-  /**
-   * m_boGateStop
-   * 游戏网关是否已经停止。只有当这个状态为 true 时，才可以关停游戏主引擎。
-   */
-  private boolean gateStop = false;
-
-  /**
-   * m_boGateStopTick
-   * 游戏网关停止后，需要等待的时间间隔。延迟关闭主引擎是一个不错的主意。
+   * m_boGateStopTick 游戏网关停止后，需要等待的时间间隔。延迟关闭主引擎是一个不错的主意。
    * <p>
    * TODO 应该优化为 Instant
    */
@@ -141,10 +101,10 @@ public final class GMain extends Application {
    * 准备一切必要的参数，比如：从 config 中读取程序配置。
    */
   @Override public void init() {
-    isExecuting = true;
+    isBusy = true;
     GShare.loadConfig();
     GShare.loadBackupConfig();
-    isExecuting = false;
+    isBusy = false;
   }
 
   @Override public void start(Stage primaryStage) {

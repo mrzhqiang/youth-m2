@@ -1,17 +1,17 @@
-package youthm2.gamecenter.internal;
+package youthm2.gamecenter;
 
 import javax.annotation.Nonnull;
 
 /**
- * 角色网关配置。
+ * 运行网关配置。
  * <p>
- * 对应 Config.ini 中的 [SelGate] 部分。
+ * 对应 Config.ini 中的 [RunGate] 部分。
  *
  * @author mrzhqiang
  */
-public final class SelConfig extends ServerConfig {
-  public static SelConfig newInstant() {
-    return new SelConfig();
+public final class RunConfig extends ServerConfig {
+  public static RunConfig newInstant() {
+    return new RunConfig();
   }
 
   @Override protected boolean defaultEnabled() {
@@ -19,23 +19,23 @@ public final class SelConfig extends ServerConfig {
   }
 
   @Override protected int defaultFormX() {
-    return 0;
+    return 437;
   }
 
   @Override protected int defaultFormY() {
-    return 180;
+    return 373;
   }
 
   @Override protected int defaultPort() {
-    return 7100;
+    return 7200;
   }
 
   @Nonnull @Override protected String defaultFile() {
     // FIXME: 2018/10/7 修改为对应 jar 文件名
-    return "SelGate.exe";
+    return "RunGate.exe";
   }
 
   @Nonnull @Override public String sectionName() {
-    return "SelGate";
+    return "RunGate";
   }
 }

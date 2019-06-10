@@ -1,4 +1,4 @@
-package youthm2.gamecenter.internal;
+package youthm2.gamecenter;
 
 import javax.annotation.Nonnull;
 

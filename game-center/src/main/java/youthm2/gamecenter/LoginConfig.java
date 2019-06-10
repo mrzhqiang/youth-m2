@@ -1,21 +1,17 @@
-package youthm2.gamecenter.internal;
+package youthm2.gamecenter;
 
 import javax.annotation.Nonnull;
 
 /**
- * 日志配置。
+ * 登陆网关配置。
  * <p>
- * 对应 Config.ini 中的 [LogServer] 部分。
+ * 对应 Config.ini 中的 [LoginGate] 部分。
  *
  * @author mrzhqiang
  */
-public final class LogConfig extends ServerConfig {
-  public static LogConfig newInstant() {
-    return new LogConfig();
-  }
-
-  @Nonnull @Override public String sectionName() {
-    return "LogServer";
+public final class LoginConfig extends ServerConfig {
+  public static LoginConfig newInstant() {
+    return new LoginConfig();
   }
 
   @Override protected boolean defaultEnabled() {
@@ -23,19 +19,23 @@ public final class LogConfig extends ServerConfig {
   }
 
   @Override protected int defaultFormX() {
-    return 252;
+    return 0;
   }
 
   @Override protected int defaultFormY() {
-    return 286;
+    return 0;
   }
 
   @Override protected int defaultPort() {
-    return 10000;
+    return 7000;
   }
 
   @Nonnull @Override protected String defaultFile() {
     // FIXME: 2018/10/7 修改为对应的 jar 文件名
-    return "LogDataServer.exe";
+    return "LoginGate.exe";
+  }
+
+  @Nonnull @Override public String sectionName() {
+    return "LoginGate";
   }
 }
