@@ -10,15 +10,10 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>engine</artifactId>
-  <name>Youth M2: Engine</name>
+  <artifactId>common</artifactId>
+  <name>Youth M2: Common</name>
 
   <dependencies>
-    <dependency>
-      <groupId>com.github.mrzhqiang.youth-m2</groupId>
-      <artifactId>common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
     <!-- https://mvnrepository.com/artifact/junit/junit -->
     <dependency>
       <groupId>junit</groupId>
@@ -35,6 +30,10 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.github.mrzhqiang.helper/helper -->
+    <dependency>
+      <groupId>com.github.mrzhqiang.helper</groupId>
+      <artifactId>helper</artifactId>
+    </dependency>
   </dependencies>
-
 </project>

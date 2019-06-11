@@ -16,7 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>com.github.mrzhqiang.youth-m2</groupId>
-      <artifactId>engine</artifactId>
+      <artifactId>common</artifactId>
       <version>${project.version}</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/junit/junit -->
@@ -24,25 +24,16 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
+    <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
     <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.typesafe/config -->
-    <dependency>
-      <groupId>com.typesafe</groupId>
-      <artifactId>config</artifactId>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
     </dependency>
   </dependencies>
 </project>
