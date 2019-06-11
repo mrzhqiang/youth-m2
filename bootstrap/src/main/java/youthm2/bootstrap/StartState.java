@@ -1,4 +1,4 @@
-package youthm2.gamecenter;
+package youthm2.bootstrap;
 
 /**
  * 启动状态。
