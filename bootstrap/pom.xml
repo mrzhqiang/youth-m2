@@ -6,12 +6,12 @@
 
   <parent>
     <groupId>com.github.mrzhqiang.youth-m2</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>root</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>game-center</artifactId>
-  <name>Youth M2: Game center</name>
+  <artifactId>bootstrap</artifactId>
+  <name>Youth M2: Bootstrap</name>
 
   <dependencies>
     <dependency>
