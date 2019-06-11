@@ -4,37 +4,41 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <!-- 项目声明 -->
   <groupId>com.github.mrzhqiang.youth-m2</groupId>
   <artifactId>parent</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
+  <!-- 项目资料 -->
   <name>Youth M2 (Parent)</name>
   <description>Java platform game engine ported from apple-m2.</description>
   <url>https://github.com/mrzhqiang/youth-m2</url>
 
   <modules>
-    <!-- 引擎 -->
+    <!-- 引擎模块 -->
     <module>engine</module>
-    <!-- 游戏控制台 -->
-    <module>game-center</module>
+    <!-- 启动模块 -->
+    <module>bootstrap</module>
     <!-- TODO more module -->
   </modules>
 
+  <!-- 项目属性 -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <!-- Project Dependencies -->
+    <!-- 项目依赖 -->
     <java.version>1.8</java.version>
     <slf4j.version>1.7.25</slf4j.version>
     <ini4j.version>0.5.4</ini4j.version>
     <guava.version>22.0</guava.version>
     <jedis.version>2.9.0</jedis.version>
 
-    <!-- Test Dependencies -->
+    <!-- 测试依赖 -->
     <junit.version>4.12</junit.version>
   </properties>
 
+  <!-- 依赖管理 -->
   <dependencyManagement>
     <dependencies>
       <!-- https://mvnrepository.com/artifact/junit/junit -->
