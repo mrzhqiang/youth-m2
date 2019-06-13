@@ -5,7 +5,7 @@ import com.typesafe.config.Config;
 /**
  * @author mrzhqiang
  */
-public final class ServerConfig extends FormConfig {
+public class ServerConfig extends FormConfig {
   private static final String SERVER_PORT = "server.port";
   private static final String SERVER_INTERVAL_PORT = "server.interval.port";
   private static final String SERVER_MON_PORT = "server.mon.port";
@@ -17,8 +17,12 @@ public final class ServerConfig extends FormConfig {
   @Override public void load(Config config) {
     super.load(config);
     port = config.getInt(SERVER_PORT);
-    intervalPort = config.getInt(SERVER_INTERVAL_PORT);
-    monPort = config.getInt(SERVER_MON_PORT);
+    if (config.hasPath(SERVER_INTERVAL_PORT)) {
+      intervalPort = config.getInt(SERVER_INTERVAL_PORT);
+    }
+    if (config.hasPath(SERVER_MON_PORT)) {
+      monPort = config.getInt(SERVER_MON_PORT);
+    }
   }
 
   public int getPort() {

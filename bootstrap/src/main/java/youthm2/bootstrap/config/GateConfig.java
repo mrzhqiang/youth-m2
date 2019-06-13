@@ -5,7 +5,7 @@ import com.typesafe.config.Config;
 /**
  * @author mrzhqiang
  */
-public final class GateConfig extends FormConfig {
+public class GateConfig extends FormConfig {
   private static final String GATE_PORT = "gate.port";
 
   private int port;

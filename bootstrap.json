@@ -1,0 +1,61 @@
+{
+  "home": {
+    "dir": "D:/mir-server/MirServer",
+    "name": "兰达尔引擎",
+    "address": "127.0.0.1",
+
+    "action": {
+      "backup": true,
+      "wuxing": false
+    },
+
+    "database": {
+      "name": "randall",
+      "form": {
+        "enabled": true
+      }
+    },
+
+    "account": {
+      "form": {
+        "enabled": true
+      }
+    },
+
+    "logger": {
+      "form": {
+        "enabled": false
+      }
+    },
+
+    "core": {
+      "form": {
+        "enabled": true
+      }
+    },
+
+    "game": {
+      "form": {
+        "enabled": true
+      }
+    },
+
+    "role": {
+      "form": {
+        "enabled": true
+      }
+    },
+
+    "login": {
+      "form": {
+        "enabled": true
+      }
+    },
+
+    "rank": {
+      "form": {
+        "enabled": true
+      }
+    }
+  }
+}
