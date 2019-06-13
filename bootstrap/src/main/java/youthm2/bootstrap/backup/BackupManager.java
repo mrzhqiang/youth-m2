@@ -6,4 +6,11 @@ package youthm2.bootstrap.backup;
  * @author mrzhqiang
  */
 public final class BackupManager {
+  public void start() {
+
+  }
+
+  public void stop() {
+
+  }
 }

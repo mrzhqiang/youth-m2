@@ -4,6 +4,9 @@ import com.google.common.base.Strings;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigRenderOptions;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,9 +26,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import youthm2.bootstrap.backup.BackupData;
@@ -80,6 +80,8 @@ public final class Bootstrap extends Application {
   public JButton newBackupButton;
   public JButton saveBackupButton;
   public JButton startBackupButton;
+  public JTable backupDataTable;
+  public JLabel backupStateLabel;
   /*数据清理*/
   public JCheckBox clearPlayerCheckBox;
   public JCheckBox clearNPCCheckBox;
@@ -94,7 +96,6 @@ public final class Bootstrap extends Application {
   public JCheckBox clearIndexCheckBox;
   public JCheckBox clearOtherCheckBox;
   public JButton clearAllButton;
-  public JTable backupDataTable;
 
   private static final int DEFAULT_MAX_CONSOLE_COUNT = 1000;
   private static final String CONFIG_FILE = "bootstrap.json";
@@ -145,7 +146,7 @@ public final class Bootstrap extends Application {
   }
 
   @Override public void start(Stage primaryStage) {
-    JFrame frame = new JFrame("游戏引导");
+    JFrame frame = new JFrame("引导程序");
     frame.setContentPane(contentPanel);
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     frame.pack();
@@ -166,6 +167,7 @@ public final class Bootstrap extends Application {
     startInfoTextArea.setText("");
     loadConfig();
     updateLayout();
+    createEvent();
     startInfoTextArea.append("启动就绪..");
     isBusy = false;
   }
@@ -211,6 +213,25 @@ public final class Bootstrap extends Application {
   private void updateBackupLayout() {
     enableBackupCheckBox.setSelected(homeConfig.isBackupAction());
     backupDataTable.setModel(backupDataModel);
+    checkBackupState();
+  }
+
+  private void checkBackupState() {
+    if (homeConfig.isBackupAction()) {
+      if (backupState == BackupState.DISABLED) {
+        backupState = BackupState.ENABLED;
+        startBackupButton.setText("停止");
+        backupManager.start();
+        backupStateLabel.setForeground(Color.GREEN);
+        backupStateLabel.setText("数据备份功能已激活");
+      } else {
+        backupState = BackupState.DISABLED;
+        startBackupButton.setText("启动");
+        backupManager.stop();
+        backupStateLabel.setForeground(Color.RED);
+        backupStateLabel.setText("数据备份功能已关闭");
+      }
+    }
   }
 
   private void updateSettingLayout() {
@@ -231,6 +252,12 @@ public final class Bootstrap extends Application {
     roleCheckBox.setSelected(homeConfig.roleGate.isEnabled());
     loginCheckBox.setSelected(homeConfig.loginGate.isEnabled());
     rankCheckBox.setSelected(homeConfig.rankPlug.isEnabled());
+  }
+
+  private void createEvent() {
+    startBackupButton.addActionListener(e -> {
+      checkBackupState();
+    });
   }
 
   public enum StartState {
@@ -254,8 +281,8 @@ public final class Bootstrap extends Application {
   }
 
   public enum BackupState {
-    DISABLED("禁用"),
-    ENABLED("激活"),
+    DISABLED("停止"),
+    ENABLED("启动"),
     ;
 
     private final String label;

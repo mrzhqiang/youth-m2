@@ -11,15 +11,17 @@ import javax.swing.table.AbstractTableModel;
  */
 public final class BackupDataModel extends AbstractTableModel {
   private String[] columnName = {"源文件", "备份地址", "状态"};
-  private Object[][] dataList = new Object[0][0];
+  private Object[][] rowList = new Object[0][0];
+  private List<BackupData> dataList;
 
   public void update(List<BackupData> dataList) {
     Preconditions.checkNotNull(dataList, "data list == null");
-    this.dataList = new Object[dataList.size()][3];
+    this.dataList = dataList;
+    this.rowList = new Object[dataList.size()][3];
     for (int i = 0; i < dataList.size(); i++) {
-      this.dataList[i][0] = dataList.get(i).source;
-      this.dataList[i][1] = dataList.get(i).destination;
-      this.dataList[i][2] = dataList.get(i).backupEnabled ? "开启" : "关闭";
+      this.rowList[i][0] = dataList.get(i).source;
+      this.rowList[i][1] = dataList.get(i).destination;
+      this.rowList[i][2] = dataList.get(i).backupEnabled ? "开启" : "关闭";
     }
   }
 
@@ -32,10 +34,10 @@ public final class BackupDataModel extends AbstractTableModel {
   }
 
   @Override public int getRowCount() {
-    return dataList.length;
+    return rowList.length;
   }
 
   @Override public Object getValueAt(int rowIndex, int columnIndex) {
-    return dataList[rowIndex][columnIndex];
+    return rowList[rowIndex][columnIndex];
   }
 }
