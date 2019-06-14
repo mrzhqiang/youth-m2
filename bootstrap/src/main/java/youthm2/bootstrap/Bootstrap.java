@@ -1,13 +1,17 @@
 package youthm2.bootstrap;
 
 import com.google.common.base.Strings;
+import com.google.common.io.Files;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigRenderOptions;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.stream.Collectors;
 import javafx.application.Application;
@@ -29,9 +33,8 @@ import javax.swing.WindowConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import youthm2.bootstrap.backup.BackupData;
-import youthm2.bootstrap.backup.BackupDataModel;
 import youthm2.bootstrap.backup.BackupManager;
-import youthm2.bootstrap.config.HomeConfig;
+import youthm2.bootstrap.config.BootstrapConfig;
 
 public final class Bootstrap extends Application {
   private static final Logger logger = LoggerFactory.getLogger("bootstrap");
@@ -97,7 +100,7 @@ public final class Bootstrap extends Application {
   public JCheckBox clearOtherCheckBox;
   public JButton clearAllButton;
 
-  private static final int DEFAULT_MAX_CONSOLE_COUNT = 1000;
+  private static final int MAX_CONSOLE_COLUMNS = 1000;
   private static final String CONFIG_FILE = "bootstrap.json";
   private static final ConfigRenderOptions RENDER_OPTIONS = ConfigRenderOptions.defaults()
       .setComments(false)
@@ -118,30 +121,23 @@ public final class Bootstrap extends Application {
   }
 
   private boolean isBusy;
-  private StartState startState;
-  private BackupState backupState;
-  private int maxConsoleCount;
-  private Config defaultConfig;
-  private HomeConfig homeConfig;
+  private Gson gson;
+  private File configFile;
+  private BootstrapState state;
+  private BootstrapConfig config;
   private BackupManager backupManager;
-  private BackupDataModel backupDataModel;
-
-  private boolean gateStoped;
-  private int startTimestamp;
-  private int startModeHours;
-  private int startModeMinutes;
-  private long startModeDuration;
-  private long coreStopDuration;
 
   @Override public void init() {
     isBusy = false;
-    startState = StartState.DEFAULT;
-    backupState = BackupState.DISABLED;
-    maxConsoleCount = DEFAULT_MAX_CONSOLE_COUNT;
-    defaultConfig = ConfigFactory.load();
-    homeConfig = new HomeConfig();
+    gson = new GsonBuilder()
+        .setPrettyPrinting()
+        .setDateFormat("yyyy-MM-dd HH:mm:ss")
+        .serializeNulls()
+        .create();
+    configFile = new File(CONFIG_FILE);
+    state = BootstrapState.DEFAULT;
+    config = new BootstrapConfig();
     backupManager = new BackupManager();
-    backupDataModel = new BackupDataModel();
     // 提醒：init 方法中不允许操作窗体
   }
 
@@ -163,7 +159,7 @@ public final class Bootstrap extends Application {
 
     isBusy = true;
     menuTab.setSelectedIndex(0);
-    startInfoTextArea.setColumns(maxConsoleCount);
+    startInfoTextArea.setColumns(MAX_CONSOLE_COLUMNS);
     startInfoTextArea.setText("");
     loadConfig();
     updateLayout();
@@ -176,10 +172,20 @@ public final class Bootstrap extends Application {
   }
 
   private void loadConfig() {
-    Config config = ConfigFactory.parseFile(new File(CONFIG_FILE));
-    homeConfig.load(config.withFallback(defaultConfig));
+    Config currentConfig = ConfigFactory.parseFile(configFile).withFallback(ConfigFactory.load());
 
     loadBackupList();
+  }
+
+  private void saveConfig() {
+    String json = defaultConfig.root().render(RENDER_OPTIONS);
+    //noinspection UnstableApiUsage
+    try(BufferedWriter writer = Files.newWriter(configFile, Charset.forName("UTF-8"))) {
+      writer.write(json);
+      writer.flush();
+    } catch (IOException e) {
+      logger.error("保存配置出错", e);
+    }
   }
 
   private void loadBackupList() {
@@ -211,56 +217,58 @@ public final class Bootstrap extends Application {
   }
 
   private void updateBackupLayout() {
-    enableBackupCheckBox.setSelected(homeConfig.isBackupAction());
+    enableBackupCheckBox.setSelected(config1.isBackupAction());
     backupDataTable.setModel(backupDataModel);
-    checkBackupState();
+    if (config1.isBackupAction()) {
+      checkBackupState();
+    }
   }
 
   private void checkBackupState() {
-    if (homeConfig.isBackupAction()) {
-      if (backupState == BackupState.DISABLED) {
-        backupState = BackupState.ENABLED;
-        startBackupButton.setText("停止");
-        backupManager.start();
-        backupStateLabel.setForeground(Color.GREEN);
-        backupStateLabel.setText("数据备份功能已激活");
-      } else {
-        backupState = BackupState.DISABLED;
-        startBackupButton.setText("启动");
-        backupManager.stop();
-        backupStateLabel.setForeground(Color.RED);
-        backupStateLabel.setText("数据备份功能已关闭");
-      }
+    if (backupState == BackupState.DISABLED) {
+      backupState = BackupState.ENABLED;
+      startBackupButton.setText("停止");
+      backupManager.start();
+      backupStateLabel.setForeground(Color.GREEN);
+      backupStateLabel.setText("数据备份功能已激活");
+    } else {
+      backupState = BackupState.DISABLED;
+      startBackupButton.setText("启动");
+      backupManager.stop();
+      backupStateLabel.setForeground(Color.RED);
+      backupStateLabel.setText("数据备份功能已关闭");
     }
   }
 
   private void updateSettingLayout() {
-    gameDirInput.setText(homeConfig.getDir());
-    gameNameInput.setText(homeConfig.getName());
-    databaseNameInput.setText(homeConfig.getDb());
-    gameAddressInput.setText(homeConfig.getAddress());
-    disableWuXingActionCheckBox.setSelected(homeConfig.isWuxingAction());
+    gameDirInput.setText(config1.getDir());
+    gameNameInput.setText(config1.getName());
+    databaseNameInput.setText(config1.getDb());
+    gameAddressInput.setText(config1.getAddress());
+    disableWuXingActionCheckBox.setSelected(config1.isWuxingAction());
   }
 
   private void updateHomeLayout() {
     // 控制概览
-    databaseCheckBox.setSelected(homeConfig.databaseServer.isEnabled());
-    accountCheckBox.setSelected(homeConfig.accountServer.isEnabled());
-    loggerCheckBox.setSelected(homeConfig.loggerServer.isEnabled());
-    coreCheckBox.setSelected(homeConfig.coreServer.isEnabled());
-    gameCheckBox.setSelected(homeConfig.gameGate.isEnabled());
-    roleCheckBox.setSelected(homeConfig.roleGate.isEnabled());
-    loginCheckBox.setSelected(homeConfig.loginGate.isEnabled());
-    rankCheckBox.setSelected(homeConfig.rankPlug.isEnabled());
+    databaseCheckBox.setSelected(config1.databaseServer.isEnabled());
+    accountCheckBox.setSelected(config1.accountServer.isEnabled());
+    loggerCheckBox.setSelected(config1.loggerServer.isEnabled());
+    coreCheckBox.setSelected(config1.coreServer.isEnabled());
+    gameCheckBox.setSelected(config1.gameGate.isEnabled());
+    roleCheckBox.setSelected(config1.roleGate.isEnabled());
+    loginCheckBox.setSelected(config1.loginGate.isEnabled());
+    rankCheckBox.setSelected(config1.rankPlug.isEnabled());
   }
 
   private void createEvent() {
-    startBackupButton.addActionListener(e -> {
-      checkBackupState();
+    startBackupButton.addActionListener(e -> checkBackupState());
+    databaseCheckBox.addChangeListener(e -> {
+      config1.databaseServer.setEnabled(databaseCheckBox.isEnabled());
+      saveConfig();
     });
   }
 
-  public enum StartState {
+  public enum BootstrapState {
     DEFAULT("启动服务器"),
     STARTING("取消启动"),
     CALCEL_START("继续启动"),
@@ -271,23 +279,7 @@ public final class Bootstrap extends Application {
 
     private final String label;
 
-    StartState(String label) {
-      this.label = label;
-    }
-
-    @Override public String toString() {
-      return label;
-    }
-  }
-
-  public enum BackupState {
-    DISABLED("停止"),
-    ENABLED("启动"),
-    ;
-
-    private final String label;
-
-    BackupState(String label) {
+    BootstrapState(String label) {
       this.label = label;
     }
 

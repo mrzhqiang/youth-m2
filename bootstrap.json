@@ -1,61 +1,32 @@
 {
-  "home": {
-    "dir": "D:/mir-server/MirServer",
-    "name": "兰达尔引擎",
-    "address": "127.0.0.1",
-
-    "action": {
-      "backup": true,
-      "wuxing": false
-    },
-
-    "database": {
-      "name": "randall",
-      "form": {
-        "enabled": true
-      }
-    },
-
-    "account": {
-      "form": {
-        "enabled": true
-      }
-    },
-
-    "logger": {
-      "form": {
-        "enabled": false
-      }
-    },
-
-    "core": {
-      "form": {
-        "enabled": true
-      }
-    },
-
-    "game": {
-      "form": {
-        "enabled": true
-      }
-    },
-
-    "role": {
-      "form": {
-        "enabled": true
-      }
-    },
-
-    "login": {
-      "form": {
-        "enabled": true
-      }
-    },
-
-    "rank": {
-      "form": {
-        "enabled": true
-      }
-    }
+  "homePath": "D:/mir-server/MirServer",
+  "dbName": "兰达尔引擎",
+  "gameName": "兰达尔第一季",
+  "gameAddress": "127.0.0.1",
+  "backupAction": true,
+  "wuxingAction": false,
+  "database": {
+    "enabled": true
+  },
+  "account": {
+    "enabled": true
+  },
+  "logger": {
+    "enabled": true
+  },
+  "core": {
+    "enabled": true
+  },
+  "game": {
+    "enabled": true
+  },
+  "role": {
+    "enabled": true
+  },
+  "login": {
+    "enabled": true
+  },
+  "rank": {
+    "enabled": true
   }
 }

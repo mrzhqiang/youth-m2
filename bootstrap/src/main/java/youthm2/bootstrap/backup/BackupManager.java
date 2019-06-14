@@ -6,6 +6,12 @@ package youthm2.bootstrap.backup;
  * @author mrzhqiang
  */
 public final class BackupManager {
+  public final BackupDataModel backupDataModel;
+
+  public BackupManager() {
+    backupDataModel = new BackupDataModel();
+  }
+
   public void start() {
 
   }
