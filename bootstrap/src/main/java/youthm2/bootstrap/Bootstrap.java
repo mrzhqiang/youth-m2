@@ -1,14 +1,17 @@
 package youthm2.bootstrap;
 
+import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.typesafe.config.ConfigRenderOptions;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import youthm2.bootstrap.backup.BackupManager;
+import youthm2.bootstrap.config.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +19,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.Timer;
 
 public final class Bootstrap extends Application {
     private static final Logger logger = LoggerFactory.getLogger("bootstrap");
@@ -83,19 +88,20 @@ public final class Bootstrap extends Application {
     public JButton clearAllButton;
 
     private static final int MAX_CONSOLE_COLUMNS = 1000;
+    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String CONFIG_FILE = "bootstrap.json";
     private static final String BACKUP_FILE = "backup.json";
+    private static final String PROGRAM_TITLE = "引导程序 - 青春引擎";
 
     public static void main(String[] args) {
-        // 获取系统默认的样式/主题
-        String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
         try {
+            // 获取系统默认的样式/主题
+            String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
             // 改变程序外观
             UIManager.setLookAndFeel(lookAndFeel);
         } catch (Exception e) {
-            logger.warn("can not set look and feel: ", e);
+            logger.warn("将外观设置为系统主题出错", e);
         }
-        // 启动程序
         launch(args);
     }
 
@@ -106,15 +112,17 @@ public final class Bootstrap extends Application {
     private BootstrapState state;
     private BootstrapConfig config;
     private BackupManager backupManager;
+    private Timer timer;
 
     private long startModeDuration;
+    private long startTimestamp;
 
     @Override
     public void init() {
         isBusy = false;
         gson = new GsonBuilder()
                 .setPrettyPrinting()
-                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .setDateFormat(DATE_FORMAT)
                 .serializeNulls()
                 .create();
         configFile = new File(CONFIG_FILE);
@@ -122,45 +130,101 @@ public final class Bootstrap extends Application {
         state = BootstrapState.DEFAULT;
         config = new BootstrapConfig();
         backupManager = new BackupManager();
+        timer = new Timer("Bootstrap Timer");
         // 提醒：init 方法中不允许操作窗体
     }
 
     @Override
     public void start(Stage primaryStage) {
-        JFrame frame = new JFrame("引导程序");
+        JFrame frame = new JFrame(PROGRAM_TITLE);
         frame.setContentPane(contentPanel);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.pack();
-    /* 居中显示（双屏幕会显示在两个屏幕中间，不友好）
-      Dimension displaySize = Toolkit.getDefaultToolkit().getScreenSize();
-      Dimension frameSize = frame.getSize();
-      int x = (displaySize.width - frameSize.width) / 2;
-      int y = (displaySize.height - frameSize.height) / 2;
-      frame.setLocation(x, y);
-    */
+        // 居中显示（双屏幕会显示在两个屏幕中间，不友好）
+//        Dimension displaySize = Toolkit.getDefaultToolkit().getScreenSize();
+//        Dimension frameSize = frame.getSize();
+//        int x = (displaySize.width - frameSize.width) / 2;
+//        int y = (displaySize.height - frameSize.height) / 2;
+//        frame.setLocation(x, y);
+
         frame.setResizable(false);
         frame.setLocationRelativeTo(frame.getOwner());
         frame.setVisible(true);
 
         isBusy = true;
-        hoursSpinner.setEnabled(startModeComboBox.getSelectedIndex() > 0 && startModeComboBox.isEnabled());
-        minuteSpinner.setEnabled(startModeComboBox.getSelectedIndex() > 0 && startModeComboBox.isEnabled());
-        menuTab.setSelectedIndex(0);
-        startInfoTextArea.setColumns(MAX_CONSOLE_COLUMNS);
-        startInfoTextArea.setText("");
         config.load(configFile);
         backupManager.load(backupFile);
-        deleteBackupButton.setEnabled(false);
-        changeBackupButton.setEnabled(false);
-        startButton.setText(state.label);
-        updateLayout();
         createEvent();
-        startInfoTextArea.append("启动就绪..");
+        updateLayout();
+        prepareStart();
         isBusy = false;
     }
 
     @Override
     public void stop() {
+    }
+
+    private void createEvent() {
+        databaseCheckBox.addChangeListener(e -> config.database.enabled = databaseCheckBox.isSelected());
+        accountCheckBox.addChangeListener(e -> config.account.enabled = accountCheckBox.isSelected());
+        coreCheckBox.addChangeListener(e -> config.core.enabled = coreCheckBox.isSelected());
+        loggerCheckBox.addChangeListener(e -> config.logger.enabled = loggerCheckBox.isSelected());
+        gameCheckBox.addChangeListener(e -> config.game.enabled = gameCheckBox.isSelected());
+        roleCheckBox.addChangeListener(e -> config.role.enabled = roleCheckBox.isSelected());
+        loginCheckBox.addChangeListener(e -> config.login.enabled = loginCheckBox.isSelected());
+        rankCheckBox.addChangeListener(e -> config.rank.enabled = rankCheckBox.isSelected());
+        startModeComboBox.addItemListener(e -> {
+            boolean startModeEnabled = startModeComboBox.getSelectedIndex() > 0 && startModeComboBox.isEnabled();
+            hoursSpinner.setEnabled(startModeEnabled);
+            minuteSpinner.setEnabled(startModeEnabled);
+            if (startModeEnabled) {
+                // getValue 返回的是 Integer 类型
+                long hours = (int) hoursSpinner.getValue();
+                long minutes = (int) minuteSpinner.getValue();
+                startModeDuration = TimeUnit.HOURS.toMillis(hours) + TimeUnit.MINUTES.toMillis(minutes);
+            } else {
+                startModeDuration = 0;
+            }
+        });
+        enableBackupCheckBox.addChangeListener(e -> {
+            boolean selected = enableBackupCheckBox.isSelected();
+            startBackupButton.setEnabled(selected);
+            config.backupAction = selected;
+        });
+        startBackupButton.addActionListener(e -> {
+            if (config.backupAction) {
+                checkBackupState();
+            }
+        });
+
+        // 启动按钮
+        startButton.addActionListener(e -> {
+            switch (state) {
+                case DEFAULT:
+                    int value = JOptionPane.showConfirmDialog(menuTab, "确定要 [" + state + "] 吗？", "提示", JOptionPane.YES_NO_OPTION);
+                    if (JOptionPane.OK_OPTION == value) {
+                        startGame();
+                    }
+                    break;
+                case STARTING:
+                case CANCEL:
+                case RUNNING:
+                case STOPPING:
+            }
+        });
+    }
+
+    private void startGame() {
+        startTimestamp = System.currentTimeMillis();
+//        if (startModeComboBox.isEnabled()) {
+//        long hours = (int) hoursSpinner.getValue();
+//        long minutes = (int) minuteSpinner.getValue();
+//        startModeDuration = TimeUnit.HOURS.toMillis(hours) + TimeUnit.MINUTES.toMillis(minutes);
+//        }
+        // todo 根据配置去启动程序
+        state = BootstrapState.STARTING;
+        startButton.setText(state.label);
+        timer.schedule(new StartGameTask(), TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(1));
     }
 
     private void saveConfig() {
@@ -174,22 +238,39 @@ public final class Bootstrap extends Application {
     }
 
     private void updateLayout() {
-        updateHomeLayout();
-        updateSettingLayout();
-        updateBackupLayout();
-        updateClearLayout();
-    }
-
-    private void updateClearLayout() {
-
-    }
-
-    private void updateBackupLayout() {
+        // 控制概览
+        databaseCheckBox.setSelected(config.database.enabled);
+        accountCheckBox.setSelected(config.account.enabled);
+        loggerCheckBox.setSelected(config.logger.enabled);
+        coreCheckBox.setSelected(config.core.enabled);
+        gameCheckBox.setSelected(config.game.enabled);
+        roleCheckBox.setSelected(config.role.enabled);
+        loginCheckBox.setSelected(config.login.enabled);
+        rankCheckBox.setSelected(config.rank.enabled);
+        // 配置设定
+        homePathInput.setText(config.homePath);
+        dbNameInput.setText(config.dbName);
+        gameNameInput.setText(config.gameName);
+        gameAddressInput.setText(config.gameAddress);
+        disableWuXingActionCheckBox.setSelected(config.wuxingAction);
+        // 备份管理
         enableBackupCheckBox.setSelected(config.backupAction);
-        backupDataTable.setModel(backupManager.dataModel);
+        backupManager.updateModel(backupDataTable);
         if (config.backupAction) {
             checkBackupState();
         }
+        // todo 清理数据
+    }
+
+    private void prepareStart() {
+        menuTab.setSelectedIndex(0);
+        boolean startModeEnabled = startModeComboBox.getSelectedIndex() > 0 && startModeComboBox.isEnabled();
+        hoursSpinner.setEnabled(startModeEnabled);
+        minuteSpinner.setEnabled(startModeEnabled);
+        startInfoTextArea.setText("");
+        startInfoTextArea.setColumns(MAX_CONSOLE_COLUMNS);
+        startButton.setText(state.label);
+        startInfoTextArea.append("准备就绪..");
     }
 
     private void checkBackupState() {
@@ -208,52 +289,12 @@ public final class Bootstrap extends Application {
         }
     }
 
-    private void updateSettingLayout() {
-        homePathInput.setText(config.homePath);
-        dbNameInput.setText(config.dbName);
-        gameNameInput.setText(config.gameName);
-        gameAddressInput.setText(config.gameAddress);
-        disableWuXingActionCheckBox.setSelected(config.wuxingAction);
-    }
-
-    private void updateHomeLayout() {
-        // 控制概览
-        databaseCheckBox.setSelected(config.database.enabled);
-        accountCheckBox.setSelected(config.account.enabled);
-        loggerCheckBox.setSelected(config.logger.enabled);
-        coreCheckBox.setSelected(config.core.enabled);
-        gameCheckBox.setSelected(config.game.enabled);
-        roleCheckBox.setSelected(config.role.enabled);
-        loginCheckBox.setSelected(config.login.enabled);
-        rankCheckBox.setSelected(config.rank.enabled);
-    }
-
-    private void createEvent() {
-        databaseCheckBox.addChangeListener(e -> config.database.enabled = databaseCheckBox.isSelected());
-        accountCheckBox.addChangeListener(e -> config.account.enabled = accountCheckBox.isSelected());
-        coreCheckBox.addChangeListener(e -> config.core.enabled = coreCheckBox.isSelected());
-        loggerCheckBox.addChangeListener(e -> config.logger.enabled = loggerCheckBox.isSelected());
-        gameCheckBox.addChangeListener(e -> config.game.enabled = gameCheckBox.isSelected());
-        roleCheckBox.addChangeListener(e -> config.role.enabled = roleCheckBox.isSelected());
-        loginCheckBox.addChangeListener(e -> config.login.enabled = loginCheckBox.isSelected());
-        rankCheckBox.addChangeListener(e -> config.rank.enabled = rankCheckBox.isSelected());
-        startModeComboBox.addItemListener(e -> {
-            hoursSpinner.setEnabled(startModeComboBox.getSelectedIndex() > 0 && startModeComboBox.isEnabled());
-            minuteSpinner.setEnabled(startModeComboBox.getSelectedIndex() > 0 && startModeComboBox.isEnabled());
-            long hours = (long) hoursSpinner.getValue();
-            long minutes = (long) minuteSpinner.getValue();
-            startModeDuration = TimeUnit.HOURS.toMillis(hours) + TimeUnit.MINUTES.toMillis(minutes);
-        });
-        startBackupButton.addActionListener(e -> checkBackupState());
-    }
-
-    public enum BootstrapState {
-        DEFAULT("启动服务器"),
+    private enum BootstrapState {
+        DEFAULT("启动服务"),
         STARTING("取消启动"),
-        CALCEL_START("继续启动"),
-        RUNNING("停止服务器"),
-        STOPING("取消停止"),
-        CALCEL_STOP("继续停止"),
+        CANCEL("停止启动"),
+        RUNNING("停止服务"),
+        STOPPING("取消停止"),
         ;
 
         private final String label;
@@ -265,6 +306,51 @@ public final class Bootstrap extends Application {
         @Override
         public String toString() {
             return label;
+        }
+    }
+
+    private static final class BootstrapConfig {
+        String homePath;
+        String dbName;
+        String gameName;
+        String gameAddress;
+        boolean backupAction;
+        boolean wuxingAction;
+
+        final ServerConfig database = new ServerConfig();
+        final PublicServerConfig account = new PublicServerConfig();
+        final ServerConfig logger = new ServerConfig();
+        final IntervalServerConfig core = new IntervalServerConfig();
+        final GateConfig game = new GateConfig();
+        final GateConfig role = new GateConfig();
+        final GateConfig login = new GateConfig();
+        final ProgramConfig rank = new GateConfig();
+
+        void load(File configFile) {
+            Preconditions.checkNotNull(configFile, "config file == null");
+            // 以 config file 为主，缺失的由默认配置 reference.conf 填补
+            Config config = ConfigFactory.parseFile(configFile).withFallback(ConfigFactory.load());
+            homePath = config.getString("homePath");
+            dbName = config.getString("dbName");
+            gameName = config.getString("gameName");
+            gameAddress = config.getString("gameAddress");
+            backupAction = config.getBoolean("backupAction");
+            wuxingAction = config.getBoolean("wuxingAction");
+            database.load(config.getConfig("database"));
+            account.load(config.getConfig("account"));
+            logger.load(config.getConfig("logger"));
+            core.load(config.getConfig("core"));
+            game.load(config.getConfig("game"));
+            role.load(config.getConfig("role"));
+            login.load(config.getConfig("login"));
+            rank.load(config.getConfig("rank"));
+        }
+    }
+
+    private static class StartGameTask extends TimerTask {
+
+        @Override
+        public void run() {
         }
     }
 }
