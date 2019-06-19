@@ -2,6 +2,7 @@ package youthm2.bootstrap;
 
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -10,25 +11,32 @@ import java.util.Locale;
  *
  * @author qiang.zhang
  */
-public final class Program {
-    public boolean enabled;
-    public int status;
-    public String filename;
-    public String path;
-    public Process process;
-    public String handler;
-    public String bootstrapHanlder;
-    public int x;
-    public int y;
+final class Program {
+    boolean enabled;
+    int status;
+    String filename;
+    String path;
+    Process process;
+    String handler;
+    String bootstrapHanlder;
+    int x;
+    int y;
 
-    public long run(long waitTime) {
+    void run() {
         String command = String.format(Locale.getDefault(), "%s%s %s %d %d", path, filename, handler, x, y);
         try {
-            Process process = Runtime.getRuntime().exec(command);
+            process = Runtime.getRuntime().exec(command);
         } catch (IOException e) {
-            LoggerFactory.getLogger("bootstrap").error("启动程序失败", e);
-            return -1;
+            LoggerFactory.getLogger("bootstrap").error("启动程序失败：" + filename, e);
         }
-        return 0;
     }
+
+    static final Program DATABASE = new Program();
+    static final Program ACCOUNT = new Program();
+    static final Program LOGGER = new Program();
+    static final Program CORE = new Program();
+    static final Program GAME = new Program();
+    static final Program ROLE = new Program();
+    static final Program LOGIN = new Program();
+    static final Program RANK = new Program();
 }

@@ -27,3 +27,5 @@ obj
 
 include
 *.dat
+
+*.log

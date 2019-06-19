@@ -1,17 +1,14 @@
 package youthm2.bootstrap;
 
-import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import youthm2.bootstrap.backup.BackupManager;
-import youthm2.bootstrap.config.*;
+import youthm2.common.monitor.Monitor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,17 +16,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
-import java.util.Timer;
 
 public final class Bootstrap extends Application {
-    private static final Logger logger = LoggerFactory.getLogger("bootstrap");
+    private static final Logger LOGGER = LoggerFactory.getLogger("bootstrap");
 
-    /*主面板*/
     public JPanel contentPanel;
     public JTabbedPane menuTab;
-    /*控制面板*/
+
     public JCheckBox databaseCheckBox;
     public JCheckBox accountCheckBox;
     public JCheckBox coreCheckBox;
@@ -43,7 +37,7 @@ public final class Bootstrap extends Application {
     public JSpinner minuteSpinner;
     public JTextArea startInfoTextArea;
     public JButton startButton;
-    /*参数配置*/
+
     public JTextField homePathInput;
     public JTextField gameNameInput;
     public JTextField dbNameInput;
@@ -51,7 +45,7 @@ public final class Bootstrap extends Application {
     public JCheckBox disableWuXingActionCheckBox;
     public JButton saveButton;
     public JButton defaultButton;
-    /*备份管理*/
+
     public JTextField dataDirInput;
     public JButton chooseDataButton;
     public JLabel backupDirInput;
@@ -72,7 +66,7 @@ public final class Bootstrap extends Application {
     public JButton startBackupButton;
     public JTable backupDataTable;
     public JLabel backupStateLabel;
-    /*数据清理*/
+
     public JCheckBox clearPlayerCheckBox;
     public JCheckBox clearNPCCheckBox;
     public JCheckBox clearAccountCheckBox;
@@ -87,11 +81,11 @@ public final class Bootstrap extends Application {
     public JCheckBox clearOtherCheckBox;
     public JButton clearAllButton;
 
-    private static final int MAX_CONSOLE_COLUMNS = 1000;
+    private static final String PROGRAM_TITLE = "引导程序 - 青春引擎";
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String CONFIG_FILE = "bootstrap.json";
     private static final String BACKUP_FILE = "backup.json";
-    private static final String PROGRAM_TITLE = "引导程序 - 青春引擎";
+    private static final int MAX_CONSOLE_COLUMNS = 1000;
 
     public static void main(String[] args) {
         try {
@@ -100,7 +94,7 @@ public final class Bootstrap extends Application {
             // 改变程序外观
             UIManager.setLookAndFeel(lookAndFeel);
         } catch (Exception e) {
-            logger.warn("将外观设置为系统主题出错", e);
+            LOGGER.warn("将外观设置为系统主题出错", e);
         }
         launch(args);
     }
@@ -112,13 +106,13 @@ public final class Bootstrap extends Application {
     private BootstrapState state;
     private BootstrapConfig config;
     private BackupManager backupManager;
-    private Timer timer;
 
     private long startModeDuration;
     private long startTimestamp;
 
     @Override
     public void init() {
+        Monitor monitor = Monitor.simple();
         isBusy = false;
         gson = new GsonBuilder()
                 .setPrettyPrinting()
@@ -130,41 +124,47 @@ public final class Bootstrap extends Application {
         state = BootstrapState.DEFAULT;
         config = new BootstrapConfig();
         backupManager = new BackupManager();
-        timer = new Timer("Bootstrap Timer");
         // 提醒：init 方法中不允许操作窗体
+        monitor.report("bootstrap init");
     }
 
     @Override
     public void start(Stage primaryStage) {
+        Monitor monitor = Monitor.simple();
         JFrame frame = new JFrame(PROGRAM_TITLE);
         frame.setContentPane(contentPanel);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.pack();
-        // 居中显示（双屏幕会显示在两个屏幕中间，不友好）
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(frame.getOwner());
+        frame.setVisible(true);
+
+        // 居中显示（双屏幕会显示在两个屏幕中间，不友好；已使用上面的代码来实现）
 //        Dimension displaySize = Toolkit.getDefaultToolkit().getScreenSize();
 //        Dimension frameSize = frame.getSize();
 //        int x = (displaySize.width - frameSize.width) / 2;
 //        int y = (displaySize.height - frameSize.height) / 2;
 //        frame.setLocation(x, y);
 
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(frame.getOwner());
-        frame.setVisible(true);
-
         isBusy = true;
-        config.load(configFile);
-        backupManager.load(backupFile);
-        createEvent();
+        monitor.record("init frame");
+        initEvent();
+        monitor.record("init event");
+        loadConfig();
+        monitor.record("load config");
         updateLayout();
+        monitor.record("update layout");
         prepareStart();
+        monitor.record("prepare start");
         isBusy = false;
+        monitor.report("bootstrap start");
     }
 
     @Override
     public void stop() {
     }
 
-    private void createEvent() {
+    private void initEvent() {
         databaseCheckBox.addChangeListener(e -> config.database.enabled = databaseCheckBox.isSelected());
         accountCheckBox.addChangeListener(e -> config.account.enabled = accountCheckBox.isSelected());
         coreCheckBox.addChangeListener(e -> config.core.enabled = coreCheckBox.isSelected());
@@ -199,42 +199,24 @@ public final class Bootstrap extends Application {
 
         // 启动按钮
         startButton.addActionListener(e -> {
-            switch (state) {
-                case DEFAULT:
-                    int value = JOptionPane.showConfirmDialog(menuTab, "确定要 [" + state + "] 吗？", "提示", JOptionPane.YES_NO_OPTION);
-                    if (JOptionPane.OK_OPTION == value) {
+            int value = JOptionPane.showConfirmDialog(menuTab, "确定要 [" + state + "] 吗？", "请确认", JOptionPane.YES_NO_OPTION);
+            if (JOptionPane.OK_OPTION == value) {
+                switch (state) {
+                    case DEFAULT:
                         startGame();
-                    }
-                    break;
-                case STARTING:
-                case CANCEL:
-                case RUNNING:
-                case STOPPING:
+                        break;
+                    case STARTING:
+                    case CANCEL:
+                    case RUNNING:
+                    case STOPPING:
+                }
             }
         });
     }
 
-    private void startGame() {
-        startTimestamp = System.currentTimeMillis();
-//        if (startModeComboBox.isEnabled()) {
-//        long hours = (int) hoursSpinner.getValue();
-//        long minutes = (int) minuteSpinner.getValue();
-//        startModeDuration = TimeUnit.HOURS.toMillis(hours) + TimeUnit.MINUTES.toMillis(minutes);
-//        }
-        // todo 根据配置去启动程序
-        state = BootstrapState.STARTING;
-        startButton.setText(state.label);
-        timer.schedule(new StartGameTask(), TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(1));
-    }
-
-    private void saveConfig() {
-        //noinspection UnstableApiUsage
-        try (BufferedWriter writer = Files.newWriter(configFile, Charset.forName("UTF-8"))) {
-            writer.write(gson.toJson(config));
-            writer.flush();
-        } catch (IOException e) {
-            logger.error("保存配置出错", e);
-        }
+    private void loadConfig() {
+        config.load(configFile);
+        backupManager.load(backupFile);
     }
 
     private void updateLayout() {
@@ -269,88 +251,48 @@ public final class Bootstrap extends Application {
         minuteSpinner.setEnabled(startModeEnabled);
         startInfoTextArea.setText("");
         startInfoTextArea.setColumns(MAX_CONSOLE_COLUMNS);
-        startButton.setText(state.label);
+        startButton.setText(state.toString());
         startInfoTextArea.append("准备就绪..");
     }
 
+    private void startGame() {
+        Monitor monitor = Monitor.simple();
+        startTimestamp = System.currentTimeMillis();
+//        if (startModeComboBox.isEnabled()) {
+//        long hours = (int) hoursSpinner.getValue();
+//        long minutes = (int) minuteSpinner.getValue();
+//        startModeDuration = TimeUnit.HOURS.toMillis(hours) + TimeUnit.MINUTES.toMillis(minutes);
+//        }
+
+        state = BootstrapState.STARTING;
+        startButton.setText(state.toString());
+//        timer.schedule(new StartGameTask(), TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(1));
+        monitor.report("start game");
+    }
+
+    private void saveConfig() {
+        //noinspection UnstableApiUsage
+        try (BufferedWriter writer = Files.newWriter(configFile, Charset.forName("UTF-8"))) {
+            writer.write(gson.toJson(config));
+            writer.flush();
+        } catch (IOException e) {
+            LOGGER.error("保存配置出错", e);
+        }
+    }
+
     private void checkBackupState() {
-        if (!backupManager.isEnabled()) {
-            backupManager.setEnabled(true);
+        if (!backupManager.enabled) {
+            backupManager.enabled = true;
             startBackupButton.setText("停止");
             backupManager.start();
             backupStateLabel.setForeground(Color.GREEN);
             backupStateLabel.setText("数据备份功能已激活");
         } else {
-            backupManager.setEnabled(false);
+            backupManager.enabled = false;
             startBackupButton.setText("启动");
             backupManager.stop();
             backupStateLabel.setForeground(Color.RED);
             backupStateLabel.setText("数据备份功能已关闭");
-        }
-    }
-
-    private enum BootstrapState {
-        DEFAULT("启动服务"),
-        STARTING("取消启动"),
-        CANCEL("停止启动"),
-        RUNNING("停止服务"),
-        STOPPING("取消停止"),
-        ;
-
-        private final String label;
-
-        BootstrapState(String label) {
-            this.label = label;
-        }
-
-        @Override
-        public String toString() {
-            return label;
-        }
-    }
-
-    private static final class BootstrapConfig {
-        String homePath;
-        String dbName;
-        String gameName;
-        String gameAddress;
-        boolean backupAction;
-        boolean wuxingAction;
-
-        final ServerConfig database = new ServerConfig();
-        final PublicServerConfig account = new PublicServerConfig();
-        final ServerConfig logger = new ServerConfig();
-        final IntervalServerConfig core = new IntervalServerConfig();
-        final GateConfig game = new GateConfig();
-        final GateConfig role = new GateConfig();
-        final GateConfig login = new GateConfig();
-        final ProgramConfig rank = new GateConfig();
-
-        void load(File configFile) {
-            Preconditions.checkNotNull(configFile, "config file == null");
-            // 以 config file 为主，缺失的由默认配置 reference.conf 填补
-            Config config = ConfigFactory.parseFile(configFile).withFallback(ConfigFactory.load());
-            homePath = config.getString("homePath");
-            dbName = config.getString("dbName");
-            gameName = config.getString("gameName");
-            gameAddress = config.getString("gameAddress");
-            backupAction = config.getBoolean("backupAction");
-            wuxingAction = config.getBoolean("wuxingAction");
-            database.load(config.getConfig("database"));
-            account.load(config.getConfig("account"));
-            logger.load(config.getConfig("logger"));
-            core.load(config.getConfig("core"));
-            game.load(config.getConfig("game"));
-            role.load(config.getConfig("role"));
-            login.load(config.getConfig("login"));
-            rank.load(config.getConfig("rank"));
-        }
-    }
-
-    private static class StartGameTask extends TimerTask {
-
-        @Override
-        public void run() {
         }
     }
 }
