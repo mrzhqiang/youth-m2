@@ -1,11 +1,11 @@
 package youthm2.bootstrap.backup;
 
-final class BackupData {
-    String source;
-    String sink;
-    int hour;
-    int min;
-    int backupMode;
-    boolean backupEnabled;
-    boolean zipEnabled;
+public final class BackupData {
+    public String source;
+    public String sink;
+    public int hour;
+    public int min;
+    public int backupMode;
+    public boolean backupEnabled;
+    public boolean zipEnabled;
 }

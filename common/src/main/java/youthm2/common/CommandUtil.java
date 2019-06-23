@@ -22,11 +22,10 @@ public final class CommandUtil {
     @Nullable
     public static Process execute(String command) {
         Preconditions.checkNotNull(command, "command == null");
-        Runtime runtime = Runtime.getRuntime();
         try {
-            return runtime.exec(command);
+            return Runtime.getRuntime().exec(command);
         } catch (IOException e) {
-            logger.error("Start [" + command + "] failed.", e);
+            logger.error("Execution [" + command + "] failed.", e);
         }
         return null;
     }

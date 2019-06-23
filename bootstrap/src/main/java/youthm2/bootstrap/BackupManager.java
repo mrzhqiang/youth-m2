@@ -1,9 +1,11 @@
-package youthm2.bootstrap.backup;
+package youthm2.bootstrap;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import youthm2.bootstrap.backup.BackupData;
+import youthm2.bootstrap.backup.BackupDataModel;
 
 import javax.swing.*;
 import java.io.File;
@@ -15,20 +17,20 @@ import java.util.stream.Collectors;
  *
  * @author mrzhqiang
  */
-public final class BackupManager {
-    public boolean enabled = false;
+final class BackupManager {
+    boolean enabled = false;
 
     private final BackupDataModel dataModel = new BackupDataModel();
 
-    public void start() {
+    void start() {
 
     }
 
-    public void stop() {
+    void stop() {
 
     }
 
-    public void load(File backupFile) {
+    void load(File backupFile) {
         Preconditions.checkNotNull(backupFile, "backup file == null");
         Config config = ConfigFactory.parseFile(backupFile);
         if (config.hasPath("dataList")) {
@@ -36,18 +38,18 @@ public final class BackupManager {
             List<BackupData> dataList = backupList.stream()
                     .filter(s -> !Strings.isNullOrEmpty(s) && config.hasPath(s))
                     .map(config::getConfig)
-                    .map(this::ofBackupData)
+                    .map(this::toBackupData)
                     .filter(data -> !Strings.isNullOrEmpty(data.source) && !Strings.isNullOrEmpty(data.sink))
                     .collect(Collectors.toList());
             dataModel.update(dataList);
         }
     }
 
-    public void updateModel(JTable dataTable) {
+    void updateModel(JTable dataTable) {
         dataTable.setModel(dataModel);
     }
 
-    private BackupData ofBackupData(Config config) {
+    private BackupData toBackupData(Config config) {
         Preconditions.checkNotNull(config, "config == null");
         BackupData data = new BackupData();
         data.source = config.getString("source");
@@ -58,5 +60,13 @@ public final class BackupManager {
         data.backupEnabled = config.getBoolean("backupEnabled");
         data.zipEnabled = config.getBoolean("zipEnabled");
         return data;
+    }
+
+    void zipChange(boolean enabled) {
+
+    }
+
+    void autoRunChange(boolean enabled) {
+
     }
 }

@@ -1,32 +1,67 @@
 {
-  "homePath": "D:/mir-server/MirServer",
+  "path": "D:/mir-server/MirServer",
   "dbName": "兰达尔引擎",
   "gameName": "兰达尔第一季",
   "gameAddress": "127.0.0.1",
   "backupAction": true,
-  "wuxingAction": false,
+  "wuxingAction": true,
   "database": {
-    "enabled": true
+    "port": 5100,
+    "x": 0,
+    "y": 373,
+    "enabled": true,
+    "filename": "DBServer.exe"
   },
   "account": {
-    "enabled": true
+    "monPort": 3000,
+    "serverPort": 5600,
+    "port": 5500,
+    "x": 252,
+    "y": 0,
+    "enabled": true,
+    "filename": "LoginSrv.exe"
   },
   "logger": {
-    "enabled": true
+    "port": 10000,
+    "x": 252,
+    "y": 286,
+    "enabled": true,
+    "filename": "LogDataServer.exe"
   },
   "core": {
-    "enabled": true
+    "serverPort": 4900,
+    "port": 5000,
+    "x": 561,
+    "y": 0,
+    "enabled": true,
+    "filename": "M2Server.exe"
   },
   "game": {
-    "enabled": true
+    "port": 7200,
+    "x": 437,
+    "y": 373,
+    "enabled": true,
+    "filename": "RunGate.exe"
   },
   "role": {
-    "enabled": true
+    "port": 7100,
+    "x": 0,
+    "y": 180,
+    "enabled": true,
+    "filename": "SelGate.exe"
   },
   "login": {
-    "enabled": true
+    "port": 7000,
+    "x": 0,
+    "y": 0,
+    "enabled": true,
+    "filename": "LoginGate.exe"
   },
   "rank": {
-    "enabled": true
+    "port": 0,
+    "x": 200,
+    "y": 0,
+    "enabled": true,
+    "filename": "PlugTop.exe"
   }
 }

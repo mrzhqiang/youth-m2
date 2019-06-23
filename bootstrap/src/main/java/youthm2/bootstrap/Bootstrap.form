@@ -570,7 +570,7 @@
                           <text value="备份"/>
                         </properties>
                       </component>
-                      <component id="debf2" class="javax.swing.JCheckBox" binding="enableZIPCheckBox">
+                      <component id="debf2" class="javax.swing.JCheckBox" binding="enableZipCheckBox">
                         <constraints/>
                         <properties>
                           <selected value="true"/>

@@ -5,12 +5,12 @@ import com.google.common.base.Preconditions;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
-final class BackupDataModel extends AbstractTableModel {
+public final class BackupDataModel extends AbstractTableModel {
     private String[] columnName = {"源文件", "备份地址", "状态"};
     private Object[][] rowList = new Object[0][0];
     private List<BackupData> dataList;
 
-    void update(List<BackupData> dataList) {
+    public void update(List<BackupData> dataList) {
         Preconditions.checkNotNull(dataList, "data list == null");
         this.dataList = dataList;
         this.rowList = new Object[dataList.size()][3];
