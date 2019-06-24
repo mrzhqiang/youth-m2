@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -39,8 +38,6 @@ import org.slf4j.LoggerFactory;
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscription;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import youthm2.bootstrap.config.HomeConfig;
 import youthm2.bootstrap.program.Program;
@@ -341,7 +338,19 @@ public final class Bootstrap extends Application implements ChangeListener {
     stopProgram();
     subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
         .observeOn(mainScheduler)
+        .filter(aLong -> startDatabase())
         .subscribe(aLong -> LOGGER.info("tick: " + aLong));
+  }
+
+  private Boolean startDatabase() {
+    if (database.config.enabled) {
+      switch (database.state) {
+        case DEFAULT:
+          database.run();
+
+      }
+    }
+    return null;
   }
 
   private void stopProgram() {
