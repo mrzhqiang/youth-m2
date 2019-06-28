@@ -20,7 +20,7 @@
                         <Button layoutX="235.0" layoutY="414.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="142.0" text="启动服务" />
                         <Accordion layoutX="14.0" layoutY="14.0" prefHeight="141.0" prefWidth="613.0">
                           <panes>
-                            <TitledPane alignment="TOP_LEFT" animated="false" text="服务状态">
+                            <TitledPane alignment="TOP_LEFT" text="服务状态">
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                               </content>
@@ -37,11 +37,7 @@
                             </TitledPane>
                           </panes>
                         </Accordion>
-                        <ScrollPane layoutX="14.0" layoutY="163.0" prefHeight="240.0" prefWidth="613.0">
-                           <content>
-                              <TextArea prefHeight="240.0" prefWidth="611.0" />
-                           </content>
-                        </ScrollPane>
+                        <TextArea layoutX="14.0" layoutY="162.0" prefHeight="239.0" prefWidth="612.0" />
                      </children></AnchorPane>
             </content>
           </Tab>
