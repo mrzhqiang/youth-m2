@@ -15,11 +15,13 @@ import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -29,7 +31,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.slf4j.Logger;
@@ -39,7 +40,6 @@ import rx.Scheduler;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 import youthm2.bootstrap.program.Program;
-import youthm2.common.LookUtil;
 import youthm2.common.monitor.Monitor;
 
 public final class Bootstrap extends Application implements ChangeListener {
@@ -137,7 +137,7 @@ public final class Bootstrap extends Application implements ChangeListener {
 
   @Override
   public void init() {
-    LookUtil.setSystemDefaultLookAndFeel();
+    //LookUtil.setSystemDefaultLookAndFeel();
     // 提醒：init 方法中不允许操作窗体，因为它不在 javafx application thread 上运行
     Monitor monitor = Monitor.simple();
     gson = new GsonBuilder()
@@ -157,13 +157,24 @@ public final class Bootstrap extends Application implements ChangeListener {
   @Override
   public void start(Stage primaryStage) {
     Monitor monitor = Monitor.simple();
-    JFrame frame = new JFrame(PROGRAM_TITLE);
-    frame.setContentPane(contentPanel);
-    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    frame.pack();
-    frame.setResizable(false);
-    frame.setLocationRelativeTo(frame.getOwner());
-    frame.setVisible(true);
+    try {
+      // Read file fxml and draw interface.
+      Parent root = FXMLLoader.load(getClass().getResource("/bootstrap.fxml"));
+      primaryStage.setTitle(PROGRAM_TITLE);
+      primaryStage.setScene(new Scene(root));
+      primaryStage.show();
+    } catch(Exception e) {
+      LOGGER.error("启动失败", e);
+      System.exit(1);
+    }
+
+    //JFrame frame = new JFrame(PROGRAM_TITLE);
+    //frame.setContentPane(contentPanel);
+    //frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    //frame.pack();
+    //frame.setResizable(false);
+    //frame.setLocationRelativeTo(frame.getOwner());
+    //frame.setVisible(true);
 
     // 居中显示（双屏幕会显示在两个屏幕中间，不友好；已使用上面的代码来实现）
     // Dimension displaySize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -172,14 +183,14 @@ public final class Bootstrap extends Application implements ChangeListener {
     // int y = (displaySize.height - frameSize.height) / 2;
     // frame.setLocation(x, y);
 
-    loadConfig();
-    monitor.record("load config");
-    updateLayout();
-    monitor.record("update layout");
-    initEvent();
-    monitor.record("init event");
-    prepareStart();
-    monitor.report("bootstrap start");
+    //loadConfig();
+    //monitor.record("load config");
+    //updateLayout();
+    //monitor.record("update layout");
+    //initEvent();
+    //monitor.record("init event");
+    //prepareStart();
+    //monitor.report("bootstrap start");
   }
 
   @Override
