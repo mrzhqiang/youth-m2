@@ -29,7 +29,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -39,13 +38,11 @@ import rx.Observable;
 import rx.Scheduler;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
-import youthm2.bootstrap.config.HomeConfig;
 import youthm2.bootstrap.program.Program;
+import youthm2.common.LookUtil;
 import youthm2.common.monitor.Monitor;
 
 public final class Bootstrap extends Application implements ChangeListener {
-  private static final Logger LOGGER = LoggerFactory.getLogger("bootstrap");
-
   public JPanel contentPanel;
   public JTabbedPane menuTab;
 
@@ -106,32 +103,25 @@ public final class Bootstrap extends Application implements ChangeListener {
   public JCheckBox clearOtherCheckBox;
   public JButton clearAllButton;
 
+  public static void main(String[] args) {
+    launch(args);
+  }
+
+  private static final Logger LOGGER = LoggerFactory.getLogger("bootstrap");
   private static final String PROGRAM_TITLE = "引导程序 - 青春引擎";
   private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
   private static final String CONFIG_FILE = "bootstrap.json";
   private static final String BACKUP_FILE = "backup.json";
   private static final int MAX_CONSOLE_COLUMNS = 1000;
-  private Subscription subscription;
-
-  public static void main(String[] args) {
-    try {
-      // 获取系统默认的样式/主题
-      String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
-      // 改变程序外观
-      UIManager.setLookAndFeel(lookAndFeel);
-    } catch (Exception e) {
-      LOGGER.warn("将外观设置为系统主题出错", e);
-    }
-    launch(args);
-  }
 
   private Gson gson;
   private State state;
   private File configFile;
   private File backupFile;
-  private Scheduler mainScheduler;
   private HomeConfig homeConfig;
   private BackupManager backupManager;
+  private Scheduler mainScheduler;
+  private Subscription subscription;
 
   private final Program database = new Program();
   private final Program account = new Program();
@@ -147,7 +137,8 @@ public final class Bootstrap extends Application implements ChangeListener {
 
   @Override
   public void init() {
-    // 提醒：init 方法中不允许操作窗体，因为它不在 java fx application thread 上运行
+    LookUtil.setSystemDefaultLookAndFeel();
+    // 提醒：init 方法中不允许操作窗体，因为它不在 javafx application thread 上运行
     Monitor monitor = Monitor.simple();
     gson = new GsonBuilder()
         .setPrettyPrinting()
