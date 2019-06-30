@@ -35,10 +35,15 @@
       <groupId>io.reactivex</groupId>
       <artifactId>rxjava</artifactId>
     </dependency>
-
+    <!-- https://mvnrepository.com/artifact/com.jfoenix/jfoenix -->
     <dependency>
       <groupId>com.jfoenix</groupId>
       <artifactId>jfoenix</artifactId>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
+    <dependency>
+      <groupId>org.controlsfx</groupId>
+      <artifactId>controlsfx</artifactId>
     </dependency>
   </dependencies>
 </project>
