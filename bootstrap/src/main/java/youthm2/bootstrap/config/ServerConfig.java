@@ -8,13 +8,13 @@ import com.typesafe.config.Config;
  * @author qiang.zhang
  */
 public class ServerConfig extends ProgramConfig {
-    public int port;
+  public int serverPort;
 
-    @Override
-    public void load(Config config) {
-        super.load(config);
-        if (config.hasPath("port")) {
-            port = config.getInt("port");
-        }
+  @Override
+  public void onLoad(Config config) {
+    super.onLoad(config);
+    if (config.hasPath("serverPort")) {
+      serverPort = config.getInt("serverPort");
     }
+  }
 }

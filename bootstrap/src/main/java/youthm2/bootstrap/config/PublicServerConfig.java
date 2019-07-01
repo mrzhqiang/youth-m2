@@ -7,14 +7,14 @@ import com.typesafe.config.Config;
  *
  * @author qiang.zhang
  */
-public class PublicServerConfig extends IntervalServerConfig {
-    public int monPort;
+public final class PublicServerConfig extends ServerConfig {
+  public int publicPort;
 
-    @Override
-    public void load(Config config) {
-        super.load(config);
-        if (config.hasPath("monPort")) {
-            monPort = config.getInt("monPort");
-        }
+  @Override
+  public void onLoad(Config config) {
+    super.onLoad(config);
+    if (config.hasPath("publicPort")) {
+      publicPort = config.getInt("publicPort");
     }
+  }
 }
