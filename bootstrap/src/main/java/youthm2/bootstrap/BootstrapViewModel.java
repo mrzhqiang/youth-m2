@@ -1,152 +1,85 @@
 package youthm2.bootstrap;
 
-import com.google.common.io.Files;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.time.Duration;
+import helper.DateTimeHelper;
+import java.sql.Date;
 import java.time.Instant;
-import java.util.concurrent.TimeUnit;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
+import java.util.Locale;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javax.swing.event.ChangeEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import rx.Observable;
-import rx.Scheduler;
-import rx.Subscription;
-import rx.schedulers.Schedulers;
-import youthm2.bootstrap.backup.BackupModel;
-import youthm2.bootstrap.config.ConfigModel;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import youthm2.common.monitor.Monitor;
 
 /**
  * 引导程序的视图模型。
+ * <p>
+ * 所谓视图模型，就是将视图与模型进行双向绑定，以便任何一方改变时，另外一方都会同时更新。
  *
  * @author qiang.zhang
  */
 public final class BootstrapViewModel {
-  private static final Logger LOGGER = LoggerFactory.getLogger("bootstrap");
-  private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-  private static final String CONFIG_FILE = "bootstrap.json";
-  private static final String BACKUP_FILE = "backup.json";
-  private static final int MAX_CONSOLE_COLUMNS = 1000;
+  private static final String FORMAT_CONSOLE = "[%s]: %s\r\n";
 
-  @FXML
-  private CheckBox databaseCheckBox;
+  @FXML CheckBox databaseCheckBox;
+  @FXML CheckBox accountCheckBox;
+  @FXML CheckBox loggerCheckBox;
+  @FXML CheckBox coreCheckBox;
+  @FXML CheckBox gameCheckBox;
+  @FXML CheckBox roleCheckBox;
+  @FXML CheckBox loginCheckBox;
+  @FXML CheckBox rankCheckBox;
 
-  private final Gson gson = new GsonBuilder()
-      .setPrettyPrinting()
-      .setDateFormat(DATE_FORMAT)
-      .serializeNulls()
-      .create();
-  private final File configFile = new File(CONFIG_FILE);
-  private final File backupFile = new File(BACKUP_FILE);
-  private final ConfigModel configModel = new ConfigModel();
+  @FXML RadioButton normalModeRadioButton;
+  @FXML RadioButton delayModeRadioButton;
+  @FXML RadioButton timingModeRadioButton;
+  @FXML ToggleGroup startModeGroup;
+  @FXML TextField hoursTextField;
+  @FXML TextField minutesTextField;
+
+  @FXML TextArea consoleTextArea;
+  @FXML Button startServerButton;
+
   private final BackupModel backupModel = new BackupModel();
-  private final Scheduler mainScheduler = Schedulers.from(Platform::runLater);
+  private final BootstrapModel bootstrapModel = new BootstrapModel();
 
-  private State state = State.DEFAULT;
-  private Instant startInstant = Instant.EPOCH;
-  private Duration waitDuration = Duration.ZERO;
-  private Subscription subscription = null;
-
-  @FXML
-  private void initialize() {
+  @FXML void initialize() {
+    Monitor monitor = Monitor.getInstance();
     bindModel();
+    monitor.record("bind model");
     loadConfig();
-    LOGGER.info("bootstrap view model init");
+    monitor.record("load config");
+    showConsole("启动已就绪！");
+    monitor.report("bootstrap view model initialized");
+  }
+
+  @FXML void onStartServerClicked() {
+    showConsole("启动服务");
   }
 
   private void bindModel() {
-    configModel.config.database.enabled = databaseCheckBox.selectedProperty();
-  }
-
-  @FXML
-  private void onDatabaseCheckChange(ActionEvent event) {
-    LOGGER.info("database check change");
+    databaseCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.database.enabled);
+    accountCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.account.enabled);
+    loggerCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.logger.enabled);
+    coreCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.core.enabled);
+    gameCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.game.enabled);
+    roleCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.role.enabled);
+    loginCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.login.enabled);
+    rankCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.rank.enabled);
+    // 其他组件不需要双向绑定，比如启动模式单选按钮组，点击切换又不影响配置
+    // 再比如控制台文本区域，只显示每次启动关闭时的信息，不需要保存到配置。
   }
 
   private void loadConfig() {
-    // 以 configFile 为主，缺失的由默认配置 reference.conf 填补
-    Config config = ConfigFactory.parseFile(configFile).withFallback(ConfigFactory.load());
-    configModel.load(config);
-    // 加载备份数据
-    backupModel.load(backupFile);
+    bootstrapModel.loadConfig();
+    backupModel.loadConfig();
   }
 
-  private void startGame() {
-    Monitor monitor = Monitor.getInstance();
-    startInstant = Instant.now();
-    initProgram();
-    startProgram();
-    state = State.STARTING;
-    monitor.report("start game");
+  private void showConsole(String message) {
+    String timestamp = DateTimeHelper.format(Date.from(Instant.now()));
+    String console = String.format(Locale.getDefault(), FORMAT_CONSOLE, timestamp, message);
+    consoleTextArea.appendText(console);
   }
-
-  private void stopGame() {
-    stopProgram();
-    state = State.DEFAULT;
-  }
-
-  private void initProgram() {
-  }
-
-  private void startProgram() {
-    stopProgram();
-    subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
-        .observeOn(mainScheduler)
-        .filter(aLong -> startDatabase())
-        .subscribe(aLong -> LOGGER.info("tick: " + aLong));
-  }
-
-  private Boolean startDatabase() {
-    return null;
-  }
-
-  private void stopProgram() {
-    if (subscription != null && !subscription.isUnsubscribed()) {
-      subscription.unsubscribe();
-    }
-  }
-
-  private void saveConfig() {
-    //noinspection UnstableApiUsage
-    try (BufferedWriter writer = Files.newWriter(configFile, Charset.forName("UTF-8"))) {
-      writer.write(gson.toJson(configModel));
-      writer.flush();
-    } catch (IOException e) {
-      LOGGER.error("保存配置出错", e);
-    }
-  }
-
-  public void stateChanged(ChangeEvent e) {
-  }
-
-  private enum State {
-    DEFAULT("启动服务"),
-    STARTING("正在启动.."),
-    RUNNING("停止服务"),
-    STOPPING("正在停止.."),
-    ;
-
-    private final String label;
-
-    State(String label) {
-      this.label = label;
-    }
-
-    @Override
-    public String toString() {
-      return label;
-    }
-  }
-
 }

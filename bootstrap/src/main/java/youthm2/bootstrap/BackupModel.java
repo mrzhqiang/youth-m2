@@ -1,4 +1,4 @@
-package youthm2.bootstrap.backup;
+package youthm2.bootstrap;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import youthm2.bootstrap.backup.BackupData;
 
 /**
  * 文件备份管理器。
@@ -16,7 +17,11 @@ import javafx.collections.ObservableList;
  * @author mrzhqiang
  */
 public final class BackupModel {
+  private static final String BACKUP_FILE = "backup.json";
+
   public final ObservableList<BackupData> dataList = FXCollections.observableArrayList();
+
+  private final File backupFile = new File(BACKUP_FILE);
 
   public void start() {
 
@@ -26,8 +31,7 @@ public final class BackupModel {
 
   }
 
-  public void load(File backupFile) {
-    Preconditions.checkNotNull(backupFile, "backup file == null");
+  public void loadConfig() {
     Config config = ConfigFactory.parseFile(backupFile);
     if (config.hasPath("dataList")) {
       List<String> backupList = config.getStringList("dataList");

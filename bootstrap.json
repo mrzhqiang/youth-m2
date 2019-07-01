@@ -5,7 +5,7 @@
     "gameName": "兰达尔第一季",
     "gameAddress": "127.0.0.1",
     "backupAction": true,
-    "wuxingAction": true,
+    "wuxingAction": false,
     "database": {
       "port": 5100,
       "x": 0,
@@ -26,7 +26,7 @@
       "port": 10000,
       "x": 252,
       "y": 286,
-      "enabled": true,
+      "enabled": false,
       "filename": "LoggerServer.exe"
     },
     "core": {
@@ -62,7 +62,7 @@
       "port": 0,
       "x": 200,
       "y": 0,
-      "enabled": true,
+      "enabled": false,
       "filename": "RankPlug.exe"
     }
   }

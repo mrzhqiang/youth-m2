@@ -1,17 +1,22 @@
 package youthm2.bootstrap.config;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 /**
  * 引导配置。
  *
  * @author qiang.zhang
  */
 public final class BootstrapConfig {
-  public String path;
-  public String dbName;
-  public String gameName;
-  public String gameAddress;
-  public boolean backupAction;
-  public boolean wuxingAction;
+  public final StringProperty path = new SimpleStringProperty("");
+  public final StringProperty dbName = new SimpleStringProperty("");
+  public final StringProperty gameName = new SimpleStringProperty("");
+  public final StringProperty gameAddress = new SimpleStringProperty("");
+  public final BooleanProperty backupAction = new SimpleBooleanProperty(false);
+  public final BooleanProperty wuxingAction = new SimpleBooleanProperty(false);
 
   public final ServerConfig database = new ServerConfig();
   public final PublicServerConfig account = new PublicServerConfig();
