@@ -1,5 +1,6 @@
 package youthm2.bootstrap.config;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.typesafe.config.Config;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -18,5 +19,9 @@ public final class PublicServerConfig extends ServerConfig {
     if (config.hasPath("publicPort")) {
       publicPort.setValue(config.getInt("publicPort"));
     }
+  }
+
+  @Override public ObjectNode objectNode() {
+    return super.objectNode().put("publicPort", publicPort.getValue());
   }
 }

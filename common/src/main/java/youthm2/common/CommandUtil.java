@@ -13,20 +13,20 @@ import java.io.IOException;
  * @author mrzhqiang
  */
 public final class CommandUtil {
-    private static final Logger logger = LoggerFactory.getLogger("common");
+  private static final Logger logger = LoggerFactory.getLogger("common");
 
-    private CommandUtil() {
-        throw new AssertionError("No instance.");
-    }
+  private CommandUtil() {
+    throw new AssertionError("No instance.");
+  }
 
-    @Nullable
-    public static Process execute(String command) {
-        Preconditions.checkNotNull(command, "command == null");
-        try {
-            return Runtime.getRuntime().exec(command);
-        } catch (IOException e) {
-            logger.error("Execution [" + command + "] failed.", e);
-        }
-        return null;
+  @Nullable
+  public static Process execute(String command) {
+    Preconditions.checkNotNull(command, "command == null");
+    try {
+      return Runtime.getRuntime().exec(command);
+    } catch (IOException e) {
+      logger.error("Execution [" + command + "] failed.", e);
     }
+    return null;
+  }
 }

@@ -13,47 +13,47 @@ import java.util.List;
  * @author mrzhqiang
  */
 final class SimpleMonitor implements Monitor {
-    private static final Logger LOGGER = LoggerFactory.getLogger("monitor");
+  private static final Logger LOGGER = LoggerFactory.getLogger("monitor");
 
-    private final long startTime = System.currentTimeMillis();
-    private final List<Cycle> cycleList = Lists.newArrayList();
+  private final long startTime = System.currentTimeMillis();
+  private final List<Cycle> cycleList = Lists.newArrayList();
 
-    @Override
-    public void record(String name) {
-        if (Strings.isNullOrEmpty(name)) {
-            return;
-        }
-        cycleList.add(new Cycle(name, System.currentTimeMillis()));
+  @Override
+  public void record(String name) {
+    if (Strings.isNullOrEmpty(name)) {
+      return;
     }
+    cycleList.add(new Cycle(name, System.currentTimeMillis()));
+  }
 
-    @Override
-    public void report(String name) {
-        long entTime = System.currentTimeMillis();
-        long totalTime = entTime - startTime;
-        LOGGER.info("The [{}] total time: {}(ms)", name, totalTime);
+  @Override
+  public void report(String name) {
+    long entTime = System.currentTimeMillis();
+    long totalTime = entTime - startTime;
+    LOGGER.info("The [{}] total time: {}(ms)", name, totalTime);
 
-        for (int i = 0; i < cycleList.size(); i++) {
-            Cycle book = cycleList.get(i);
-            long intervalTime;
-            if (i == 0) {
-                intervalTime = book.timestamp - startTime;
-            } else if (i == cycleList.size() - 1) {
-                intervalTime = entTime - book.timestamp;
-            } else {
-                intervalTime = cycleList.get(i + 1).timestamp - book.timestamp;
-            }
-            LOGGER.info("The [{}] >>> [{}] time: {}(ms)", name, book.name, intervalTime);
-        }
-        cycleList.clear();
+    for (int i = 0; i < cycleList.size(); i++) {
+      Cycle book = cycleList.get(i);
+      long intervalTime;
+      if (i == 0) {
+        intervalTime = book.timestamp - startTime;
+      } else if (i == cycleList.size() - 1) {
+        intervalTime = entTime - book.timestamp;
+      } else {
+        intervalTime = cycleList.get(i + 1).timestamp - book.timestamp;
+      }
+      LOGGER.info("The [{}] >>> [{}] time: {}(ms)", name, book.name, intervalTime);
     }
+    cycleList.clear();
+  }
 
-    private static final class Cycle {
-        final String name;
-        final long timestamp;
+  private static final class Cycle {
+    final String name;
+    final long timestamp;
 
-        private Cycle(String name, long timestamp) {
-            this.name = name;
-            this.timestamp = timestamp;
-        }
+    private Cycle(String name, long timestamp) {
+      this.name = name;
+      this.timestamp = timestamp;
     }
+  }
 }

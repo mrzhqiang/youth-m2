@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import com.jfoenix.controls.*?>
 <?import impl.org.controlsfx.skin.*?>
 <?import org.controlsfx.control.*?>
 <?import org.controlsfx.control.textfield.*?>
@@ -34,11 +36,6 @@
                           <children>
                             <GridPane layoutX="14.0" layoutY="16.0" prefHeight="152.0" prefWidth="582.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
                               <children>
-                                <CheckBox fx:id="databaseCheckBox" mnemonicParsing="false" selected="true" text="数据库服务器">
-                                  <GridPane.margin>
-                                    <Insets />
-                                  </GridPane.margin>
-                                </CheckBox>
                                 <CheckBox fx:id="accountCheckBox" mnemonicParsing="false" selected="true" text="账号服务器" GridPane.columnIndex="1" />
                                 <CheckBox fx:id="loggerCheckBox" mnemonicParsing="false" selected="true" text="日志服务器" GridPane.rowIndex="1" />
                                 <CheckBox fx:id="coreCheckBox" mnemonicParsing="false" selected="true" text="核心服务器" GridPane.columnIndex="1" GridPane.rowIndex="1" />
@@ -48,6 +45,7 @@
                                 <CheckBox fx:id="rankCheckBox" mnemonicParsing="false" selected="true" text="排行榜插件" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                 <CheckBox disable="true" indeterminate="true" mnemonicParsing="false" text="活动插件(未实现)" GridPane.rowIndex="4" />
                                 <CheckBox disable="true" indeterminate="true" mnemonicParsing="false" text="任务插件(未实现)" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <CheckBox fx:id="databaseCheckBox" mnemonicParsing="false" selected="true" text="数据库服务器" />
                               </children>
                               <columnConstraints>
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -99,19 +97,21 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="109.0" prefWidth="598.0">
                                   <children>
-                                    <TextField fx:id="hoursTextField" alignment="CENTER_RIGHT" layoutX="50.0" layoutY="27.0" prefHeight="23.0" prefWidth="32.0" text="00" AnchorPane.leftAnchor="50.0" />
+                                    <TextField fx:id="hoursTextField" alignment="CENTER_RIGHT" layoutX="50.0" layoutY="27.0" prefHeight="23.0" prefWidth="32.0" text="0" AnchorPane.leftAnchor="50.0" />
                                     <Label layoutX="82.0" layoutY="31.0" text="小时">
                                       <padding>
                                         <Insets left="8.0" right="8.0" />
                                       </padding>
                                     </Label>
-                                    <TextField fx:id="minutesTextField" alignment="CENTER_RIGHT" layoutX="122.0" layoutY="27.0" prefHeight="23.0" prefWidth="32.0" text="00" />
+                                    <TextField fx:id="minutesTextField" alignment="CENTER_RIGHT" layoutX="122.0" layoutY="27.0" prefHeight="23.0" prefWidth="32.0" text="0" />
                                     <Label layoutX="154.0" layoutY="31.0" text="分钟">
                                       <padding>
                                         <Insets left="8.0" right="8.0" />
                                       </padding>
                                     </Label>
                                     <Label layoutX="14.0" layoutY="31.0" text="时间：" />
+                                                      <Label layoutX="295.0" layoutY="19.0" text="1. 延迟启动，自当前时间往后开始计时。" textFill="#dd4646" />
+                                                      <Label layoutX="295.0" layoutY="42.0" text="2. 定时启动，小于当前时间视为第二天。" textFill="#dd4646" />
                                   </children>
                                 </AnchorPane>
                               </items>
@@ -122,8 +122,8 @@
                     </TitledPane>
                   </panes>
                 </Accordion>
-                <Label layoutX="14.0" layoutY="275.0" text="控制信息：" />
-                <Label layoutX="14.0" layoutY="14.0" text="控制选项：" />
+                <Label layoutX="14.0" layoutY="278.0" text="信息：" />
+                <Label layoutX="14.0" layoutY="14.0" text="选项：" AnchorPane.bottomAnchor="422.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="590.0" AnchorPane.topAnchor="14.0" />
               </children>
             </AnchorPane>
           </content>

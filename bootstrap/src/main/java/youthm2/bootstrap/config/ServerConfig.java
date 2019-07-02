@@ -1,5 +1,6 @@
 package youthm2.bootstrap.config;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.typesafe.config.Config;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -18,5 +19,9 @@ public class ServerConfig extends ProgramConfig {
     if (config.hasPath("serverPort")) {
       serverPort.setValue(config.getInt("serverPort"));
     }
+  }
+
+  @Override public ObjectNode objectNode() {
+    return super.objectNode().put("serverPort", serverPort.getValue());
   }
 }

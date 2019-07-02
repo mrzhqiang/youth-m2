@@ -1,5 +1,6 @@
 package youthm2.bootstrap.config;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.typesafe.config.Config;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -7,6 +8,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import youthm2.common.Json;
 
 /**
  * 程序配置。
@@ -36,5 +38,14 @@ public class ProgramConfig {
     if (config.hasPath("filename")) {
       filename.setValue(config.getString("filename"));
     }
+  }
+
+  public ObjectNode objectNode() {
+    return Json.newObject()
+        .put("x", x.getValue())
+        .put("y", y.getValue())
+        .put("port", port.getValue())
+        .put("enabled", enabled.getValue())
+        .put("filename", filename.getValue());
   }
 }

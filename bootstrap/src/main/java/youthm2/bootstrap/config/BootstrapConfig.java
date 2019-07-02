@@ -1,9 +1,12 @@
 package youthm2.bootstrap.config;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import youthm2.common.Json;
 
 /**
  * 引导配置。
@@ -16,7 +19,6 @@ public final class BootstrapConfig {
   public final StringProperty gameName = new SimpleStringProperty("");
   public final StringProperty gameAddress = new SimpleStringProperty("");
   public final BooleanProperty backupAction = new SimpleBooleanProperty(false);
-  public final BooleanProperty wuxingAction = new SimpleBooleanProperty(false);
 
   public final ServerConfig database = new ServerConfig();
   public final PublicServerConfig account = new PublicServerConfig();
@@ -26,4 +28,24 @@ public final class BootstrapConfig {
   public final ProgramConfig role = new ProgramConfig();
   public final ProgramConfig login = new ProgramConfig();
   public final ProgramConfig rank = new ProgramConfig();
+
+  public JsonNode toJsonNode() {
+    ObjectNode bootstrap = Json.newObject()
+        .put("path", path.getValue())
+        .put("dbName", dbName.getValue())
+        .put("gameName", gameName.getValue())
+        .put("gameAddress", gameAddress.getValue())
+        .put("backupAction", backupAction.getValue());
+    bootstrap.set("database", database.objectNode());
+    bootstrap.set("account", account.objectNode());
+    bootstrap.set("logger", logger.objectNode());
+    bootstrap.set("core", core.objectNode());
+    bootstrap.set("game", game.objectNode());
+    bootstrap.set("role", role.objectNode());
+    bootstrap.set("login", login.objectNode());
+    bootstrap.set("rank", rank.objectNode());
+    ObjectNode jsonNodes = Json.newObject();
+    jsonNodes.set("bootstrap", bootstrap);
+    return jsonNodes;
+  }
 }

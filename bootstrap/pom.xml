@@ -25,20 +25,10 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-    </dependency>
     <!-- https://mvnrepository.com/artifact/io.reactivex/rxjava -->
     <dependency>
       <groupId>io.reactivex</groupId>
       <artifactId>rxjava</artifactId>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.jfoenix/jfoenix -->
-    <dependency>
-      <groupId>com.jfoenix</groupId>
-      <artifactId>jfoenix</artifactId>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
     <dependency>

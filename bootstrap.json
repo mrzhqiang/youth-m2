@@ -1,69 +1,70 @@
 {
-  "bootstrap": {
-    "path": "D:/mir-server/randall/",
-    "dbName": "兰达尔引擎",
-    "gameName": "兰达尔第一季",
-    "gameAddress": "127.0.0.1",
-    "backupAction": true,
-    "wuxingAction": false,
-    "database": {
-      "port": 5100,
-      "x": 0,
-      "y": 373,
-      "enabled": true,
-      "filename": "DatabaseServer.exe"
+  "bootstrap" : {
+    "path" : "D:/mir-server/randall/",
+    "dbName" : "兰达尔引擎",
+    "gameName" : "兰达尔第一季",
+    "gameAddress" : "127.0.0.1",
+    "backupAction" : true,
+    "database" : {
+      "x" : 0,
+      "y" : 373,
+      "port" : 5100,
+      "enabled" : true,
+      "filename" : "DatabaseServer.exe",
+      "serverPort" : 6000
     },
-    "account": {
-      "monPort": 3000,
-      "serverPort": 5600,
-      "port": 5500,
-      "x": 252,
-      "y": 0,
-      "enabled": true,
-      "filename": "AccountServer.exe"
+    "account" : {
+      "x" : 252,
+      "y" : 0,
+      "port" : 5500,
+      "enabled" : true,
+      "filename" : "AccountServer.exe",
+      "serverPort" : 5600,
+      "publicPort" : 3000
     },
-    "logger": {
-      "port": 10000,
-      "x": 252,
-      "y": 286,
-      "enabled": false,
-      "filename": "LoggerServer.exe"
+    "logger" : {
+      "x" : 252,
+      "y" : 286,
+      "port" : 10000,
+      "enabled" : false,
+      "filename" : "LoggerServer.exe",
+      "serverPort" : 0
     },
-    "core": {
-      "serverPort": 4900,
-      "port": 5000,
-      "x": 561,
-      "y": 0,
-      "enabled": true,
-      "filename": "CoreServer.exe"
+    "core" : {
+      "x" : 561,
+      "y" : 0,
+      "port" : 5000,
+      "enabled" : true,
+      "filename" : "CoreServer.exe",
+      "serverPort" : 4900
     },
-    "game": {
-      "port": 7200,
-      "x": 437,
-      "y": 373,
-      "enabled": true,
-      "filename": "GameGate.exe"
+    "game" : {
+      "x" : 437,
+      "y" : 373,
+      "port" : 7200,
+      "enabled" : true,
+      "filename" : "GameGate.exe"
     },
-    "role": {
-      "port": 7100,
-      "x": 0,
-      "y": 180,
-      "enabled": true,
-      "filename": "RoleGate.exe"
+    "role" : {
+      "x" : 0,
+      "y" : 180,
+      "port" : 7100,
+      "enabled" : true,
+      "filename" : "RoleGate.exe"
     },
-    "login": {
-      "port": 7000,
-      "x": 0,
-      "y": 0,
-      "enabled": true,
-      "filename": "LoginGate.exe"
+    "login" : {
+      "x" : 0,
+      "y" : 0,
+      "port" : 7000,
+      "enabled" : true,
+      "filename" : "LoginGate.exe"
     },
-    "rank": {
-      "port": 0,
-      "x": 200,
-      "y": 0,
-      "enabled": false,
-      "filename": "RankPlug.exe"
+    "rank" : {
+      "x" : 200,
+      "y" : 0,
+      "port" : 0,
+      "enabled" : false,
+      "filename" : "RankPlug.exe"
     }
   }
 }

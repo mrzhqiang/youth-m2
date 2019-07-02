@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.controlsfx.dialog.ExceptionDialog;
+import org.slf4j.LoggerFactory;
 import youthm2.common.monitor.Monitor;
 
 /**
@@ -29,13 +30,12 @@ public final class Bootstrap extends Application {
       primaryStage.setScene(new Scene(root));
       primaryStage.show();
     } catch (Exception e) {
-      monitor.report("bootstrap start failed: " + e.getMessage());
+      LoggerFactory.getLogger("bootstrap").error("bootstrap start failed!", e);
       new ExceptionDialog(e)
           .showAndWait()
           .filter(buttonType -> buttonType == ButtonType.OK)
           .ifPresent(buttonType -> System.exit(-1));
-      return;
     }
-    monitor.report("bootstrap start successful");
+    monitor.report("bootstrap start");
   }
 }
