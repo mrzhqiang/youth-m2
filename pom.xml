@@ -136,6 +136,18 @@
                         </dependency>
                     </dependencies>
                 </plugin>
+                <!-- 本地化打包插件 -->
+                <!-- 使用 jfx:native 在 IDEA 右侧的 Maven 中运行即可 -->
+                <!-- 或者运行全部命令：mvn jfx:native -->
+                <plugin>
+                    <groupId>com.zenjava</groupId>
+                    <artifactId>javafx-maven-plugin</artifactId>
+                    <version>8.8.3</version>
+                    <configuration>
+                        <vendor>Youth M2</vendor>
+                        <mainClass>bootstrap.Bootstrap</mainClass>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
