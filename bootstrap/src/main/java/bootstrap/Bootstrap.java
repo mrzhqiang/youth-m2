@@ -1,4 +1,4 @@
-package youthm2.bootstrap;
+package bootstrap;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

@@ -1,4 +1,4 @@
-package youthm2.bootstrap.model;
+package bootstrap.model;
 
 import com.google.common.base.Preconditions;
 import com.typesafe.config.Config;
@@ -16,7 +16,7 @@ import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
-import youthm2.bootstrap.model.config.BootstrapConfig;
+import bootstrap.model.config.BootstrapConfig;
 import youthm2.common.Json;
 
 /**
