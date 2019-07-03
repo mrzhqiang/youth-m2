@@ -1,4 +1,4 @@
-package youthm2.bootstrap.backup;
+package youthm2.bootstrap.model.backup;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;

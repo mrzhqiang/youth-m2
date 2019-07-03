@@ -1,4 +1,4 @@
-package youthm2.bootstrap.config;
+package youthm2.bootstrap.model.config;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.typesafe.config.Config;
@@ -19,6 +19,10 @@ public class ServerConfig extends ProgramConfig {
     if (config.hasPath("serverPort")) {
       serverPort.setValue(config.getInt("serverPort"));
     }
+  }
+
+  public final int getServerPort() {
+    return serverPort.getValue();
   }
 
   @Override public ObjectNode objectNode() {

@@ -1,4 +1,4 @@
-package youthm2.bootstrap.backup;
+package youthm2.bootstrap.model;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -9,28 +9,29 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import youthm2.bootstrap.model.backup.BackupData;
 
 /**
  * 文件备份管理器。
  *
  * @author mrzhqiang
  */
-public final class BackupModel {
+final class BackupModel {
   private static final String BACKUP_FILE = "backup.json";
 
-  public final ObservableList<BackupData> dataList = FXCollections.observableArrayList();
+  final ObservableList<BackupData> dataList = FXCollections.observableArrayList();
 
   private final File backupFile = new File(BACKUP_FILE);
 
-  public void start() {
+  void start() {
 
   }
 
-  public void stop() {
+  void stop() {
 
   }
 
-  public void loadConfig() {
+  void loadConfig() {
     Config config = ConfigFactory.parseFile(backupFile);
     if (config.hasPath("dataList")) {
       List<String> backupList = config.getStringList("dataList");
@@ -53,13 +54,5 @@ public final class BackupModel {
     data.backupEnabled.setValue(config.getBoolean("backupEnabled"));
     data.zipEnabled.setValue(config.getBoolean("zipEnabled"));
     return data;
-  }
-
-  public void zipChange(boolean enabled) {
-
-  }
-
-  public void autoRunChange(boolean enabled) {
-
   }
 }

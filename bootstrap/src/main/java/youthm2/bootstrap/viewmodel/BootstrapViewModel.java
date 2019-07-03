@@ -1,4 +1,4 @@
-package youthm2.bootstrap;
+package youthm2.bootstrap.viewmodel;
 
 import com.google.common.base.Strings;
 import helper.DateTimeHelper;
@@ -20,7 +20,7 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import org.controlsfx.dialog.ExceptionDialog;
 import rx.Subscriber;
-import youthm2.bootstrap.backup.BackupModel;
+import youthm2.bootstrap.model.BootstrapModel;
 import youthm2.common.monitor.Monitor;
 
 /**
@@ -60,7 +60,6 @@ public final class BootstrapViewModel {
   /*启动按钮*/
   @FXML Button startServerButton;
 
-  private final BackupModel backupModel = new BackupModel();
   private final BootstrapModel bootstrapModel = new BootstrapModel();
 
   @FXML void initialize() {
@@ -78,6 +77,7 @@ public final class BootstrapViewModel {
   }
 
   @FXML void onStartServerClicked() {
+    Monitor monitor = Monitor.getInstance();
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     switch (bootstrapModel.state) {
       case DEFAULT:
@@ -85,20 +85,22 @@ public final class BootstrapViewModel {
         alert.showAndWait()
             .filter(buttonType -> buttonType == ButtonType.OK)
             .ifPresent(buttonType -> {
-              bootstrapModel.startGame(computeStartDateTime(), new Subscriber<Long>() {
+              bootstrapModel.startServer(computeStartDateTime(), new Subscriber<Long>() {
                 @Override public void onCompleted() {
                   bootstrapModel.state = BootstrapModel.State.RUNNING;
                   startServerButton.setText(bootstrapModel.state.toString());
+                  monitor.report("start server completed");
                 }
 
                 @Override public void onError(Throwable throwable) {
                   new ExceptionDialog(throwable).show();
                   bootstrapModel.state = BootstrapModel.State.DEFAULT;
                   startServerButton.setText(bootstrapModel.state.toString());
+                  monitor.report("start server error");
                 }
 
                 @Override public void onNext(Long aLong) {
-                  // do nothing
+                  monitor.record("start server: " + aLong);
                 }
               });
               bootstrapModel.state = BootstrapModel.State.STARTING;
@@ -164,7 +166,6 @@ public final class BootstrapViewModel {
 
   private void loadConfig() {
     bootstrapModel.loadConfig();
-    backupModel.loadConfig();
   }
 
   private void showConsole(String message) {

@@ -22,6 +22,7 @@
         <module>engine</module>
         <!-- 启动模块 -->
         <module>bootstrap</module>
+        <module>database</module>
         <!-- TODO more module -->
     </modules>
 

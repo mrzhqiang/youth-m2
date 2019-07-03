@@ -1,6 +1,6 @@
 {
   "bootstrap" : {
-    "path" : "D:/mir-server/randall/",
+    "path" : "D:/mir-server/randall",
     "dbName" : "兰达尔引擎",
     "gameName" : "兰达尔第一季",
     "gameAddress" : "127.0.0.1",
@@ -10,6 +10,7 @@
       "y" : 373,
       "port" : 5100,
       "enabled" : true,
+      "path": "database",
       "filename" : "DatabaseServer.exe",
       "serverPort" : 6000
     },
@@ -18,6 +19,7 @@
       "y" : 0,
       "port" : 5500,
       "enabled" : true,
+      "path": "account",
       "filename" : "AccountServer.exe",
       "serverPort" : 5600,
       "publicPort" : 3000
@@ -27,6 +29,7 @@
       "y" : 286,
       "port" : 10000,
       "enabled" : false,
+      "path": "logger",
       "filename" : "LoggerServer.exe",
       "serverPort" : 0
     },
@@ -35,6 +38,7 @@
       "y" : 0,
       "port" : 5000,
       "enabled" : true,
+      "path": "core",
       "filename" : "CoreServer.exe",
       "serverPort" : 4900
     },
@@ -43,6 +47,7 @@
       "y" : 373,
       "port" : 7200,
       "enabled" : true,
+      "path": "game",
       "filename" : "GameGate.exe"
     },
     "role" : {
@@ -50,6 +55,7 @@
       "y" : 180,
       "port" : 7100,
       "enabled" : true,
+      "path": "role",
       "filename" : "RoleGate.exe"
     },
     "login" : {
@@ -57,6 +63,7 @@
       "y" : 0,
       "port" : 7000,
       "enabled" : true,
+      "path": "login",
       "filename" : "LoginGate.exe"
     },
     "rank" : {
@@ -64,6 +71,7 @@
       "y" : 0,
       "port" : 0,
       "enabled" : false,
+      "path": "core",
       "filename" : "RankPlug.exe"
     }
   }

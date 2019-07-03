@@ -1,4 +1,4 @@
-package youthm2.bootstrap.config;
+package youthm2.bootstrap.model.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -14,7 +14,7 @@ import youthm2.common.Json;
  * @author qiang.zhang
  */
 public final class BootstrapConfig {
-  public final StringProperty path = new SimpleStringProperty("");
+  public final StringProperty home = new SimpleStringProperty("");
   public final StringProperty dbName = new SimpleStringProperty("");
   public final StringProperty gameName = new SimpleStringProperty("");
   public final StringProperty gameAddress = new SimpleStringProperty("");
@@ -31,7 +31,7 @@ public final class BootstrapConfig {
 
   public JsonNode toJsonNode() {
     ObjectNode bootstrap = Json.newObject()
-        .put("path", path.getValue())
+        .put("home", home.getValue())
         .put("dbName", dbName.getValue())
         .put("gameName", gameName.getValue())
         .put("gameAddress", gameAddress.getValue())
@@ -44,8 +44,38 @@ public final class BootstrapConfig {
     bootstrap.set("role", role.objectNode());
     bootstrap.set("login", login.objectNode());
     bootstrap.set("rank", rank.objectNode());
-    ObjectNode jsonNodes = Json.newObject();
-    jsonNodes.set("bootstrap", bootstrap);
-    return jsonNodes;
+    return Json.newObject().set("bootstrap", bootstrap);
+  }
+
+  public String databaseCommand() {
+    return database.command(home.getValue());
+  }
+
+  public String accountCommand() {
+    return account.command(home.getValue());
+  }
+
+  public String loggerCommand() {
+    return logger.command(home.getValue());
+  }
+
+  public String coreCommand() {
+    return core.command(home.getValue());
+  }
+
+  public String gameCommand() {
+    return game.command(home.getValue());
+  }
+
+  public String roleCommand() {
+    return role.command(home.getValue());
+  }
+
+  public String loginCommand() {
+    return login.command(home.getValue());
+  }
+
+  public String rankCommand() {
+    return rank.command(home.getValue());
   }
 }
