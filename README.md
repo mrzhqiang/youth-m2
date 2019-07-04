@@ -1,26 +1,81 @@
 [mir2-applem2]:https://github.com/mrzhqiang/mir2-applem2
 
-# youth-m2
-这是一个基于 Java 语言的 GUI 图形程序项目，有意于移植 [mir2-applem2] 代码到 Java 平台，可能存在诸多问题，希望不会有放弃的一天。
+Youth Mir 2
+-----------
+~~这是一个基于 Java 语言的 GUI 图形程序项目~~，有意于移植 [mir2-applem2][1] 代码到 Java 平台，可能存在诸多问题，希望不会有放弃的一天。
+
+**现在 Java GUI 从 swing 重构为 JavaFx，则可视化界面由 GUI Form 改为 `*.fxml`，基本上使用方式不变。**
 
 ## 背景
-最初是喜欢玩传奇，接触到 **给力引擎** 后，迷上了这种精致风格的引擎。
+个人喜欢玩传奇，从 2016 年至今，独立运营一个公益私服。
 
-然后去找给力引擎的官网和 QQ 群，利用网络自学引擎的架设，最终在家中电脑上开起游戏，并购买阿里云服务器运营公益服。
+在 2017 年 8 月，给力引擎的 QQ 群不再提供延期的 M2Server 主程序，公益私服被迫转向 GEE 引擎。
 
-由于给力引擎已经倒闭，在 2017 年 8 月，给力引擎 QQ 群也不再提供延期的 M2Server 程序，所开放的公益传奇也逐渐转向 **GEE 引擎**。
+GEE 引擎很新颖，功能也很强大，唯一的缺点就是经常报毒。
 
-但最终 GEE 引擎过于年轻，许多地方设定不合理，虽然大部分功能适合开发 Randall 版本，但由于理念相差，最终决定将 applem2 的源码，移植为 Java 语言。
+为了免受木马病毒的干扰，最终决定改写 [mir2-applem2][1] 引擎。
 
-## 关于 applem2 源码编译
-- 下载 Delphi2007 安装
-- clone [mir2-applem2] （苹果引擎）到本地
-- 安装 Raize5.5 程序（可以从网上下载，苹果引擎仓库中也有这个安装包），并输入苹果引擎 `.\demmrfm\Raize_5.5` 中的序列号
-- 打开 Delphi2007，安装 Library32...
+但 delphi 2007 所使用的 Object Pascal 语言，终究引发了水土不服，所以我开始重构为 JavaFx 程序。
 
-以上步骤在苹果引擎仓库中有教程，就不多说了。
+## 一、需求
+编译运行这个项目的基础需求。
 
-需要注意的是，FreeLogin 和 Login 的代码不太完整，使用 Client 可以在本地玩游戏，但是 Client 的界面有些问题，还需要自己调整一下。
+#### 1.1 开发环境需求
+- Maven 3.5 (旧版或许也可以运行)
+- JDK 1.8（至少 40 以上版本）
+
+#### 1.2 操作系统需求
+- (Windows) EXE installers: Inno Setup
+- (Windows) MSI installers: WiX (at least version 3.7)
+- (Linux) DEB installers: dpkg-deb
+- (Linux) RPM installers: rpmbuild
+- (Mac) DMG installers: hdiutil
+- (Mac) PKG installers: pkgbuild
+
+## 二、打包
+由于 Youth M2 是 JavaFX 程序，打包方式与普通的 Java 有点区别。
+
+而使用 IDEA 的 Artifacts 只能构建正经 JavaFX 程序，对于 Maven 多模块结构无能为力。
+
+所以我们要利用 Maven 插件进行一键打包。
+
+#### 2.1 jar 打包
+添加以下插件到顶级模块（root 模块）的 `pom.xml` 文件：
+```xml
+<plugin>
+    <groupId>com.zenjava</groupId>
+    <artifactId>javafx-maven-plugin</artifactId>
+    <version>8.8.3</version>
+    <configuration>
+        <mainClass>your.package.with.Launcher</mainClass>
+    </configuration>
+</plugin>
+```
+
+*提示：如果顶级模块不包含启动程序，则随意选择一个 Main 入口即可。*
+
+使用 `mvn jfx:jar` 命令进行打包，编译输出的目录位于：`target/jfx/app`。
+
+#### 2.2 native 打包
+添加以下插件到顶级模块（root 模块）的 `pom.xml` 文件：
+```xml
+<plugin>
+    <groupId>com.zenjava</groupId>
+    <artifactId>javafx-maven-plugin</artifactId>
+    <version>8.8.3</version>
+    <configuration>
+        <vendor>YourCompany</vendor>
+        <mainClass>your.package.with.Launcher</mainClass>
+    </configuration>
+</plugin>
+```
+
+*提示：native 实际上包含 jar 打包。*
+
+使用 `mvn jfx:native` 命令进行打包，编译输出的目录位于：`target/jfx/native`。
 
 ## 声明
 本仓库仅供学习交流使用，请勿用于任何商业活动。请于下载24小时内删除。^_^!
+
+
+[1]:https://github.com/mrzhqiang/mir2-applem2
