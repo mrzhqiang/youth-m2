@@ -7,7 +7,7 @@
     <!-- 项目声明 -->
     <groupId>com.github.mrzhqiang.youth-m2</groupId>
     <artifactId>root</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>pom</packaging>
 
     <!-- 项目资料 -->
@@ -18,10 +18,11 @@
     <modules>
         <!-- 公共模块 -->
         <module>common</module>
-        <!-- 引擎模块 -->
-        <module>engine</module>
-        <!-- 启动模块 -->
+        <!-- 核心服务 -->
+        <module>core</module>
+        <!-- 引导启动 -->
         <module>bootstrap</module>
+        <!-- 数据库服务 -->
         <module>database</module>
         <!-- TODO more module -->
     </modules>
@@ -29,15 +30,18 @@
     <!-- 项目属性 -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Java SDK 版本-->
+        <!-- JDK 版本 -->
         <java.version>1.8</java.version>
-        <!-- 测试依赖 -->
+        <!-- 测试框架 -->
         <junit.version>4.12</junit.version>
-        <!-- 项目依赖 -->
+        <!-- 日志打印 -->
         <slf4j.version>1.7.25</slf4j.version>
         <logback.version>1.2.3</logback.version>
+        <!-- 辅助工具 -->
         <helper.version>2018.1.2</helper.version>
+        <!-- json 工具 -->
         <jackson.version>2.9.9</jackson.version>
+        <!-- 异步处理 -->
         <rxjava.version>1.3.8</rxjava.version>
         <!-- 扩展组件 -->
         <controlsfx.version>8.40.15</controlsfx.version>
@@ -145,7 +149,8 @@
                     <version>8.8.3</version>
                     <configuration>
                         <vendor>Youth M2</vendor>
-                        <mainClass>bootstrap.Bootstrap</mainClass>
+                        <!-- 这里为了一键打包，随便填了个入口类 -->
+                        <mainClass>root.Root</mainClass>
                     </configuration>
                 </plugin>
             </plugins>
