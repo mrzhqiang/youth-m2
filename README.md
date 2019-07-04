@@ -20,17 +20,18 @@ GEE 引擎很新颖，功能也很强大，唯一的缺点就是经常报毒。
 ## 一、需求
 编译运行这个项目的基础需求。
 
-#### 1.1 开发环境需求
+### 1.1 开发环境需求
 - Maven 3.5 (旧版或许也可以运行)
 - JDK 1.8（至少 40 以上版本）
 
-#### 1.2 操作系统需求
+### 1.2 操作系统需求（可忽略）
 - (Windows) EXE installers: Inno Setup
 - (Windows) MSI installers: WiX (at least version 3.7)
 - (Linux) DEB installers: dpkg-deb
 - (Linux) RPM installers: rpmbuild
 - (Mac) DMG installers: hdiutil
 - (Mac) PKG installers: pkgbuild
+
 
 ## 二、打包
 由于 Youth M2 是 JavaFX 程序，打包方式与普通的 Java 有点区别。
@@ -39,7 +40,7 @@ GEE 引擎很新颖，功能也很强大，唯一的缺点就是经常报毒。
 
 所以我们要利用 Maven 插件进行一键打包。
 
-#### 2.1 jar 打包
+### 2.1 jar 打包
 添加以下插件到顶级模块（root 模块）的 `pom.xml` 文件：
 ```xml
 <plugin>
@@ -56,7 +57,7 @@ GEE 引擎很新颖，功能也很强大，唯一的缺点就是经常报毒。
 
 使用 `mvn jfx:jar` 命令进行打包，编译输出的目录位于：`target/jfx/app`。
 
-#### 2.2 native 打包
+### 2.2 native 打包
 添加以下插件到顶级模块（root 模块）的 `pom.xml` 文件：
 ```xml
 <plugin>
@@ -73,6 +74,22 @@ GEE 引擎很新颖，功能也很强大，唯一的缺点就是经常报毒。
 *提示：native 实际上包含 jar 打包。*
 
 使用 `mvn jfx:native` 命令进行打包，编译输出的目录位于：`target/jfx/native`。
+
+### 2.3 exe4j 打包
+native 打包出来的只是按不同操作系统区分的安装包，实际上这种方式对于需要移植的引擎体系来说，非常不合理。
+
+**TODO：未来应该设计为多模块单应用的架构，安装一次就可以启动所有服务、网关、插件等等。**
+
+我们暂时使用 exe4j 工具来逐个集成 jar 打包出来的 `*.jar`，每个 Java 程序对应一个 `*.exe`。
+
+1. 首先找到 `./tool/exe4.exe` 工具，安装到你的系统中。
+
+2. 随后找到某个 `./package/*.exe4j` 文件，根据需要设定一些参数后，再点击 `9.Compile executable` 打包。
+
+3. 按照第二步逐个打包所有程序。
+
+**注意：如果需要测试运行的话，必须将 `./tool/jre.zip` 解压到程序目录下。**
+
 
 ## 声明
 本仓库仅供学习交流使用，请勿用于任何商业活动。请于下载24小时内删除。^_^!
