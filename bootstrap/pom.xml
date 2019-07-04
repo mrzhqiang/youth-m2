@@ -46,7 +46,7 @@
           <version>8.8.3</version>
           <configuration>
             <vendor>Youth M2</vendor>
-            <mainClass>bootstrap.Bootstrap</mainClass>
+            <mainClass>youthm2.bootstrap.Bootstrap</mainClass>
           </configuration>
         </plugin>
       </plugins>

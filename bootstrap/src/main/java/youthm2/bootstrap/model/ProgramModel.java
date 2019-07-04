@@ -1,4 +1,4 @@
-package bootstrap.model;
+package youthm2.bootstrap.model;
 
 import com.google.common.collect.Maps;
 import java.io.File;

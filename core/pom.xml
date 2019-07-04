@@ -36,7 +36,7 @@
           <version>8.8.3</version>
           <configuration>
             <vendor>Youth M2</vendor>
-            <mainClass>core.Core</mainClass>
+            <mainClass>youthm2.core.Core</mainClass>
           </configuration>
         </plugin>
       </plugins>

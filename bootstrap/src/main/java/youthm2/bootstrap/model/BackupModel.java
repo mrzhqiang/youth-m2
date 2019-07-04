@@ -1,4 +1,4 @@
-package bootstrap.model;
+package youthm2.bootstrap.model;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import bootstrap.model.backup.BackupData;
+import youthm2.bootstrap.model.backup.BackupData;
 
 /**
  * 文件备份管理器。

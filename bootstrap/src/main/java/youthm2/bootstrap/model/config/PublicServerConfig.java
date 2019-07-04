@@ -1,4 +1,4 @@
-package bootstrap.model.config;
+package youthm2.bootstrap.model.config;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.typesafe.config.Config;

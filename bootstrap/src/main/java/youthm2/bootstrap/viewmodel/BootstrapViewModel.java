@@ -1,4 +1,4 @@
-package bootstrap.viewmodel;
+package youthm2.bootstrap.viewmodel;
 
 import com.google.common.base.Strings;
 import helper.DateTimeHelper;
@@ -20,7 +20,7 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import org.controlsfx.dialog.ExceptionDialog;
 import rx.Subscriber;
-import bootstrap.model.BootstrapModel;
+import youthm2.bootstrap.model.BootstrapModel;
 import youthm2.common.monitor.Monitor;
 
 /**

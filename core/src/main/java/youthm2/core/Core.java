@@ -1,4 +1,4 @@
-package core;
+package youthm2.core;
 
 import javafx.application.Application;
 import javafx.stage.Stage;

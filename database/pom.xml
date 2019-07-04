@@ -46,7 +46,7 @@
           <version>8.8.3</version>
           <configuration>
             <vendor>Youth M2</vendor>
-            <mainClass>database.Database</mainClass>
+            <mainClass>youthm2.database.Database</mainClass>
           </configuration>
         </plugin>
       </plugins>

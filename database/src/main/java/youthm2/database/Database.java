@@ -1,4 +1,4 @@
-package bootstrap;
+package youthm2.database;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,10 +11,12 @@ import org.slf4j.LoggerFactory;
 import youthm2.common.monitor.Monitor;
 
 /**
- * 引导程序。
+ * 数据库服务。
+ *
+ * @author qiang.zhang
  */
-public final class Bootstrap extends Application {
-  private static final String TITLE = "引导程序 - 青春引擎";
+public final class Database extends Application {
+  private static final String TITLE = "数据库服务 - 青春引擎";
 
   public static void main(String[] args) {
     launch(args);
@@ -24,18 +26,17 @@ public final class Bootstrap extends Application {
   public void start(Stage primaryStage) {
     Monitor monitor = Monitor.getInstance();
     try {
-      // Read file fxml and draw interface.
-      Parent root = FXMLLoader.load(getClass().getResource("/view-bootstrap.fxml"));
+      Parent root = FXMLLoader.load(getClass().getResource("/view-database.fxml"));
       primaryStage.setTitle(TITLE);
       primaryStage.setScene(new Scene(root));
       primaryStage.show();
     } catch (Exception e) {
-      LoggerFactory.getLogger("bootstrap").error("引导程序启动失败！", e);
+      LoggerFactory.getLogger("database").error("数据库服务启动失败！", e);
       new ExceptionDialog(e)
           .showAndWait()
           .filter(buttonType -> buttonType == ButtonType.OK)
           .ifPresent(buttonType -> System.exit(-1));
     }
-    monitor.report("bootstrap started");
+    monitor.report("database started");
   }
 }
