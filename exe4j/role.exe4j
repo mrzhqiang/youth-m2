@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exe4j version="5.1" transformSequenceNumber="2">
+  <directoryPresets config="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib" />
+  <application name="Core" distributionSourceDir="../sample/server/core/">
+    <languages>
+      <principalLanguage id="en" customLocalizationFile="" />
+    </languages>
+  </application>
+  <executable name="core" type="2" iconSet="false" iconFile="" executableDir="." redirectStderr="true" stderrFile="bootstrap-error.log" stderrMode="append" redirectStdout="false" stdoutFile="output.log" stdoutMode="overwrite" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="true" globalSingleInstance="false" singleInstanceActivate="true" dpiAware="false" amd64="true">
+    <messageSet />
+    <versionInfo include="false" fileVersion="" fileDescription="" legalCopyright="" internalName="" productName="" companyName="" productVersion="" />
+  </executable>
+  <splashScreen show="false" width="0" height="0" bitmapFile="" windowsNative="false" textOverlay="false">
+    <text>
+      <statusLine x="20" y="20" text="" fontSize="8" fontColor="0,0,0" bold="false" />
+      <versionLine x="20" y="40" text="version %VERSION%" fontSize="8" fontColor="0,0,0" bold="false" />
+    </text>
+  </splashScreen>
+  <java mainClass="youthm2.core.Core" vmParameters="" arguments="" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true" minVersion="1.8" maxVersion="1.8" allowBetaVM="false" jdkOnly="false">
+    <searchSequence>
+      <registry />
+      <envVar name="JAVA_HOME" />
+      <envVar name="JDK_HOME" />
+      <directory location="C:/Program Files/Java/jre1.8.0_171" />
+    </searchSequence>
+    <classPath>
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/core-1.0-jfx.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/animal-sniffer-annotations-1.14.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/common-1.0.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/config-1.3.3.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/error_prone_annotations-2.0.18.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/guava-22.0.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/helper-2018.1.2.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/j2objc-annotations-1.1.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/jackson-annotations-2.9.0.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/jackson-core-2.9.9.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/jackson-databind-2.9.9.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/jackson-datatype-jdk8-2.9.9.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/jackson-datatype-jdk8-2.9.9.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/jackson-datatype-jsr310-2.9.9.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/jsr305-3.0.2.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/logback-classic-1.2.3.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/logback-core-1.2.3.jar" failOnError="false" />
+      <archive location="D:/1mrzhqiang/youth-m2/core/target/jfx/app/lib/slf4j-api-1.7.25.jar" failOnError="false" />
+    </classPath>
+    <nativeLibraryDirectories />
+    <vmOptions />
+  </java>
+  <includedFiles />
+  <unextractableFiles />
+</exe4j>

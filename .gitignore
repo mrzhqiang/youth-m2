@@ -30,4 +30,18 @@ include
 
 *.log
 
-/release-exe/*.exe
+*.exe
+!/sample/*.exe
+!/sample/server/database/*.exe
+!/sample/server/account/*.exe
+!/sample/server/logger/*.exe
+!/sample/server/core/*.exe
+!/sample/gate/game/*.exe
+!/sample/gate/role/*.exe
+!/sample/gate/login/*.exe
+!/sample/plugin/rank/*.exe
+
+!/tool/exe4.exe
+!/tool/innosetup-6.0.2.exe
+
+/sample/jre
