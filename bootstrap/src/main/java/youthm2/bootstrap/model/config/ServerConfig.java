@@ -21,7 +21,7 @@ public class ServerConfig extends ProgramConfig {
     }
   }
 
-  public final int getServerPort() {
+  public int getServerPort() {
     return serverPort.getValue();
   }
 

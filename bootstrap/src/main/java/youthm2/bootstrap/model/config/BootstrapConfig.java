@@ -46,36 +46,4 @@ public final class BootstrapConfig {
     bootstrap.set("rank", rank.objectNode());
     return Json.newObject().set("bootstrap", bootstrap);
   }
-
-  public String databaseCommand() {
-    return database.command(home.getValue());
-  }
-
-  public String accountCommand() {
-    return account.command(home.getValue());
-  }
-
-  public String loggerCommand() {
-    return logger.command(home.getValue());
-  }
-
-  public String coreCommand() {
-    return core.command(home.getValue());
-  }
-
-  public String gameCommand() {
-    return game.command(home.getValue());
-  }
-
-  public String roleCommand() {
-    return role.command(home.getValue());
-  }
-
-  public String loginCommand() {
-    return login.command(home.getValue());
-  }
-
-  public String rankCommand() {
-    return rank.command(home.getValue());
-  }
 }

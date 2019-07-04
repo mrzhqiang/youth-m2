@@ -93,10 +93,9 @@ public final class BootstrapModel {
     Preconditions.checkNotNull(subscriber, "subscriber == null");
     subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
         .filter(aLong -> LocalDateTime.now().isAfter(targetTime))
-        .doOnNext(aLong -> programModel.start("C:\\Windows\\notepad.exe"))
-        .filter(aLong -> programModel.check("C:\\Windows\\notepad.exe"))
-        //.doOnNext(aLong -> programModel.start(config.databaseCommand()))
-        //.filter(aLong -> programModel.check(config.databaseCommand()))
+        //.doOnNext(aLong -> programModel.start("C:\\Windows\\notepad.exe"))
+        //.filter(aLong -> programModel.check("C:\\Windows\\notepad.exe"))
+        .filter(aLong -> startDatabase())
         //.doOnNext(aLong -> programModel.start(config.accountCommand()))
         //.doOnNext(aLong -> programModel.start(config.loggerCommand()))
         //.doOnNext(aLong -> programModel.start(config.coreCommand()))
@@ -119,6 +118,15 @@ public final class BootstrapModel {
 
   public void cancelStop() {
 
+  }
+
+  private Boolean startDatabase() {
+    String command = config.database.command(config.home.getValue());
+    boolean started = programModel.check(command);
+    if (config.database.isEnabled() && !started) {
+      programModel.start(command);
+    }
+    return started;
   }
 
   public enum State {

@@ -26,11 +26,6 @@ final class ProgramModel {
     program.status = Status.STARTING;
     ProcessBuilder pb = new ProcessBuilder(command);
     try {
-      File file = new File("nohub-youthm2.out");
-      if (!file.exists() && file.createNewFile()) {
-        LOGGER.info("create not exists file: " + file.toString());
-      }
-      pb.redirectOutput(ProcessBuilder.Redirect.appendTo(file));
       program.process = pb.start();
       program.status = Status.RUNNING;
     } catch (IOException e) {
@@ -41,7 +36,7 @@ final class ProgramModel {
 
   boolean check(String command) {
     Program program = allProgram.get(command);
-    return program != null && program.process.isAlive();
+    return program != null && program.status == Status.RUNNING;
   }
 
   private static final class Program {
