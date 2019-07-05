@@ -10,28 +10,33 @@ import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import youthm2.bootstrap.model.backup.BackupData;
+import youthm2.common.Environments;
 
 /**
  * 文件备份管理器。
  *
  * @author mrzhqiang
  */
-final class BackupModel {
+public final class BackupModel {
   private static final String BACKUP_FILE = "backup.json";
 
-  final ObservableList<BackupData> dataList = FXCollections.observableArrayList();
+  public final ObservableList<BackupData> dataList = FXCollections.observableArrayList();
 
-  private final File backupFile = new File(BACKUP_FILE);
-
-  void start() {
+  public void start() {
 
   }
 
-  void stop() {
+  public void stop() {
 
   }
 
-  void loadConfig() {
+  public void loadConfig() {
+    File backupFile;
+    if (Environments.isDebug()) {
+      backupFile = new File("sample", BACKUP_FILE);
+    } else {
+      backupFile = new File(BACKUP_FILE);
+    }
     Config config = ConfigFactory.parseFile(backupFile);
     if (config.hasPath("dataList")) {
       List<String> backupList = config.getStringList("dataList");

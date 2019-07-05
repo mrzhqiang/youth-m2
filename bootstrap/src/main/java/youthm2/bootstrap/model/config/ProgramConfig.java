@@ -3,8 +3,8 @@ package youthm2.bootstrap.model.config;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.typesafe.config.Config;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Locale;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -81,10 +81,10 @@ public class ProgramConfig {
         .put("filename", filename.getValue());
   }
 
-  public final String command(String home) {
+  public final Path link(String home) {
     Preconditions.checkNotNull(home, "home == null");
-    String link = Paths.get(home, path.getValue(), filename.getValue()).toAbsolutePath().toString();
-    return String.format(Locale.getDefault(),
-        "%s", link);
+    String pathValue = path.getValue();
+    String filenameValue = filename.getValue();
+    return Paths.get(home, pathValue, filenameValue);
   }
 }

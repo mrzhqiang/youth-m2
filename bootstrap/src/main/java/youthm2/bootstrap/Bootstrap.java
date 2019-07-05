@@ -27,12 +27,15 @@ public final class Bootstrap extends Application {
       // Read file fxml and draw interface.
       Parent root = FXMLLoader.load(getClass().getResource("/view-bootstrap.fxml"));
       primaryStage.setTitle(TITLE);
-      primaryStage.setScene(new Scene(root));
+      Scene scene = new Scene(root);
+      scene.getStylesheets().add(getClass().getResource("/application.css").toExternalForm());
+      primaryStage.setScene(scene);
       primaryStage.show();
     } catch (Exception e) {
       LoggerFactory.getLogger("bootstrap").error("引导程序启动失败！", e);
-      new ExceptionDialog(e)
-          .showAndWait()
+      ExceptionDialog dialog = new ExceptionDialog(e);
+      dialog.setHeaderText("启动出错：" + e.getMessage());
+      dialog.showAndWait()
           .filter(buttonType -> buttonType == ButtonType.OK)
           .ifPresent(buttonType -> System.exit(-1));
     }

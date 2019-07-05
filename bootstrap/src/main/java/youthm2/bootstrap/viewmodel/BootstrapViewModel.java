@@ -19,7 +19,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import org.controlsfx.dialog.ExceptionDialog;
+import org.slf4j.LoggerFactory;
 import rx.Subscriber;
+import youthm2.bootstrap.model.BackupModel;
 import youthm2.bootstrap.model.BootstrapModel;
 import youthm2.common.monitor.Monitor;
 
@@ -61,6 +63,7 @@ public final class BootstrapViewModel {
   @FXML Button startServerButton;
 
   private final BootstrapModel bootstrapModel = new BootstrapModel();
+  private final BackupModel backupModel = new BackupModel();
 
   @FXML void initialize() {
     Monitor monitor = Monitor.getInstance();
@@ -77,35 +80,36 @@ public final class BootstrapViewModel {
   }
 
   @FXML void onStartServerClicked() {
-    Monitor monitor = Monitor.getInstance();
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     switch (bootstrapModel.state) {
-      case DEFAULT:
+      case INITIALIZED:
         alert.setHeaderText("是否启动服务？");
         alert.showAndWait()
             .filter(buttonType -> buttonType == ButtonType.OK)
-            .ifPresent(buttonType -> {
-              bootstrapModel.startServer(computeStartDateTime(), new Subscriber<Long>() {
-                @Override public void onCompleted() {
-                  bootstrapModel.state = BootstrapModel.State.RUNNING;
-                  startServerButton.setText(bootstrapModel.state.toString());
-                  monitor.report("start server completed");
-                }
+            .ifPresent(buttonType ->
+                bootstrapModel.startServer(computeStartDateTime(), new Subscriber<Long>() {
+                  @Override public void onStart() {
+                    bootstrapModel.state = BootstrapModel.State.STARTING;
+                    startServerButton.setText(bootstrapModel.state.toString());
+                  }
 
-                @Override public void onError(Throwable throwable) {
-                  new ExceptionDialog(throwable).show();
-                  bootstrapModel.state = BootstrapModel.State.DEFAULT;
-                  startServerButton.setText(bootstrapModel.state.toString());
-                  monitor.report("start server error");
-                }
+                  @Override public void onCompleted() {
+                    // interval 直到终结也不会回调
+                    LoggerFactory.getLogger("test").info("不可能回调完成逻辑吧！");
+                  }
 
-                @Override public void onNext(Long aLong) {
-                  monitor.record("start server: " + aLong);
-                }
-              });
-              bootstrapModel.state = BootstrapModel.State.STARTING;
-              startServerButton.setText(bootstrapModel.state.toString());
-            });
+                  @Override public void onError(Throwable throwable) {
+                    new ExceptionDialog(throwable).show();
+                    bootstrapModel.state = BootstrapModel.State.INITIALIZED;
+                    startServerButton.setText(bootstrapModel.state.toString());
+                  }
+
+                  @Override public void onNext(Long aLong) {
+                    bootstrapModel.cancelStart();
+                    bootstrapModel.state = BootstrapModel.State.RUNNING;
+                    startServerButton.setText(bootstrapModel.state.toString());
+                  }
+                }));
         break;
       case STARTING:
         alert.setHeaderText("服务正在启动，是否取消？");
@@ -113,7 +117,7 @@ public final class BootstrapViewModel {
             .filter(buttonType -> buttonType == ButtonType.OK)
             .ifPresent(buttonType -> {
               bootstrapModel.cancelStart();
-              bootstrapModel.state = BootstrapModel.State.DEFAULT;
+              bootstrapModel.state = BootstrapModel.State.INITIALIZED;
               startServerButton.setText(bootstrapModel.state.toString());
             });
         break;
@@ -121,7 +125,7 @@ public final class BootstrapViewModel {
         alert.setHeaderText("是否停止服务？");
         alert.showAndWait()
             .filter(buttonType -> buttonType == ButtonType.OK)
-            .ifPresent(buttonType -> bootstrapModel.stopGame());
+            .ifPresent(buttonType -> bootstrapModel.stopServer());
         break;
       case STOPPING:
         alert.setHeaderText("服务正在停止，是否取消？");
@@ -166,6 +170,7 @@ public final class BootstrapViewModel {
 
   private void loadConfig() {
     bootstrapModel.loadConfig();
+    backupModel.loadConfig();
   }
 
   private void showConsole(String message) {
@@ -191,6 +196,7 @@ public final class BootstrapViewModel {
       }
       return timing;
     }
+    // 正常模式，直接启动
     return now;
   }
 

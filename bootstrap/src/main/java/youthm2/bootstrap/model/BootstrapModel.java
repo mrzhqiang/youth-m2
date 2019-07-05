@@ -17,6 +17,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 import youthm2.bootstrap.model.config.BootstrapConfig;
+import youthm2.common.Environments;
 import youthm2.common.Json;
 
 /**
@@ -30,17 +31,23 @@ public final class BootstrapModel {
 
   public final BootstrapConfig config = new BootstrapConfig();
 
-  private final BackupModel backupModel = new BackupModel();
+  public State state = State.INITIALIZED;
+
   private final ProgramModel programModel = new ProgramModel();
-
   private final Scheduler mainScheduler = Schedulers.from(Platform::runLater);
-
-  public State state = State.DEFAULT;
 
   private Subscription subscription = null;
 
   public void loadConfig() {
-    File configFile = new File(CONFIG_FILE);
+    File configFile;
+    if (Environments.isDebug()) {
+      // 调试模式，就读取 sample 目录下的配置。
+      configFile = new File("sample", CONFIG_FILE);
+    } else {
+      // 非调试模式，读取当前目录下的配置。
+      // 注意：直接在 IDEA 中 Run 的话，那么使用的是内置配置。
+      configFile = new File(CONFIG_FILE);
+    }
     // 以 configFile 为主，缺失的由默认配置 reference.conf 填补
     Config conf = ConfigFactory.parseFile(configFile).withFallback(ConfigFactory.load());
     Config bootstrap = conf.getConfig("bootstrap");
@@ -59,8 +66,6 @@ public final class BootstrapModel {
     config.role.onLoad(bootstrap.getConfig("role"));
     config.login.onLoad(bootstrap.getConfig("login"));
     config.rank.onLoad(bootstrap.getConfig("rank"));
-
-    backupModel.loadConfig();
   }
 
   public void saveConfig() {
@@ -93,16 +98,12 @@ public final class BootstrapModel {
     Preconditions.checkNotNull(subscriber, "subscriber == null");
     subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
         .filter(aLong -> LocalDateTime.now().isAfter(targetTime))
-        //.doOnNext(aLong -> programModel.start("C:\\Windows\\notepad.exe"))
-        //.filter(aLong -> programModel.check("C:\\Windows\\notepad.exe"))
-        .filter(aLong -> startDatabase())
-        //.doOnNext(aLong -> programModel.start(config.accountCommand()))
-        //.doOnNext(aLong -> programModel.start(config.loggerCommand()))
-        //.doOnNext(aLong -> programModel.start(config.coreCommand()))
-        //.doOnNext(aLong -> programModel.start(config.gameCommand()))
-        //.doOnNext(aLong -> programModel.start(config.roleCommand()))
-        //.doOnNext(aLong -> programModel.start(config.loginCommand()))
-        //.doOnNext(aLong -> programModel.start(config.rankCommand()))
+        // RxJava 只是一种异步调度神器，实现逻辑还放在私有方法里
+        .filter(aLong -> {
+          startServer();
+          return checkAllServer();
+        })
+        // 回调就需要更新 UI，此时应该放到主线程上运行
         .observeOn(mainScheduler)
         .subscribe(subscriber);
   }
@@ -113,24 +114,44 @@ public final class BootstrapModel {
     }
   }
 
-  public void stopGame() {
+  private void startServer() {
+    String homeValue = config.home.getValue();
+    programModel.start(homeValue, config.database);
+    programModel.start(homeValue, config.account);
+    programModel.start(homeValue, config.logger);
+    programModel.start(homeValue, config.core);
+    programModel.start(homeValue, config.game);
+    programModel.start(homeValue, config.role);
+    programModel.start(homeValue, config.login);
+    programModel.start(homeValue, config.rank);
+  }
+
+  private Boolean checkAllServer() {
+    if (Environments.isDebug()) {
+      return true;
+    }
+    String homeValue = config.home.getValue();
+    boolean check = programModel.check(homeValue, config.database);
+    check = check && programModel.check(homeValue, config.account);
+    check = check && programModel.check(homeValue, config.logger);
+    check = check && programModel.check(homeValue, config.core);
+    check = check && programModel.check(homeValue, config.game);
+    check = check && programModel.check(homeValue, config.role);
+    check = check && programModel.check(homeValue, config.login);
+    check = check && programModel.check(homeValue, config.rank);
+    return check;
+  }
+
+  public void stopServer() {
+
   }
 
   public void cancelStop() {
 
   }
 
-  private Boolean startDatabase() {
-    String command = config.database.command(config.home.getValue());
-    boolean started = programModel.check(command);
-    if (config.database.isEnabled() && !started) {
-      programModel.start(command);
-    }
-    return started;
-  }
-
   public enum State {
-    DEFAULT("启动服务"),
+    INITIALIZED("启动服务"),
     STARTING("正在启动.."),
     RUNNING("停止服务"),
     STOPPING("正在停止.."),

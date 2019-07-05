@@ -1,11 +1,18 @@
 package youthm2.bootstrap.model;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import youthm2.bootstrap.model.config.ProgramConfig;
+import youthm2.common.Environments;
+import youthm2.common.Platform;
 
 /**
  * 程序模块。
@@ -17,41 +24,70 @@ final class ProgramModel {
 
   private final Map<String, Program> allProgram = Maps.newHashMap();
 
-  void start(String command) {
-    Program program = allProgram.get(command);
+  void start(String home, ProgramConfig config) {
+    Preconditions.checkNotNull(home, "home == null");
+    Preconditions.checkNotNull(config, "config == null");
+    if (!config.isEnabled()) {
+      return;
+    }
+    String path = config.link(home).toString();
+    Program program = allProgram.get(path);
     if (program == null) {
       program = new Program();
-      allProgram.put(command, program);
+      allProgram.put(path, program);
     }
-    program.status = Status.STARTING;
-    ProcessBuilder pb = new ProcessBuilder(command);
-    try {
-      program.process = pb.start();
-      program.status = Status.RUNNING;
-    } catch (IOException e) {
-      LOGGER.error("启动 ["+command+"] 出错", e);
-      program.status = Status.ERROR_OF_START;
+    if (program.status == Status.INITIALIZED) {
+      List<String> command = prepareCommand(path, config);
+      ProcessBuilder builder = new ProcessBuilder(command);
+      File directory = new File(home);
+      if (Environments.isDebug()) {
+        directory = new File(Environments.workDirectory(), home);
+      }
+      builder.directory(directory);
+      try {
+        program.process = builder.start();
+        program.status = Status.STARTING;
+      } catch (IOException e) {
+        LOGGER.error("无法启动程序：{}", path);
+        throw new RuntimeException(String.format(Locale.getDefault(),
+            "启动程序 [%s] 出错！", path));
+      }
     }
   }
 
-  boolean check(String command) {
-    Program program = allProgram.get(command);
-    return program != null && program.status == Status.RUNNING;
+  private List<String> prepareCommand(String path, ProgramConfig config) {
+    Preconditions.checkNotNull(path, "path == null");
+    Preconditions.checkNotNull(config, "config == null");
+
+    List<String> command = Lists.newArrayList();
+    Platform current = Platform.current();
+    path = path.replace('/', current.fileSeparator);
+    command.add(path);
+    command.add(String.valueOf(config.getPort()));
+    command.add(String.valueOf(config.getX()));
+    command.add(String.valueOf(config.getY()));
+    return command;
+  }
+
+  boolean check(String home, ProgramConfig config) {
+    Preconditions.checkNotNull(home, "home == null");
+    Preconditions.checkNotNull(config, "config == null");
+
+    String path = config.link(home).toString();
+    Program program = allProgram.get(path);
+    return program != null && program.status == Status.STARTED;
   }
 
   private static final class Program {
-    String command;
-    Status status = Status.STOPPED;
+    Status status = Status.INITIALIZED;
     Process process;
   }
 
   enum Status {
-    STOPPED,
+    INITIALIZED,
     STARTING,
-    ERROR_OF_START,
-    RUNNING,
-    DIRTY_SHUTDOWN,
+    STARTED,
     STOPPING,
-    ERROR_OF_STOP
+    STOPPED,
   }
 }
