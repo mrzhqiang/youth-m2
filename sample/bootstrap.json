@@ -1,6 +1,6 @@
 {
   "bootstrap" : {
-    "home" : "F:/github/youth-m2/sample",
+    "home" : "./sample",
     "dbName" : "兰达尔引擎",
     "gameName" : "兰达尔第一季",
     "gameAddress" : "127.0.0.1",
