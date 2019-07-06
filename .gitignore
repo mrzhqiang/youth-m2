@@ -50,3 +50,5 @@ include
 !/tool/innosetup-6.0.2.exe
 
 /sample/jre
+
+*.gz

@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -30,7 +31,11 @@ final class ProgramModel {
     if (!config.isEnabled()) {
       return;
     }
-    String path = config.link(home).toString();
+    Path link = config.link(home);
+    if (link == null) {
+      return;
+    }
+    String path = link.toString();
     Program program = allProgram.get(path);
     if (program == null) {
       program = new Program();
@@ -73,9 +78,13 @@ final class ProgramModel {
     Preconditions.checkNotNull(home, "home == null");
     Preconditions.checkNotNull(config, "config == null");
 
-    String path = config.link(home).toString();
+    Path link = config.link(home);
+    if (link == null) {
+      return true;
+    }
+    String path = link.toString();
     Program program = allProgram.get(path);
-    return program != null && program.status == Status.STARTED;
+    return config.isEnabled() && program != null && program.status == Status.STARTED;
   }
 
   private static final class Program {

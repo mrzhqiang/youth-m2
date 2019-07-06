@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javax.annotation.Nullable;
 import youthm2.common.Json;
 
 /**
@@ -81,10 +82,12 @@ public class ProgramConfig {
         .put("filename", filename.getValue());
   }
 
+  @Nullable
   public final Path link(String home) {
     Preconditions.checkNotNull(home, "home == null");
     String pathValue = path.getValue();
     String filenameValue = filename.getValue();
-    return Paths.get(home, pathValue, filenameValue);
+    Path path = Paths.get(home, pathValue, filenameValue);
+    return path.toFile().exists() ? path : null;
   }
 }

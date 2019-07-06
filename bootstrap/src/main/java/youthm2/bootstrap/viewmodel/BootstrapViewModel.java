@@ -95,7 +95,7 @@ public final class BootstrapViewModel {
 
                   @Override public void onCompleted() {
                     // interval 直到终结也不会回调
-                    LoggerFactory.getLogger("test").info("不可能回调完成逻辑吧！");
+                    LoggerFactory.getLogger("bootstrap").info("不可能回调完成逻辑吧！");
                   }
 
                   @Override public void onError(Throwable throwable) {
