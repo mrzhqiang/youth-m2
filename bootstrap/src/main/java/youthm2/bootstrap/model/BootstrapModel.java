@@ -39,18 +39,14 @@ public final class BootstrapModel {
   private Subscription subscription = null;
 
   public void loadConfig() {
-    File configFile;
-    if (Environments.isDebug()) {
-      // 调试模式，就读取 sample 目录下的配置。
-      configFile = new File("sample", CONFIG_FILE);
-    } else {
-      // 非调试模式，读取当前目录下的配置。
-      // 注意：直接在 IDEA 中 Run 的话，那么使用的是内置配置。
-      configFile = new File(CONFIG_FILE);
-    }
+    File configFile = getConfigFile();
     // 以 configFile 为主，缺失的由默认配置 reference.conf 填补
-    Config conf = ConfigFactory.parseFile(configFile).withFallback(getDefaultConfig());
+    Config conf = ConfigFactory.parseFile(configFile).withFallback(ConfigFactory.load());
     Config bootstrap = conf.getConfig("bootstrap");
+    loadAllConfig(bootstrap);
+  }
+
+  private void loadAllConfig(Config bootstrap) {
     loadBasicConfig(bootstrap);
 
     config.database.onLoad(bootstrap.getConfig("database"));
@@ -70,14 +66,51 @@ public final class BootstrapModel {
     config.gameName.setValue(bootstrap.getString("gameName"));
     config.gameAddress.setValue(bootstrap.getString("gameAddress"));
     config.backupAction.setValue(bootstrap.getBoolean("backupAction"));
+    config.compoundAction.setValue(bootstrap.getBoolean("compoundAction"));
   }
 
   public Config getDefaultConfig() {
-    return ConfigFactory.load();
+    return ConfigFactory.load().getConfig("bootstrap");
+  }
+
+  public Config getDefaultDatabaseConfig() {
+    return getDefaultConfig().getConfig("database");
+  }
+
+  public Config getDefaultAccountConfig() {
+    return getDefaultConfig().getConfig("account");
+  }
+
+  public Config getDefaultLoggerConfig() {
+    return getDefaultConfig().getConfig("logger");
+  }
+
+  public Config getDefaultCoreConfig() {
+    return getDefaultConfig().getConfig("core");
+  }
+
+  public Config getDefaultGameConfig() {
+    return getDefaultConfig().getConfig("game");
+  }
+
+  public Config getDefaultRoleConfig() {
+    return getDefaultConfig().getConfig("role");
+  }
+
+  public Config getDefaultLoginConfig() {
+    return getDefaultConfig().getConfig("login");
+  }
+
+  public Config getDefaultRankConfig() {
+    return getDefaultConfig().getConfig("rank");
+  }
+
+  public void loadDefaultConfig() {
+    loadAllConfig(getDefaultConfig());
   }
 
   public void saveConfig() {
-    File configFile = new File(CONFIG_FILE);
+    File configFile = getConfigFile();
     if (!configFile.exists()) {
       try {
         boolean newFile = configFile.createNewFile();
@@ -99,6 +132,19 @@ public final class BootstrapModel {
       dialog.setHeaderText("无法保存当前配置");
       dialog.show();
     }
+  }
+
+  private File getConfigFile() {
+    File configFile;
+    if (Environments.isDebug()) {
+      // DEBUG 模式，就读取 sample 目录下的配置。
+      configFile = new File("sample", CONFIG_FILE);
+    } else {
+      // 非 DEBUG 模式，读取当前目录下的配置。
+      // 注意：直接在 IDEA 中 Run 的话，那么使用的是内置配置。
+      configFile = new File(CONFIG_FILE);
+    }
+    return configFile;
   }
 
   public void startServer(LocalDateTime targetTime, Subscriber<Long> subscriber) {

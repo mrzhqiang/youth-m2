@@ -2,6 +2,7 @@ package youthm2.bootstrap.viewmodel;
 
 import com.google.common.base.Strings;
 import helper.DateTimeHelper;
+import java.io.File;
 import java.sql.Date;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -18,11 +19,15 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.stage.FileChooser;
 import org.controlsfx.dialog.ExceptionDialog;
 import org.slf4j.LoggerFactory;
 import rx.Subscriber;
 import youthm2.bootstrap.model.BackupModel;
 import youthm2.bootstrap.model.BootstrapModel;
+import youthm2.bootstrap.model.config.ProgramConfig;
+import youthm2.bootstrap.model.config.PublicServerConfig;
+import youthm2.bootstrap.model.config.ServerConfig;
 import youthm2.common.monitor.Monitor;
 
 /**
@@ -41,7 +46,6 @@ public final class BootstrapViewModel {
   private static final Integer MAX_TIMING_HOURS = 23;
   private static final Integer MAX_TIMING_MINUTES = 59;
 
-  /*程序控制*/
   @FXML CheckBox databaseCheckBox;
   @FXML CheckBox accountCheckBox;
   @FXML CheckBox loggerCheckBox;
@@ -50,16 +54,15 @@ public final class BootstrapViewModel {
   @FXML CheckBox roleCheckBox;
   @FXML CheckBox loginCheckBox;
   @FXML CheckBox rankCheckBox;
-  /*启动控制*/
+
   @FXML RadioButton normalModeRadioButton;
   @FXML RadioButton delayModeRadioButton;
   @FXML RadioButton timingModeRadioButton;
   @FXML ToggleGroup startModeGroup;
   @FXML TextField hoursTextField;
   @FXML TextField minutesTextField;
-  /*信息文本*/
+
   @FXML TextArea consoleTextArea;
-  /*启动按钮*/
   @FXML Button startServerButton;
 
   @FXML TextField homePathTextField;
@@ -67,6 +70,23 @@ public final class BootstrapViewModel {
   @FXML TextField gameNameTextField;
   @FXML TextField gameAddressTextField;
   @FXML CheckBox compoundActionCheckBox;
+
+  @FXML RadioButton databaseRadioButton;
+  @FXML RadioButton accountRadioButton;
+  @FXML RadioButton loggerRadioButton;
+  @FXML RadioButton coreRadioButton;
+  @FXML RadioButton gameRadioButton;
+  @FXML RadioButton roleRadioButton;
+  @FXML RadioButton loginRadioButton;
+  @FXML RadioButton rankRadioButton;
+  @FXML ToggleGroup programSettingGroup;
+  @FXML CheckBox enabledActionCheckBox;
+  @FXML TextField xTextField;
+  @FXML TextField yTextField;
+  @FXML TextField portTextField;
+  @FXML TextField serverTextField;
+  @FXML TextField publicServerTextField;
+  @FXML TextField pathTextField;
 
   private final BootstrapModel bootstrapModel = new BootstrapModel();
   private final BackupModel backupModel = new BackupModel();
@@ -142,8 +162,51 @@ public final class BootstrapViewModel {
     }
   }
 
-  @FXML void onBasicConfigDefaultClicked() {
-    bootstrapModel.loadBasicConfig(bootstrapModel.getDefaultConfig().getConfig("bootstrap"));
+  @FXML void onDefaultBasicConfigClicked() {
+    bootstrapModel.loadBasicConfig(bootstrapModel.getDefaultConfig());
+  }
+
+  @FXML void onBrowserPathClicked() {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("请选择要启动的程序文件");
+    fileChooser.setInitialDirectory(new File(bootstrapModel.config.home.getValue()));
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("程序文件", "*.exe"));
+    File file = fileChooser.showOpenDialog(null);
+    if (file != null) {
+      if (file.exists() && file.isFile()) {
+        String path = file.getPath();
+        pathTextField.setText(path);
+      }
+    }
+  }
+
+  @FXML void onDefaultCurrentConfigClicked() {
+    Toggle toggle = programSettingGroup.getSelectedToggle();
+    if (toggle.equals(databaseRadioButton)) {
+      bootstrapModel.config.database.onLoad(bootstrapModel.getDefaultDatabaseConfig());
+    } else if (toggle.equals(accountRadioButton)) {
+      bootstrapModel.config.account.onLoad(bootstrapModel.getDefaultAccountConfig());
+    } else if (toggle.equals(loggerRadioButton)) {
+      bootstrapModel.config.logger.onLoad(bootstrapModel.getDefaultLoggerConfig());
+    } else if (toggle.equals(coreRadioButton)) {
+      bootstrapModel.config.core.onLoad(bootstrapModel.getDefaultCoreConfig());
+    } else if (toggle.equals(gameRadioButton)) {
+      bootstrapModel.config.game.onLoad(bootstrapModel.getDefaultGameConfig());
+    } else if (toggle.equals(roleRadioButton)) {
+      bootstrapModel.config.role.onLoad(bootstrapModel.getDefaultRoleConfig());
+    } else if (toggle.equals(loginRadioButton)) {
+      bootstrapModel.config.login.onLoad(bootstrapModel.getDefaultLoginConfig());
+    } else if (toggle.equals(rankRadioButton)) {
+      bootstrapModel.config.rank.onLoad(bootstrapModel.getDefaultRankConfig());
+    }
+  }
+
+  @FXML void onReloadDefaultConfigClicked() {
+    bootstrapModel.loadDefaultConfig();
+  }
+
+  @FXML void onSaveAllConfigClicked() {
+    bootstrapModel.saveConfig();
   }
 
   private void initState() {
@@ -158,6 +221,7 @@ public final class BootstrapViewModel {
     databaseNameTextField.clear();
     gameNameTextField.clear();
     gameAddressTextField.clear();
+    programSettingGroup.selectToggle(databaseRadioButton);
   }
 
   private void initEvent() {
@@ -167,10 +231,13 @@ public final class BootstrapViewModel {
         handleHoursTextChanged(newValue, oldValue));
     minutesTextField.textProperty().addListener((observable, oldValue, newValue) ->
         handleMinutesTextChanged(newValue, oldValue));
+    programSettingGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) ->
+        handleProgramSettingChanged(oldValue, newValue));
   }
 
   private void bindModel() {
     // bindBidirectional 是指双向绑定，意味着数据改动会影响组件状态，同时组件状态改变会更新到数据。
+    // 需要注意的是：绑定从一开始就将目标对象的值设置给调用者；解绑则只是移除了监听器。
     databaseCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.database.enabled);
     accountCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.account.enabled);
     loggerCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.logger.enabled);
@@ -180,11 +247,13 @@ public final class BootstrapViewModel {
     loginCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.login.enabled);
     rankCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.rank.enabled);
 
-    compoundActionCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.compoundAction);
+    compoundActionCheckBox.selectedProperty()
+        .bindBidirectional(bootstrapModel.config.compoundAction);
     homePathTextField.textProperty().bindBidirectional(bootstrapModel.config.home);
     databaseNameTextField.textProperty().bindBidirectional(bootstrapModel.config.dbName);
     gameNameTextField.textProperty().bindBidirectional(bootstrapModel.config.gameName);
     gameAddressTextField.textProperty().bindBidirectional(bootstrapModel.config.gameAddress);
+    bindTargetConfig(databaseRadioButton);
     // 其他组件不需要双向绑定，比如启动模式单选按钮组，点击切换又不影响配置；
     // 再比如控制台文本区域，只显示每次启动关闭时的信息，不需要保存到配置。
   }
@@ -267,5 +336,94 @@ public final class BootstrapViewModel {
     } catch (Exception e) {
       minutesTextField.setText(oldValue);
     }
+  }
+
+  private void handleProgramSettingChanged(Toggle oldValue, Toggle newValue) {
+    unbindTargetConfig(oldValue);
+    bindTargetConfig(newValue);
+  }
+
+  private void unbindTargetConfig(Toggle toggle) {
+    if (toggle.equals(databaseRadioButton)) {
+      unbindServerConfig(bootstrapModel.config.database);
+    } else if (toggle.equals(accountRadioButton)) {
+      unbindPublicServerConfig(bootstrapModel.config.account);
+    } else if (toggle.equals(loggerRadioButton)) {
+      unbindServerConfig(bootstrapModel.config.logger);
+    } else if (toggle.equals(coreRadioButton)) {
+      unbindServerConfig(bootstrapModel.config.core);
+    } else if (toggle.equals(gameRadioButton)) {
+      unbindProgramConfig(bootstrapModel.config.game);
+    } else if (toggle.equals(roleRadioButton)) {
+      unbindProgramConfig(bootstrapModel.config.role);
+    } else if (toggle.equals(loginRadioButton)) {
+      unbindProgramConfig(bootstrapModel.config.login);
+    } else if (toggle.equals(rankRadioButton)) {
+      unbindProgramConfig(bootstrapModel.config.rank);
+    }
+  }
+
+  private void unbindProgramConfig(ProgramConfig config) {
+    enabledActionCheckBox.selectedProperty().unbindBidirectional(config.enabled);
+    xTextField.textProperty().unbindBidirectional(config.x);
+    yTextField.textProperty().unbindBidirectional(config.y);
+    portTextField.textProperty().unbindBidirectional(config.port);
+    pathTextField.textProperty().unbindBidirectional(config.path);
+    portTextField.setDisable(false);
+  }
+
+  private void unbindServerConfig(ServerConfig config) {
+    unbindProgramConfig(config);
+    serverTextField.textProperty().unbindBidirectional(config.serverPort);
+    serverTextField.setDisable(false);
+  }
+
+  private void unbindPublicServerConfig(PublicServerConfig config) {
+    unbindServerConfig(config);
+    publicServerTextField.textProperty().unbindBidirectional(config.publicPort);
+    publicServerTextField.setDisable(false);
+  }
+
+  private void bindTargetConfig(Toggle toggle) {
+    if (toggle.equals(databaseRadioButton)) {
+      bindServerConfig(bootstrapModel.config.database);
+    } else if (toggle.equals(accountRadioButton)) {
+      bindPublicServerConfig(bootstrapModel.config.account);
+    } else if (toggle.equals(loggerRadioButton)) {
+      bindServerConfig(bootstrapModel.config.logger);
+    } else if (toggle.equals(coreRadioButton)) {
+      bindServerConfig(bootstrapModel.config.core);
+    } else if (toggle.equals(gameRadioButton)) {
+      bindProgramConfig(bootstrapModel.config.game);
+    } else if (toggle.equals(roleRadioButton)) {
+      bindProgramConfig(bootstrapModel.config.role);
+    } else if (toggle.equals(loginRadioButton)) {
+      bindProgramConfig(bootstrapModel.config.login);
+    } else if (toggle.equals(rankRadioButton)) {
+      bindProgramConfig(bootstrapModel.config.rank);
+    }
+  }
+
+  private void bindProgramConfig(ProgramConfig config) {
+    enabledActionCheckBox.selectedProperty().bindBidirectional(config.enabled);
+    xTextField.textProperty().bindBidirectional(config.x);
+    yTextField.textProperty().bindBidirectional(config.y);
+    portTextField.textProperty().bindBidirectional(config.port);
+    pathTextField.textProperty().bindBidirectional(config.path);
+    serverTextField.setDisable(true);
+    publicServerTextField.setDisable(true);
+  }
+
+  private void bindServerConfig(ServerConfig config) {
+    bindProgramConfig(config);
+    serverTextField.textProperty().bindBidirectional(config.serverPort);
+    serverTextField.setDisable(false);
+    publicServerTextField.setDisable(true);
+  }
+
+  private void bindPublicServerConfig(PublicServerConfig config) {
+    bindServerConfig(config);
+    publicServerTextField.textProperty().bindBidirectional(config.publicPort);
+    publicServerTextField.setDisable(false);
   }
 }
