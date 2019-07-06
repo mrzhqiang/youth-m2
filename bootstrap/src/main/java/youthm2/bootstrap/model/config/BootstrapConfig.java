@@ -19,6 +19,7 @@ public final class BootstrapConfig {
   public final StringProperty gameName = new SimpleStringProperty("");
   public final StringProperty gameAddress = new SimpleStringProperty("");
   public final BooleanProperty backupAction = new SimpleBooleanProperty(false);
+  public final BooleanProperty compoundAction = new SimpleBooleanProperty(false);
 
   public final ServerConfig database = new ServerConfig();
   public final PublicServerConfig account = new PublicServerConfig();

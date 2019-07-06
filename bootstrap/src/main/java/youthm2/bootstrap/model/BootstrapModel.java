@@ -49,14 +49,9 @@ public final class BootstrapModel {
       configFile = new File(CONFIG_FILE);
     }
     // 以 configFile 为主，缺失的由默认配置 reference.conf 填补
-    Config conf = ConfigFactory.parseFile(configFile).withFallback(ConfigFactory.load());
+    Config conf = ConfigFactory.parseFile(configFile).withFallback(getDefaultConfig());
     Config bootstrap = conf.getConfig("bootstrap");
-    Preconditions.checkNotNull(bootstrap, "bootstrap config == null");
-    config.home.setValue(bootstrap.getString("home"));
-    config.dbName.setValue(bootstrap.getString("dbName"));
-    config.gameName.setValue(bootstrap.getString("gameName"));
-    config.gameAddress.setValue(bootstrap.getString("gameAddress"));
-    config.backupAction.setValue(bootstrap.getBoolean("backupAction"));
+    loadBasicConfig(bootstrap);
 
     config.database.onLoad(bootstrap.getConfig("database"));
     config.account.onLoad(bootstrap.getConfig("account"));
@@ -66,6 +61,19 @@ public final class BootstrapModel {
     config.role.onLoad(bootstrap.getConfig("role"));
     config.login.onLoad(bootstrap.getConfig("login"));
     config.rank.onLoad(bootstrap.getConfig("rank"));
+  }
+
+  public void loadBasicConfig(Config bootstrap) {
+    Preconditions.checkNotNull(bootstrap, "bootstrap config == null");
+    config.home.setValue(bootstrap.getString("home"));
+    config.dbName.setValue(bootstrap.getString("dbName"));
+    config.gameName.setValue(bootstrap.getString("gameName"));
+    config.gameAddress.setValue(bootstrap.getString("gameAddress"));
+    config.backupAction.setValue(bootstrap.getBoolean("backupAction"));
+  }
+
+  public Config getDefaultConfig() {
+    return ConfigFactory.load();
   }
 
   public void saveConfig() {

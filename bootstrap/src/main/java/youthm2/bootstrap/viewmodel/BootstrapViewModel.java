@@ -62,6 +62,12 @@ public final class BootstrapViewModel {
   /*启动按钮*/
   @FXML Button startServerButton;
 
+  @FXML TextField homePathTextField;
+  @FXML TextField databaseNameTextField;
+  @FXML TextField gameNameTextField;
+  @FXML TextField gameAddressTextField;
+  @FXML CheckBox compoundActionCheckBox;
+
   private final BootstrapModel bootstrapModel = new BootstrapModel();
   private final BackupModel backupModel = new BackupModel();
 
@@ -136,6 +142,10 @@ public final class BootstrapViewModel {
     }
   }
 
+  @FXML void onBasicConfigDefaultClicked() {
+    bootstrapModel.loadBasicConfig(bootstrapModel.getDefaultConfig().getConfig("bootstrap"));
+  }
+
   private void initState() {
     startModeGroup.selectToggle(normalModeRadioButton);
     hoursTextField.setText(MIN_TIME.toString());
@@ -143,6 +153,11 @@ public final class BootstrapViewModel {
     hoursTextField.setDisable(true);
     minutesTextField.setDisable(true);
     consoleTextArea.clear();
+
+    homePathTextField.clear();
+    databaseNameTextField.clear();
+    gameNameTextField.clear();
+    gameAddressTextField.clear();
   }
 
   private void initEvent() {
@@ -164,6 +179,12 @@ public final class BootstrapViewModel {
     roleCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.role.enabled);
     loginCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.login.enabled);
     rankCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.rank.enabled);
+
+    compoundActionCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.compoundAction);
+    homePathTextField.textProperty().bindBidirectional(bootstrapModel.config.home);
+    databaseNameTextField.textProperty().bindBidirectional(bootstrapModel.config.dbName);
+    gameNameTextField.textProperty().bindBidirectional(bootstrapModel.config.gameName);
+    gameAddressTextField.textProperty().bindBidirectional(bootstrapModel.config.gameAddress);
     // 其他组件不需要双向绑定，比如启动模式单选按钮组，点击切换又不影响配置；
     // 再比如控制台文本区域，只显示每次启动关闭时的信息，不需要保存到配置。
   }
