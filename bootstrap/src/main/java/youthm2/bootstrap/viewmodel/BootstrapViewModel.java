@@ -107,9 +107,9 @@ public final class BootstrapViewModel {
 
   @FXML void onStartServerClicked() {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setHeaderText(bootstrapModel.state.getMessage());
     switch (bootstrapModel.state) {
       case INITIALIZED:
-        alert.setHeaderText("是否启动服务？");
         alert.showAndWait()
             .filter(buttonType -> buttonType == ButtonType.OK)
             .ifPresent(buttonType ->
@@ -138,7 +138,6 @@ public final class BootstrapViewModel {
                 }));
         break;
       case STARTING:
-        alert.setHeaderText("服务正在启动，是否取消？");
         alert.showAndWait()
             .filter(buttonType -> buttonType == ButtonType.OK)
             .ifPresent(buttonType -> {
@@ -148,13 +147,11 @@ public final class BootstrapViewModel {
             });
         break;
       case RUNNING:
-        alert.setHeaderText("是否停止服务？");
         alert.showAndWait()
             .filter(buttonType -> buttonType == ButtonType.OK)
             .ifPresent(buttonType -> bootstrapModel.stopServer());
         break;
       case STOPPING:
-        alert.setHeaderText("服务正在停止，是否取消？");
         alert.showAndWait()
             .filter(buttonType -> buttonType == ButtonType.OK)
             .ifPresent(buttonType -> bootstrapModel.cancelStop());
@@ -163,7 +160,11 @@ public final class BootstrapViewModel {
   }
 
   @FXML void onDefaultBasicConfigClicked() {
-    bootstrapModel.loadBasicConfig(bootstrapModel.getDefaultConfig());
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setHeaderText("是否恢复基本配置为默认值？");
+    alert.showAndWait()
+        .filter(buttonType -> buttonType == ButtonType.OK)
+        .ifPresent(buttonType -> bootstrapModel.loadBootstrapConfig(null));
   }
 
   @FXML void onBrowserPathClicked() {
@@ -181,32 +182,58 @@ public final class BootstrapViewModel {
   }
 
   @FXML void onDefaultCurrentConfigClicked() {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setHeaderText("是否恢复当前配置为默认值？");
     Toggle toggle = programSettingGroup.getSelectedToggle();
     if (toggle.equals(databaseRadioButton)) {
-      bootstrapModel.config.database.onLoad(bootstrapModel.getDefaultDatabaseConfig());
+      alert.showAndWait()
+          .filter(buttonType -> buttonType == ButtonType.OK)
+          .ifPresent(buttonType -> bootstrapModel.loadDatabaseConfig(null));
     } else if (toggle.equals(accountRadioButton)) {
-      bootstrapModel.config.account.onLoad(bootstrapModel.getDefaultAccountConfig());
+      alert.showAndWait()
+          .filter(buttonType -> buttonType == ButtonType.OK)
+          .ifPresent(buttonType -> bootstrapModel.loadAccountConfig(null));
     } else if (toggle.equals(loggerRadioButton)) {
-      bootstrapModel.config.logger.onLoad(bootstrapModel.getDefaultLoggerConfig());
+      alert.showAndWait()
+          .filter(buttonType -> buttonType == ButtonType.OK)
+          .ifPresent(buttonType -> bootstrapModel.loadLoggerConfig(null));
     } else if (toggle.equals(coreRadioButton)) {
-      bootstrapModel.config.core.onLoad(bootstrapModel.getDefaultCoreConfig());
+      alert.showAndWait()
+          .filter(buttonType -> buttonType == ButtonType.OK)
+          .ifPresent(buttonType -> bootstrapModel.loadCoreConfig(null));
     } else if (toggle.equals(gameRadioButton)) {
-      bootstrapModel.config.game.onLoad(bootstrapModel.getDefaultGameConfig());
+      alert.showAndWait()
+          .filter(buttonType -> buttonType == ButtonType.OK)
+          .ifPresent(buttonType -> bootstrapModel.loadGameConfig(null));
     } else if (toggle.equals(roleRadioButton)) {
-      bootstrapModel.config.role.onLoad(bootstrapModel.getDefaultRoleConfig());
+      alert.showAndWait()
+          .filter(buttonType -> buttonType == ButtonType.OK)
+          .ifPresent(buttonType -> bootstrapModel.loadRoleConfig(null));
     } else if (toggle.equals(loginRadioButton)) {
-      bootstrapModel.config.login.onLoad(bootstrapModel.getDefaultLoginConfig());
+      alert.showAndWait()
+          .filter(buttonType -> buttonType == ButtonType.OK)
+          .ifPresent(buttonType -> bootstrapModel.loadLoginConfig(null));
     } else if (toggle.equals(rankRadioButton)) {
-      bootstrapModel.config.rank.onLoad(bootstrapModel.getDefaultRankConfig());
+      alert.showAndWait()
+          .filter(buttonType -> buttonType == ButtonType.OK)
+          .ifPresent(buttonType -> bootstrapModel.loadRankConfig(null));
     }
   }
 
-  @FXML void onReloadDefaultConfigClicked() {
-    bootstrapModel.loadDefaultConfig();
+  @FXML void onReloadConfigClicked() {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setHeaderText("是否重新加载所有配置？");
+    alert.showAndWait()
+        .filter(buttonType -> buttonType == ButtonType.OK)
+        .ifPresent(buttonType -> bootstrapModel.loadConfig());
   }
 
   @FXML void onSaveAllConfigClicked() {
-    bootstrapModel.saveConfig();
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setHeaderText("是否保存当前所有配置？");
+    alert.showAndWait()
+        .filter(buttonType -> buttonType == ButtonType.OK)
+        .ifPresent(buttonType -> bootstrapModel.saveConfig());
   }
 
   private void initState() {

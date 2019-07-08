@@ -1,18 +1,16 @@
 package youthm2.bootstrap.model;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.List;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
-import java.util.Map;
+import org.controlsfx.dialog.ExceptionDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 import youthm2.bootstrap.model.config.ProgramConfig;
-import youthm2.common.Environments;
-import youthm2.common.Platform;
 
 /**
  * 程序模块。
@@ -22,80 +20,78 @@ import youthm2.common.Platform;
 final class ProgramModel {
   private static final Logger LOGGER = LoggerFactory.getLogger("bootstrap");
 
-  private final Map<String, Program> allProgram = Maps.newHashMap();
+  private final ProgramConfig config;
 
-  void start(String home, ProgramConfig config) {
-    Preconditions.checkNotNull(home, "home == null");
-    Preconditions.checkNotNull(config, "config == null");
+  private Status status = Status.DEFAULT;
+  private Process process;
+
+  ProgramModel(ProgramConfig config) {
+    this.config = config;
+  }
+
+  void start() {
+    if (config.isEnabled()) {
+      if (status == Status.DEFAULT) {
+        status = Status.STARTING;
+        String path = config.getPath();
+        String port = config.getPort();
+        String x = config.getX();
+        String y = config.getY();
+        String command = String.format(Locale.getDefault(), "%s %s %s %s", path, port, x, y);
+        try {
+          process = Runtime.getRuntime().exec(command);
+          Observable.just(process.getInputStream())
+              .subscribeOn(Schedulers.io())
+              .map(inputStream -> new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+              .map(BufferedReader::new)
+              .doOnNext(this::handleResponse)
+              .subscribe();
+        } catch (Exception e) {
+          status = Status.DEFAULT;
+          LOGGER.error("无法启动程序：{} in {} port", path, port);
+          ExceptionDialog dialog = new ExceptionDialog(e);
+          dialog.setHeaderText("启动程序 [" + path + "] 出错！");
+          dialog.show();
+        }
+      }
+    }
+  }
+
+  boolean check() {
     if (!config.isEnabled()) {
-      return;
-    }
-    File file = new File(config.getPath());
-    if (file.isDirectory() || !file.exists()) {
-      return;
-    }
-    String path = file.getPath();
-    Program program = allProgram.get(path);
-    if (program == null) {
-      program = new Program();
-      allProgram.put(path, program);
-    }
-    if (program.status == Status.INITIALIZED) {
-      List<String> command = prepareCommand(path, config);
-      ProcessBuilder builder = new ProcessBuilder(command);
-      File directory = new File(home);
-      if (Environments.isDebug()) {
-        directory = new File(Environments.workDirectory(), home);
-      }
-      builder.directory(directory);
-      try {
-        program.process = builder.start();
-        program.status = Status.STARTING;
-      } catch (IOException e) {
-        LOGGER.error("无法启动程序：{}", path);
-        throw new RuntimeException(String.format(Locale.getDefault(),
-            "启动程序 [%s] 出错！", path));
-      }
-    }
-  }
-
-  private List<String> prepareCommand(String path, ProgramConfig config) {
-    Preconditions.checkNotNull(path, "path == null");
-    Preconditions.checkNotNull(config, "config == null");
-
-    List<String> command = Lists.newArrayList();
-    Platform current = Platform.current();
-    path = path.replace('/', current.fileSeparator);
-    command.add(path);
-    command.add(String.valueOf(config.getPort()));
-    command.add(String.valueOf(config.getX()));
-    command.add(String.valueOf(config.getY()));
-    return command;
-  }
-
-  boolean check(String home, ProgramConfig config) {
-    Preconditions.checkNotNull(home, "home == null");
-    Preconditions.checkNotNull(config, "config == null");
-
-    File file = new File(config.getPath());
-    if (file.isDirectory() || !file.exists()) {
       return true;
     }
-    String path = file.getPath();
-    Program program = allProgram.get(path);
-    return config.isEnabled() && program != null && program.status == Status.STARTED;
+    return status == Status.STARTED && process != null && process.isAlive();
   }
 
-  private static final class Program {
-    Status status = Status.INITIALIZED;
-    Process process;
+  void stop() {
+    if (status == Status.STARTED) {
+      status = Status.STOPPING;
+      if (process != null && process.isAlive()) {
+        process.destroy();
+      }
+    }
+    status = Status.DEFAULT;
+  }
+
+  private void handleResponse(BufferedReader bufferedReader) {
+    do {
+      try {
+        String line = bufferedReader.readLine();
+        if ("ok".equalsIgnoreCase(line)) {
+          status = Status.STARTED;
+          return;
+        }
+      } catch (IOException ignore) {
+        break;
+      }
+    } while (true);
   }
 
   enum Status {
-    INITIALIZED,
+    DEFAULT,
     STARTING,
     STARTED,
     STOPPING,
-    STOPPED,
   }
 }

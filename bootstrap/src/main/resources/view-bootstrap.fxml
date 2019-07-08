@@ -240,7 +240,7 @@
                           </panes>
                         </Accordion>
                         <Button layoutX="320.0" layoutY="414.0" mnemonicParsing="false" onAction="#onSaveAllConfigClicked" text="保存配置" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="340.0" AnchorPane.rightAnchor="236.0" AnchorPane.topAnchor="414.0" />
-                        <Button layoutX="236.0" layoutY="414.0" mnemonicParsing="false" onAction="#onReloadDefaultConfigClicked" text="重新加载" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="236.0" AnchorPane.rightAnchor="340.0" AnchorPane.topAnchor="414.0" />
+                        <Button layoutX="236.0" layoutY="414.0" mnemonicParsing="false" onAction="#onReloadConfigClicked" text="重新加载" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="236.0" AnchorPane.rightAnchor="340.0" AnchorPane.topAnchor="414.0" />
                      </children>
             </AnchorPane>
           </content>

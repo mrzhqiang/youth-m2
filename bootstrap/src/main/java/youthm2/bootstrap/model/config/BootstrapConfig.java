@@ -36,7 +36,8 @@ public final class BootstrapConfig {
         .put("dbName", dbName.getValue())
         .put("gameName", gameName.getValue())
         .put("gameAddress", gameAddress.getValue())
-        .put("backupAction", backupAction.getValue());
+        .put("backupAction", backupAction.getValue())
+        .put("compoundAction", compoundAction.getValue());
     bootstrap.set("database", database.objectNode());
     bootstrap.set("account", account.objectNode());
     bootstrap.set("logger", logger.objectNode());
