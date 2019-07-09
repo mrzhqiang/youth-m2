@@ -1,11 +1,11 @@
 package youthm2.bootstrap.model;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
-import org.controlsfx.dialog.ExceptionDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
@@ -34,6 +34,10 @@ final class ProgramModel {
       if (status == Status.DEFAULT) {
         status = Status.STARTING;
         String path = config.getPath();
+        File file = new File(path);
+        if (!file.isFile() || !file.exists()) {
+          throw new IllegalStateException("程序路径无效，请检查");
+        }
         String port = config.getPort();
         String x = config.getX();
         String y = config.getY();
@@ -49,9 +53,7 @@ final class ProgramModel {
         } catch (Exception e) {
           status = Status.DEFAULT;
           LOGGER.error("无法启动程序：{} in {} port", path, port);
-          ExceptionDialog dialog = new ExceptionDialog(e);
-          dialog.setHeaderText("启动程序 [" + path + "] 出错！");
-          dialog.show();
+          throw new RuntimeException("启动程序 [" + path + "] 出错", e);
         }
       }
     }

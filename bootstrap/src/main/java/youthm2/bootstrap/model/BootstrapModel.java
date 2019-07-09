@@ -156,7 +156,6 @@ public final class BootstrapModel {
         return;
       }
     }
-    // todo 检查配置是否正确
     try (FileWriter writer = new FileWriter(configFile)) {
       writer.write(Json.prettyPrint(config.toJsonNode()));
       writer.flush();
@@ -168,20 +167,21 @@ public final class BootstrapModel {
     }
   }
 
-  public void startServer(LocalDateTime targetTime, Subscriber<Long> subscriber) {
+  public void startServer(LocalDateTime targetTime, Subscriber<String> subscriber) {
     Preconditions.checkNotNull(targetTime, "target time == null");
     Preconditions.checkNotNull(subscriber, "subscriber == null");
     subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
+        // 是否抵达目标时间
         .filter(aLong -> LocalDateTime.now().isAfter(targetTime))
         // RxJava 只是一种异步调度神器，实现逻辑还放在私有方法里
-        .filter(aLong -> startDatabaseServer())
-        .filter(aLong -> startAccountServer())
-        .filter(aLong -> startLoggerServer())
-        .filter(aLong -> startCoreServer())
-        .filter(aLong -> startGameServer())
-        .filter(aLong -> startRoleServer())
-        .filter(aLong -> startLoginServer())
-        .filter(aLong -> startRankServer())
+        .map(aLong -> startDatabaseServer())
+        //.filter(aLong -> startAccountServer())
+        //.filter(aLong -> startLoggerServer())
+        //.filter(aLong -> startCoreServer())
+        //.filter(aLong -> startGameServer())
+        //.filter(aLong -> startRoleServer())
+        //.filter(aLong -> startLoginServer())
+        //.filter(aLong -> startRankServer())
         // 回调就需要更新 UI，此时应该放到主线程上运行
         .observeOn(mainScheduler)
         .subscribe(subscriber);
@@ -214,9 +214,10 @@ public final class BootstrapModel {
     return configFile;
   }
 
-  private Boolean startDatabaseServer() {
+  private String startDatabaseServer() {
     databaseModel.start();
-    return databaseModel.check();
+    databaseModel.check();
+    return "";
   }
 
   private Boolean startAccountServer() {
