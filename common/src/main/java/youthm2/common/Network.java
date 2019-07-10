@@ -4,12 +4,12 @@ import com.google.common.base.Preconditions;
 import java.util.regex.Pattern;
 
 /**
- * NetAddressUtil
+ * Network
  *
  * @author qiang.zhang
  */
-public final class NetAddressUtil {
-  private NetAddressUtil() {
+public final class Network {
+  private Network() {
     throw new AssertionError("This is factory class");
   }
 

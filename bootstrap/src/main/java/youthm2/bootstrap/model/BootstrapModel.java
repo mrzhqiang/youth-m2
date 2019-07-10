@@ -18,7 +18,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 import youthm2.bootstrap.model.config.BootstrapConfig;
-import youthm2.common.Environments;
+import youthm2.common.Environment;
 import youthm2.common.Json;
 
 /**
@@ -203,7 +203,7 @@ public final class BootstrapModel {
 
   private File getConfigFile() {
     File configFile;
-    if (Environments.isDebug()) {
+    if (Environment.isDebug()) {
       // DEBUG 模式，就读取 sample 目录下的配置。
       configFile = new File(DEBUG_ROOT_DIR, CONFIG_FILE);
     } else {

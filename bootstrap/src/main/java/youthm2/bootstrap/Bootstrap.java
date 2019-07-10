@@ -8,7 +8,7 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.controlsfx.dialog.ExceptionDialog;
 import org.slf4j.LoggerFactory;
-import youthm2.common.monitor.Monitor;
+import youthm2.common.Monitor;
 
 /**
  * 引导程序。

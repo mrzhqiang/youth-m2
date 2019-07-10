@@ -22,8 +22,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import org.controlsfx.dialog.ExceptionDialog;
 import org.slf4j.LoggerFactory;
 import rx.Subscriber;
 import youthm2.bootstrap.model.BackupModel;
@@ -31,8 +31,8 @@ import youthm2.bootstrap.model.BootstrapModel;
 import youthm2.bootstrap.model.config.ProgramConfig;
 import youthm2.bootstrap.model.config.PublicServerConfig;
 import youthm2.bootstrap.model.config.ServerConfig;
-import youthm2.common.NetAddressUtil;
-import youthm2.common.monitor.Monitor;
+import youthm2.common.Network;
+import youthm2.common.Monitor;
 
 /**
  * 引导程序的视图模型。
@@ -138,22 +138,51 @@ public final class BootstrapViewModel {
 
   @FXML void onDefaultBasicConfigClicked() {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-    alert.setHeaderText("是否恢复基本配置为默认值？");
+    alert.setHeaderText("是否恢复为默认的基本配置？");
     alert.showAndWait()
         .filter(buttonType -> buttonType == ButtonType.OK)
         .ifPresent(buttonType -> bootstrapModel.loadBootstrapConfig(null));
   }
 
-  @FXML void onBrowserPathClicked() {
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("请选择要启动的程序文件");
-    fileChooser.setInitialDirectory(new File(bootstrapModel.config.home.getValue()));
-    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("程序文件", "*.exe"));
-    File file = fileChooser.showOpenDialog(null);
+  @FXML void onFoundGamePathClicked() {
+    DirectoryChooser chooser = new DirectoryChooser();
+    chooser.setTitle("请选择服务端目录");
+    String home = bootstrapModel.config.home.getValue();
+    if (Strings.isNullOrEmpty(home)) {
+      home = System.getProperty("user.dir");
+    }
+    chooser.setInitialDirectory(new File(home));
+    File file = chooser.showDialog(null);
+    if (file != null) {
+      if (file.exists() && file.isDirectory()) {
+        homePathTextField.setText(file.getPath());
+      }
+    }
+  }
+
+  @FXML void onFoundExeFileClicked() {
+    FileChooser chooser = new FileChooser();
+    chooser.setTitle("请选择要启动的程序文件");
+    String path = pathTextField.getText();
+    if (Strings.isNullOrEmpty(path)) {
+      path = bootstrapModel.config.home.getValue();
+    }
+    if (Strings.isNullOrEmpty(path)) {
+      path = System.getProperty("user.dir");
+    }
+    File exeFile = new File(path);
+    if (exeFile.isFile()) {
+      chooser.setInitialDirectory(exeFile.getAbsoluteFile().getParentFile());
+      chooser.setInitialFileName(exeFile.getName());
+    } else {
+      chooser.setInitialDirectory(exeFile);
+    }
+    // todo move the extension filter to common module
+    chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("程序文件", "*.exe"));
+    File file = chooser.showOpenDialog(null);
     if (file != null) {
       if (file.exists() && file.isFile()) {
-        String path = file.getPath();
-        pathTextField.setText(path);
+        pathTextField.setText(file.getPath());
       }
     }
   }
@@ -282,7 +311,7 @@ public final class BootstrapViewModel {
       return false;
     }
     String address = bootstrapModel.config.getGameAddress();
-    if (Strings.isNullOrEmpty(address) || !NetAddressUtil.isAddressV4(address)) {
+    if (Strings.isNullOrEmpty(address) || !Network.isAddressV4(address)) {
       Alert alert = new Alert(Alert.AlertType.WARNING);
       alert.setHeaderText("无效的游戏 IP 地址，请检查");
       alert.show();

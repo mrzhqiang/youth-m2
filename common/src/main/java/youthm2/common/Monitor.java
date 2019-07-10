@@ -1,4 +1,6 @@
-package youthm2.common.monitor;
+package youthm2.common;
+
+import youthm2.common.monitor.SimpleMonitor;
 
 /**
  * 监视器。
