@@ -15,12 +15,7 @@ target
 pom.xml.*
 release.properties
 
-.idea/gradle_extensions.xml
-.idea/libraries/Gradle__*.xml
-.idea/libraries/Maven__*.xml
-.idea/shelf
-.idea/usage.statistics.xml
-.idea/workspace.xml
+.idea
 *.iml
 *.ipr
 *.iws
