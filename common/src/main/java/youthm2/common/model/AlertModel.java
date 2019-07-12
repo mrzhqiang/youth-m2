@@ -8,10 +8,20 @@ import javax.annotation.Nullable;
 
 /**
  * 警告模型。
+ * <p>
+ * 为什么要有这种的一个模型呢？
+ * <p>
+ * 因为有时候系统 API 在你的代码里泛滥成灾，而当你想重构的时候，你会发现重复操作非常之多。
+ * <p>
+ * 与其这样，还不如从一开始就在模型里面限定系统 API 的调用方式，从而避免诸多问题。
  *
  * @author qiang.zhang
  */
 public final class AlertModel {
+  private AlertModel() {
+    throw new AssertionError("No instance");
+  }
+
   public static void show(String message, @Nullable String content) {
     Preconditions.checkNotNull(message, "message == null");
     Alert alert = new Alert(Alert.AlertType.NONE);

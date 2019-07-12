@@ -9,6 +9,10 @@ import org.slf4j.LoggerFactory;
  * @author qiang.zhang
  */
 public final class LoggerModel {
+  private LoggerModel() {
+    throw new AssertionError("No instance");
+  }
+
   /**
    * 公共模块日志打印器。
    */

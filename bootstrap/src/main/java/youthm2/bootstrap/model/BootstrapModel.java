@@ -20,6 +20,8 @@ import rx.schedulers.Schedulers;
 import youthm2.bootstrap.model.config.BootstrapConfig;
 import youthm2.common.Environment;
 import youthm2.common.Json;
+import youthm2.common.exception.FileException;
+import youthm2.common.model.FileModel;
 
 /**
  * 引导模型。
@@ -144,26 +146,11 @@ public final class BootstrapModel {
 
   public void saveConfig() {
     File configFile = getConfigFile();
-    if (!configFile.exists()) {
-      try {
-        boolean newFile = configFile.createNewFile();
-        LOGGER.info("创建新的配置文件: {}", newFile);
-      } catch (Exception e) {
-        LOGGER.error("创建新的配置文件出错：{}", e.getMessage());
-        ExceptionDialog dialog = new ExceptionDialog(e);
-        dialog.setHeaderText("无法创建新的配置文件");
-        dialog.show();
-        return;
-      }
-    }
-    try (FileWriter writer = new FileWriter(configFile)) {
-      writer.write(Json.prettyPrint(config.toJsonNode()));
-      writer.flush();
-    } catch (Exception e) {
-      LOGGER.error("保存当前配置出错：{}", e.getMessage());
-      ExceptionDialog dialog = new ExceptionDialog(e);
-      dialog.setHeaderText("无法保存当前配置");
-      dialog.show();
+    try {
+      FileModel.existsOrCreate(configFile);
+      FileModel.onceWrite(configFile, Json.prettyPrint(config.toJsonNode()));
+    } catch (FileException e) {
+      new ExceptionDialog(e).show();
     }
   }
 

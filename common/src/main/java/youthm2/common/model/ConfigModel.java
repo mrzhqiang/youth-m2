@@ -3,7 +3,6 @@ package youthm2.common.model;
 import com.google.common.base.Preconditions;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import java.awt.Dialog;
 import java.io.File;
 import javafx.scene.control.Alert;
 import org.slf4j.Logger;
