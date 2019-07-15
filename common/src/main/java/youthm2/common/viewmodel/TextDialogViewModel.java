@@ -2,14 +2,12 @@ package youthm2.common.viewmodel;
 
 import java.awt.TextArea;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.Clipboard;
-import javafx.scene.input.DataFormat;
+import javafx.scene.input.ClipboardContent;
 import javafx.stage.Stage;
 import youthm2.common.model.AlertModel;
 import youthm2.common.model.LoggerModel;
@@ -23,9 +21,10 @@ public final class TextDialogViewModel {
   @FXML TextArea contentTextArea;
 
   @FXML void onCopyClicked() {
-    Map<DataFormat, Object> content = new HashMap<>();
-    content.put(DataFormat.PLAIN_TEXT, contentTextArea.getText());
-    Clipboard.getSystemClipboard().setContent(content);
+    Clipboard clipboard = Clipboard.getSystemClipboard();
+    ClipboardContent content = new ClipboardContent();
+    content.putString(contentTextArea.getText());
+    clipboard.setContent(content);
   }
 
   @FXML void onCloseClicked() {
