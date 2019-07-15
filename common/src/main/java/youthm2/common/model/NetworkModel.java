@@ -1,27 +1,20 @@
-package youthm2.common;
+package youthm2.common.model;
 
 import com.google.common.base.Preconditions;
 import java.util.regex.Pattern;
 
 /**
- * Network
+ * NetworkModel
  *
  * @author qiang.zhang
  */
-public final class Network {
-  private Network() {
+public final class NetworkModel {
+  private NetworkModel() {
     throw new AssertionError("This is factory class");
   }
 
-  private static final String REGEX_LOCAL_ADDRESS =
-      "^(192\\.168\\.|169\\.254\\.|10\\.|172\\.(1[6-9]|2\\d|3[01]))";
   private static final String REGEX_V4_ADDRESS = "([0-9]{1,3}(\\.[0-9]{1,3}){3})";
   private static final String REGEX_V6_ADDRESS = "[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7}";
-
-  public static boolean isLocalAddressPrefix(String address) {
-    Preconditions.checkNotNull(address, "address == null");
-    return Pattern.matches(REGEX_LOCAL_ADDRESS, address);
-  }
 
   public static boolean isAddressV4(String address) {
     Preconditions.checkNotNull(address, "address == null");

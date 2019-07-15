@@ -7,8 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.controlsfx.dialog.ExceptionDialog;
-import org.slf4j.LoggerFactory;
 import youthm2.common.Monitor;
+import youthm2.common.model.LoggerModel;
 
 /**
  * 引导程序。
@@ -25,14 +25,14 @@ public final class Bootstrap extends Application {
     Monitor monitor = Monitor.getInstance();
     try {
       // Read file fxml and draw interface.
-      Parent root = FXMLLoader.load(getClass().getResource("/view-bootstrap.fxml"));
+      Parent root = FXMLLoader.load(getClass().getResource("/bootstrap-layout.fxml"));
       primaryStage.setTitle(TITLE);
       Scene scene = new Scene(root);
       scene.getStylesheets().add(getClass().getResource("/application.css").toExternalForm());
       primaryStage.setScene(scene);
       primaryStage.show();
     } catch (Exception e) {
-      LoggerFactory.getLogger("bootstrap").error("引导程序启动失败！", e);
+      LoggerModel.BOOTSTRAP.error("引导程序启动失败！", e);
       ExceptionDialog dialog = new ExceptionDialog(e);
       dialog.setHeaderText("启动出错：" + e.getMessage());
       dialog.showAndWait()

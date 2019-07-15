@@ -21,8 +21,6 @@ import org.slf4j.LoggerFactory;
  * @author qiang.zhang
  */
 public final class ConfigModel {
-  private static final Logger LOGGER = LoggerFactory.getLogger("common");
-
   private final File configFile;
   private final Config config;
 
@@ -50,9 +48,9 @@ public final class ConfigModel {
     if (!configFile.exists()) {
       try {
         boolean newFile = configFile.createNewFile();
-        LOGGER.info("创建新的配置文件: {}", newFile);
+        LoggerModel.LOGGER.info("创建新的配置文件: {}", newFile);
       } catch (Exception e) {
-        LOGGER.error("创建新的配置文件出错：{}", e.getMessage());
+        LoggerModel.LOGGER.error("创建新的配置文件出错：{}", e.getMessage());
         Alert alert = new Alert(Alert.AlertType.ERROR);
         //dialog.setHeaderText("无法创建新的配置文件");
         //dialog.show();

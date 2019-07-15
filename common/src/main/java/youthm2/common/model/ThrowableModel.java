@@ -16,4 +16,20 @@ public final class ThrowableModel {
     e.printStackTrace(pw);
     return sw.toString();
   }
+
+  public static String printStackTrace() {
+    StringBuilder builder = new StringBuilder();
+    for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+      if (builder.length() > 0) {
+        builder.append("\r\n");
+      }
+      builder.append(element.toString());
+    }
+    return builder.toString();
+  }
+
+  public static void main(String[] args) {
+    System.out.println(print(new RuntimeException("print me")));
+    System.out.println(printStackTrace());
+  }
 }

@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.io.File;
-import java.io.FileWriter;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
@@ -147,7 +146,7 @@ public final class BootstrapModel {
   public void saveConfig() {
     File configFile = getConfigFile();
     try {
-      FileModel.existsOrCreate(configFile);
+      FileModel.createOrExists(configFile);
       FileModel.onceWrite(configFile, Json.prettyPrint(config.toJsonNode()));
     } catch (FileException e) {
       new ExceptionDialog(e).show();

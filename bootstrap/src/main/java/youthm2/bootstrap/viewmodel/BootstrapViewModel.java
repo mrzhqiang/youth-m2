@@ -31,7 +31,7 @@ import youthm2.bootstrap.model.BootstrapModel;
 import youthm2.bootstrap.model.config.ProgramConfig;
 import youthm2.bootstrap.model.config.PublicServerConfig;
 import youthm2.bootstrap.model.config.ServerConfig;
-import youthm2.common.Network;
+import youthm2.common.model.NetworkModel;
 import youthm2.common.Monitor;
 
 /**
@@ -311,7 +311,7 @@ public final class BootstrapViewModel {
       return false;
     }
     String address = bootstrapModel.config.getGameAddress();
-    if (Strings.isNullOrEmpty(address) || !Network.isAddressV4(address)) {
+    if (Strings.isNullOrEmpty(address) || !NetworkModel.isAddressV4(address)) {
       Alert alert = new Alert(Alert.AlertType.WARNING);
       alert.setHeaderText("无效的游戏 IP 地址，请检查");
       alert.show();

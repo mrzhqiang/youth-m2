@@ -1,11 +1,11 @@
 package youthm2.common.exception;
 
 /**
- * FileException
+ * 文件异常。
  *
  * @author qiang.zhang
  */
-public class FileException extends RuntimeException {
+public final class FileException extends RuntimeException {
   public FileException(String message) {
     super(message);
   }

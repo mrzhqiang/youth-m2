@@ -1,12 +1,10 @@
 package youthm2.common.model;
 
 import java.io.File;
-import java.time.Instant;
+import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * FileModelTest
@@ -19,16 +17,16 @@ public class FileModelTest {
 
   @Before
   public void setUp() throws Exception {
-    FileModel.existsOrCreate(testFile);
+    FileModel.createOrExists(testFile);
   }
 
   @After
   public void tearDown() throws Exception {
-    FileModel.notExistsOrDelete(testFile);
+    FileModel.deleteOrNotExists(testFile);
   }
 
   @Test
-  public void test() {
+  public void test() throws IOException {
     FileModel.onceWrite(testFile, "你好，文件！");
     FileModel.appleWrite(testFile, "追加到末尾。");
   }
