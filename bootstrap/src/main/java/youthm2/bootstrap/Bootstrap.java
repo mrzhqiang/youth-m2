@@ -4,9 +4,8 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import org.controlsfx.dialog.ExceptionDialog;
+import youthm2.common.ErrorDialog;
 import youthm2.common.Monitor;
 import youthm2.common.model.LoggerModel;
 
@@ -31,13 +30,10 @@ public final class Bootstrap extends Application {
       scene.getStylesheets().add(getClass().getResource("/application.css").toExternalForm());
       primaryStage.setScene(scene);
       primaryStage.show();
+      throw new RuntimeException("测试一下 ErrorDialogViewModel");
     } catch (Exception e) {
       LoggerModel.BOOTSTRAP.error("引导程序启动失败！", e);
-      ExceptionDialog dialog = new ExceptionDialog(e);
-      dialog.setHeaderText("启动出错：" + e.getMessage());
-      dialog.showAndWait()
-          .filter(buttonType -> buttonType == ButtonType.OK)
-          .ifPresent(buttonType -> System.exit(-1));
+      ErrorDialog.show(e);
     }
     monitor.report("bootstrap started");
   }
