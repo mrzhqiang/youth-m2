@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import youthm2.bootstrap.model.backup.BackupData;
-import youthm2.common.Environments;
+import youthm2.common.Environment;
 
 /**
  * 文件备份管理器。
@@ -32,7 +32,7 @@ public final class BackupModel {
 
   public void loadConfig() {
     File backupFile;
-    if (Environments.isDebug()) {
+    if (Environment.isDebug()) {
       backupFile = new File("sample", BACKUP_FILE);
     } else {
       backupFile = new File(BACKUP_FILE);

@@ -6,73 +6,65 @@
     "gameAddress" : "127.0.0.1",
     "backupAction" : true,
     "database" : {
-      "x" : 0,
-      "y" : 373,
-      "port" : 5100,
       "enabled" : true,
-      "path": "/server/database",
-      "filename" : "database.exe",
-      "serverPort" : 6000
+      "x" : "0",
+      "y" : "373",
+      "port" : "5100",
+      "path" : "/server/database/database.exe",
+      "serverPort" : "6000"
     },
     "account" : {
-      "x" : 252,
-      "y" : 0,
-      "port" : 5500,
       "enabled" : true,
-      "path": "/server/account",
-      "filename" : "account.exe",
-      "serverPort" : 5600,
-      "publicPort" : 3000
+      "x" : "252",
+      "y" : "0",
+      "port" : "5500",
+      "path" : "/server/account/account.exe",
+      "serverPort" : "5600",
+      "publicPort" : "3000"
     },
     "logger" : {
-      "x" : 252,
-      "y" : 286,
-      "port" : 10000,
       "enabled" : false,
-      "path": "/server/logger",
-      "filename" : "logger.exe",
-      "serverPort" : 0
+      "x" : "252",
+      "y" : "286",
+      "port" : "10000",
+      "path" : "/server/logger/logger.exe",
+      "serverPort" : "0"
     },
     "core" : {
-      "x" : 561,
-      "y" : 0,
-      "port" : 5000,
       "enabled" : true,
-      "path": "/server/core",
-      "filename" : "core.exe",
-      "serverPort" : 4900
+      "x" : "561",
+      "y" : "0",
+      "port" : "5000",
+      "path" : "/server/core/core.exe",
+      "serverPort" : "4900"
     },
     "game" : {
-      "x" : 437,
-      "y" : 373,
-      "port" : 7200,
       "enabled" : true,
-      "path": "/gate/game",
-      "filename" : "game.exe"
+      "x" : "437",
+      "y" : "373",
+      "port" : "7200",
+      "path" : "/gate/game/game.exe"
     },
     "role" : {
-      "x" : 0,
-      "y" : 180,
-      "port" : 7100,
       "enabled" : true,
-      "path": "/gate/role",
-      "filename" : "role.exe"
+      "x" : "0",
+      "y" : "180",
+      "port" : "7100",
+      "path" : "/gate/role/role.exe"
     },
     "login" : {
-      "x" : 0,
-      "y" : 0,
-      "port" : 7000,
       "enabled" : true,
-      "path": "/gate/login",
-      "filename" : "login.exe"
+      "x" : "0",
+      "y" : "0",
+      "port" : "7000",
+      "path" : "/gate/login/login.exe"
     },
     "rank" : {
-      "x" : 200,
-      "y" : 0,
-      "port" : 0,
-      "enabled" : false,
-      "path": "/plugin/rank",
-      "filename" : "rank.exe"
+      "enabled" : true,
+      "x" : "200",
+      "y" : "0",
+      "port" : "0",
+      "path" : "/plugin/rank/rank.exe"
     }
   }
 }

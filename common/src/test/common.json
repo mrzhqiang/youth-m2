@@ -1,0 +1,12 @@
+{
+  "common": {
+    "string": "common",
+    "int": 100,
+    "double": 1.001,
+    "duration": "10h",
+    "period": "10w",
+    "bytes": "10B",
+    "ten-powers": "10kB",
+    "two-powers": "10K"
+  }
+}

@@ -2,8 +2,8 @@ package youthm2.bootstrap.model.config;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.typesafe.config.Config;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * 公开服务配置。
@@ -11,17 +11,17 @@ import javafx.beans.property.SimpleIntegerProperty;
  * @author qiang.zhang
  */
 public final class PublicServerConfig extends ServerConfig {
-  public final IntegerProperty publicPort = new SimpleIntegerProperty(0);
+  public final StringProperty publicPort = new SimpleStringProperty("0");
 
   @Override
   public void onLoad(Config config) {
     super.onLoad(config);
     if (config.hasPath("publicPort")) {
-      publicPort.setValue(config.getInt("publicPort"));
+      publicPort.setValue(String.valueOf(config.getInt("publicPort")));
     }
   }
 
-  public int getPublicPort() {
+  public String getPublicPort() {
     return publicPort.getValue();
   }
 

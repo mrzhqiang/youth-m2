@@ -5,8 +5,8 @@ package youthm2.common;
  *
  * @author qiang.zhang
  */
-public final class Environments {
-  private Environments() {
+public final class Environment {
+  private Environment() {
     throw new AssertionError("This is factory class");
   }
 

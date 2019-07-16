@@ -19,6 +19,7 @@ public final class BootstrapConfig {
   public final StringProperty gameName = new SimpleStringProperty("");
   public final StringProperty gameAddress = new SimpleStringProperty("");
   public final BooleanProperty backupAction = new SimpleBooleanProperty(false);
+  public final BooleanProperty compoundAction = new SimpleBooleanProperty(false);
 
   public final ServerConfig database = new ServerConfig();
   public final PublicServerConfig account = new PublicServerConfig();
@@ -29,13 +30,38 @@ public final class BootstrapConfig {
   public final ProgramConfig login = new ProgramConfig();
   public final ProgramConfig rank = new ProgramConfig();
 
+  public String getHome() {
+    return home.get();
+  }
+
+  public String getDbName() {
+    return dbName.get();
+  }
+
+  public String getGameName() {
+    return gameName.get();
+  }
+
+  public String getGameAddress() {
+    return gameAddress.get();
+  }
+
+  public boolean isBackupAction() {
+    return backupAction.get();
+  }
+
+  public boolean isCompoundAction() {
+    return compoundAction.get();
+  }
+
   public JsonNode toJsonNode() {
     ObjectNode bootstrap = Json.newObject()
         .put("home", home.getValue())
         .put("dbName", dbName.getValue())
         .put("gameName", gameName.getValue())
         .put("gameAddress", gameAddress.getValue())
-        .put("backupAction", backupAction.getValue());
+        .put("backupAction", backupAction.getValue())
+        .put("compoundAction", compoundAction.getValue());
     bootstrap.set("database", database.objectNode());
     bootstrap.set("account", account.objectNode());
     bootstrap.set("logger", logger.objectNode());

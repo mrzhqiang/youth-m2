@@ -6,13 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import youthm2.common.Monitor;
 
 /**
  * 最简单的监视器。
  *
  * @author mrzhqiang
  */
-final class SimpleMonitor implements Monitor {
+public final class SimpleMonitor implements Monitor {
   private static final Logger LOGGER = LoggerFactory.getLogger("monitor");
 
   private final long startTime = System.currentTimeMillis();
