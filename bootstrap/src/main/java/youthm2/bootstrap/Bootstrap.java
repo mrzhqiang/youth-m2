@@ -30,7 +30,7 @@ public final class Bootstrap extends Application {
       scene.getStylesheets().add(getClass().getResource("/application.css").toExternalForm());
       primaryStage.setScene(scene);
       primaryStage.show();
-      throw new RuntimeException("测试一下 ErrorDialogViewModel");
+      throw new RuntimeException("测试一下");
     } catch (Exception e) {
       LoggerModel.BOOTSTRAP.error("引导程序启动失败！", e);
       ErrorDialog.show(e);

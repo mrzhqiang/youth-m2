@@ -32,7 +32,9 @@ public final class TextDialog {
     } catch (IOException e) {
       LoggerModel.COMMON.error("创建文本对话框出错", e);
       AlertModel.showError(e);
+      return;
     }
+    stage.setTitle("详情");
     TextDialogViewModel viewModel = loader.getController();
     viewModel.setStage(stage)
         .setText(text)

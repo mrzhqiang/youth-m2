@@ -1,7 +1,7 @@
 package youthm2.common.viewmodel;
 
-import java.awt.TextArea;
 import javafx.fxml.FXML;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.stage.Stage;
