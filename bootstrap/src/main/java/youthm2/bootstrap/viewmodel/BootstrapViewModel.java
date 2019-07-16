@@ -350,20 +350,13 @@ public final class BootstrapViewModel {
 
   private void initLayout() {
     controlAccordion.setExpandedPane(controlSwitchTitledPane);
-    //controlSwitchTitledPane.setExpanded(true);
-    //controlTimeTitledPane.setExpanded(false);
     startModeGroup.selectToggle(normalModeRadioButton);
     hoursTextField.setText(MIN_TIME.toString());
     minutesTextField.setText(MIN_TIME.toString());
     hoursTextField.setDisable(true);
     minutesTextField.setDisable(true);
     consoleTextArea.clear();
-
     parameterConfigAccordion.setExpandedPane(basicConfigTitledPane);
-    homePathTextField.clear();
-    databaseNameTextField.clear();
-    gameNameTextField.clear();
-    gameAddressTextField.clear();
     programSettingGroup.selectToggle(databaseRadioButton);
   }
 

@@ -4,9 +4,10 @@
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
@@ -17,11 +18,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="youthm2.bootstrap.viewmodel.BootstrapViewModel">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="youthm2.bootstrap.viewmodel.BootstrapViewModel">
   <children>
-    <TabPane layoutX="24.0" layoutY="24.0" prefHeight="480.0" prefWidth="640.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <TabPane layoutX="24.0" layoutY="24.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <effect>
         <Blend />
       </effect>
@@ -30,102 +33,65 @@
           <content>
             <AnchorPane>
               <children>
-                <Button fx:id="startServerButton" layoutX="235.0" layoutY="414.0" mnemonicParsing="false" onAction="#onStartServerClicked" prefHeight="23.0" prefWidth="142.0" text="启动服务" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="235.0" AnchorPane.rightAnchor="263.0" AnchorPane.topAnchor="414.0" />
-                <TextArea fx:id="consoleTextArea" editable="false" layoutX="14.0" layoutY="298.0" prefHeight="103.0" prefWidth="612.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="298.0" />
-                <Accordion fx:id="controlAccordion" layoutX="14.0" layoutY="14.0" prefHeight="250.0" prefWidth="612.0">
-                  <panes>
-                    <TitledPane fx:id="controlSwitchTitledPane" animated="false" expanded="false" prefHeight="177.0" prefWidth="612.0" text="控制开关">
-                      <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                          <children>
-                            <GridPane layoutX="14.0" layoutY="16.0" prefHeight="152.0" prefWidth="582.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
-                              <children>
-                                <CheckBox fx:id="accountCheckBox" mnemonicParsing="false" selected="true" text="账号服务器" GridPane.columnIndex="1" />
-                                <CheckBox fx:id="loggerCheckBox" mnemonicParsing="false" selected="true" text="日志服务器" GridPane.rowIndex="1" />
-                                <CheckBox fx:id="coreCheckBox" mnemonicParsing="false" selected="true" text="核心服务器" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                <CheckBox fx:id="gameCheckBox" mnemonicParsing="false" selected="true" text="游戏网关" GridPane.rowIndex="2" />
-                                <CheckBox fx:id="roleCheckBox" mnemonicParsing="false" selected="true" text="角色网关" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                <CheckBox fx:id="loginCheckBox" mnemonicParsing="false" selected="true" text="登录网关" GridPane.rowIndex="3" />
-                                <CheckBox fx:id="rankCheckBox" mnemonicParsing="false" selected="true" text="排行榜插件" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                <CheckBox fx:id="databaseCheckBox" mnemonicParsing="false" selected="true" text="数据库服务器" />
-                              </children>
-                              <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              </columnConstraints>
-                              <rowConstraints>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                              </rowConstraints>
-                            </GridPane>
-                          </children>
-                        </AnchorPane>
-                      </content>
-                    </TitledPane>
-                    <TitledPane fx:id="controlTimeTitledPane" animated="false" expanded="false" text="控制时间">
-                      <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                          <children>
-                            <SplitPane dividerPositions="0.5" layoutX="3.0" layoutY="3.0" orientation="VERTICAL" prefHeight="179.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                              <items>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                                  <opaqueInsets>
-                                    <Insets />
-                                  </opaqueInsets>
-                                  <children>
-                                    <RadioButton fx:id="delayModeRadioButton" layoutX="135.0" layoutY="31.0" mnemonicParsing="false" text="延迟启动">
-                                      <toggleGroup>
-                                        <ToggleGroup fx:id="startModeGroup" />
-                                      </toggleGroup>
-                                      <padding>
-                                        <Insets left="8.0" right="8.0" />
-                                      </padding>
-                                    </RadioButton>
-                                    <RadioButton fx:id="timingModeRadioButton" layoutX="220.0" layoutY="31.0" mnemonicParsing="false" text="定时启动" toggleGroup="$startModeGroup">
-                                      <padding>
-                                        <Insets left="8.0" right="8.0" />
-                                      </padding>
-                                    </RadioButton>
-                                    <RadioButton fx:id="normalModeRadioButton" layoutX="50.0" layoutY="31.0" mnemonicParsing="false" selected="true" text="正常启动" toggleGroup="$startModeGroup" AnchorPane.rightAnchor="454.0">
-                                      <padding>
-                                        <Insets left="8.0" right="8.0" />
-                                      </padding>
-                                    </RadioButton>
-                                    <Label layoutX="14.0" layoutY="31.0" text="模式：" />
-                                  </children>
-                                </AnchorPane>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="109.0" prefWidth="598.0">
-                                  <children>
-                                    <TextField fx:id="hoursTextField" alignment="CENTER_RIGHT" layoutX="50.0" layoutY="27.0" prefHeight="23.0" prefWidth="32.0" text="0" AnchorPane.leftAnchor="50.0" />
-                                    <Label layoutX="82.0" layoutY="31.0" text="小时">
-                                      <padding>
-                                        <Insets left="8.0" right="8.0" />
-                                      </padding>
-                                    </Label>
-                                    <TextField fx:id="minutesTextField" alignment="CENTER_RIGHT" layoutX="122.0" layoutY="27.0" prefHeight="23.0" prefWidth="32.0" text="0" />
-                                    <Label layoutX="154.0" layoutY="31.0" text="分钟">
-                                      <padding>
-                                        <Insets left="8.0" right="8.0" />
-                                      </padding>
-                                    </Label>
-                                    <Label layoutX="14.0" layoutY="31.0" text="时间：" />
-                                    <Label layoutX="295.0" layoutY="19.0" text="1. 延迟启动，自当前时间往后开始计时。" textFill="#dd4646" />
-                                    <Label layoutX="295.0" layoutY="42.0" text="2. 定时启动，小于当前时间视为第二天。" textFill="#dd4646" />
-                                  </children>
-                                </AnchorPane>
-                              </items>
-                            </SplitPane>
-                          </children>
-                        </AnchorPane>
-                      </content>
-                    </TitledPane>
-                  </panes>
-                </Accordion>
-                <Label layoutX="14.0" layoutY="278.0" text="控制台信息" />
+                        <VBox minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                <GridPane prefHeight="152.0" prefWidth="582.0">
+                  <children>
+                    <CheckBox fx:id="accountCheckBox" mnemonicParsing="false" selected="true" text="账号服务器" GridPane.columnIndex="1" />
+                    <CheckBox fx:id="loggerCheckBox" mnemonicParsing="false" selected="true" text="日志服务器" GridPane.rowIndex="1" />
+                    <CheckBox fx:id="coreCheckBox" mnemonicParsing="false" selected="true" text="核心服务器" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <CheckBox fx:id="gameCheckBox" mnemonicParsing="false" selected="true" text="游戏网关" GridPane.rowIndex="2" />
+                    <CheckBox fx:id="roleCheckBox" mnemonicParsing="false" selected="true" text="角色网关" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <CheckBox fx:id="loginCheckBox" mnemonicParsing="false" selected="true" text="登录网关" GridPane.rowIndex="3" />
+                    <CheckBox fx:id="rankCheckBox" mnemonicParsing="false" selected="true" text="排行榜插件" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <CheckBox fx:id="databaseCheckBox" mnemonicParsing="false" selected="true" text="数据库服务器" />
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                </GridPane>
+                      <TextArea fx:id="consoleTextArea" editable="false" prefHeight="103.0" prefWidth="612.0" />
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <ChoiceBox prefHeight="23.0" prefWidth="79.0" />
+                  <Label text="时间：" />
+                                    <Spinner prefHeight="23.0" prefWidth="42.0" />
+                  <Label text="小时">
+                    <padding>
+                      <Insets left="8.0" right="8.0" />
+                    </padding>
+                  </Label>
+                                    <Spinner prefHeight="23.0" prefWidth="44.0" />
+                  <Label text="分钟">
+                    <padding>
+                      <Insets left="8.0" right="8.0" />
+                    </padding>
+                  </Label>
+                                    <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="234.0">
+                                       <children>
+                        <Label text="1. 延迟启动，自当前时间往后开始计时。" textFill="#dd4646" />
+                        <Label text="2. 定时启动，小于当前时间视为第二天。" textFill="#dd4646" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                      <Button fx:id="startServerButton" mnemonicParsing="false" onAction="#onStartServerClicked" prefHeight="23.0" prefWidth="142.0" text="启动服务" />
+                           </children>
+                           <padding>
+                              <Insets bottom="24.0" top="24.0" />
+                           </padding>
+                        </VBox>
               </children>
+                     <padding>
+                        <Insets left="16.0" right="16.0" />
+                     </padding>
             </AnchorPane>
           </content>
         </Tab>
