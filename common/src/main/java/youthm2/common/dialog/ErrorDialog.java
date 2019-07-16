@@ -1,4 +1,4 @@
-package youthm2.common;
+package youthm2.common.dialog;
 
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;

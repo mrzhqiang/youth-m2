@@ -4,9 +4,6 @@ import com.google.common.base.Preconditions;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.io.File;
-import javafx.scene.control.Alert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 配置模块。
@@ -21,54 +18,38 @@ import org.slf4j.LoggerFactory;
  * @author qiang.zhang
  */
 public final class ConfigModel {
-  private final File configFile;
-  private final Config config;
+  private ConfigModel() {
+    throw new AssertionError("No instance");
+  }
 
-  public ConfigModel(File configFile) {
+  public static Config load(File configFile) {
     Preconditions.checkNotNull(configFile, "config file == null");
     Preconditions.checkState(configFile.isFile(), "config file is not file");
     Preconditions.checkState(configFile.exists(), "config file is not exists");
-    this.configFile = configFile;
-    this.config = ConfigFactory.parseFile(configFile);
+    return ConfigFactory.parseFile(configFile);
   }
 
-  public Config getConfig() {
-    return config;
-  }
-
-  public Config defaultConfig() {
+  public static Config loadDefault() {
     return ConfigFactory.load();
   }
 
-  public Config mergeConfig() {
-    return getConfig().withFallback(defaultConfig());
+  public static Config merge(Config primary, Config second) {
+    Preconditions.checkNotNull(primary, "primary config == null");
+    Preconditions.checkNotNull(second, "second config == nul");
+    return primary.withFallback(second);
   }
 
-  public void saveConfig() {
-    if (!configFile.exists()) {
-      try {
-        boolean newFile = configFile.createNewFile();
-        LoggerModel.LOGGER.info("创建新的配置文件: {}", newFile);
-      } catch (Exception e) {
-        LoggerModel.LOGGER.error("创建新的配置文件出错：{}", e.getMessage());
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        //dialog.setHeaderText("无法创建新的配置文件");
-        //dialog.show();
-        return;
-      }
-    }
-    //try (FileWriter writer = new FileWriter(configFile)) {
-    //  writer.write(Json.prettyPrint(config.toJsonNode()));
-    //  writer.flush();
-    //} catch (Exception e) {
-    //  LOGGER.error("保存当前配置出错：{}", e.getMessage());
-    //  ExceptionDialog dialog = new ExceptionDialog(e);
-    //  dialog.setHeaderText("无法保存当前配置");
-    //  dialog.show();
-    //}
+  public static Config mergeDefault(Config primary) {
+    Preconditions.checkNotNull(primary, "primary config == null");
+    return primary.withFallback(loadDefault());
   }
 
-  public static void main(String[] args) {
-    Config load = ConfigFactory.load();
+  public static void saveConfig(File configFile, String content) {
+    Preconditions.checkNotNull(configFile, "config file == null");
+    Preconditions.checkState(configFile.isFile(), "config file is not file");
+    Preconditions.checkState(configFile.exists(), "config file is not exists");
+    Preconditions.checkNotNull(content, "content == null");
+    FileModel.createOrExists(configFile);
+    FileModel.onceWrite(configFile, content);
   }
 }

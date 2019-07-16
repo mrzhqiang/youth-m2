@@ -5,7 +5,7 @@ import com.google.common.base.Strings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import youthm2.common.TextDialog;
+import youthm2.common.dialog.TextDialog;
 import youthm2.common.model.ThrowableModel;
 
 /**
