@@ -8,6 +8,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
@@ -33,22 +34,14 @@
           <content>
             <AnchorPane>
               <children>
-                        <VBox minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                <GridPane prefHeight="152.0" prefWidth="582.0">
-                  <children>
-                    <CheckBox fx:id="accountCheckBox" mnemonicParsing="false" selected="true" text="账号服务器" GridPane.columnIndex="1" />
-                    <CheckBox fx:id="loggerCheckBox" mnemonicParsing="false" selected="true" text="日志服务器" GridPane.rowIndex="1" />
-                    <CheckBox fx:id="coreCheckBox" mnemonicParsing="false" selected="true" text="核心服务器" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                    <CheckBox fx:id="gameCheckBox" mnemonicParsing="false" selected="true" text="游戏网关" GridPane.rowIndex="2" />
-                    <CheckBox fx:id="roleCheckBox" mnemonicParsing="false" selected="true" text="角色网关" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                    <CheckBox fx:id="loginCheckBox" mnemonicParsing="false" selected="true" text="登录网关" GridPane.rowIndex="3" />
-                    <CheckBox fx:id="rankCheckBox" mnemonicParsing="false" selected="true" text="排行榜插件" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                    <CheckBox fx:id="databaseCheckBox" mnemonicParsing="false" selected="true" text="数据库服务器" />
-                  </children>
+                <GridPane>
                   <columnConstraints>
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   </columnConstraints>
                   <rowConstraints>
                     <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
@@ -56,42 +49,87 @@
                     <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                     <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                   </rowConstraints>
-                </GridPane>
-                      <TextArea fx:id="consoleTextArea" editable="false" prefHeight="103.0" prefWidth="612.0" />
-                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                                  <children>
-                                    <ChoiceBox prefHeight="23.0" prefWidth="79.0" />
-                  <Label text="时间：" />
-                                    <Spinner prefHeight="23.0" prefWidth="42.0" />
+                                    <Button fx:id="databaseServerButton" mnemonicParsing="false" onAction="#onDatabaseServerClicked" text="数据库服务" />
+                                    <Label fx:id="databaseServerLabel" text="未启动" GridPane.columnIndex="1" />
+                                    <Button fx:id="accountServerButton" mnemonicParsing="false" onAction="#onAccountServerClicked" text="账号服务" GridPane.columnIndex="2" />
+                                    <Label fx:id="accountServerLabel" text="未启动" GridPane.columnIndex="3" />
+                                    <Button fx:id="loggerServerButton" mnemonicParsing="false" onAction="#onLoggerServerClicked" text="日志服务" GridPane.rowIndex="1" />
+                                    <Label fx:id="loggerServerLabel" text="未启动" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Button fx:id="coreServerButton" mnemonicParsing="false" onAction="#onCoreServerClicked" text="核心服务" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                    <Label fx:id="coreServerLabel" text="未启动" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                    <Button fx:id="gameGateButton" mnemonicParsing="false" onAction="#onGameGateClicked" text="游戏网关" GridPane.rowIndex="2" />
+                                    <Label fx:id="gameGateLabel" text="未启动" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Button fx:id="roleGateButton" mnemonicParsing="false" onAction="#onRoleGateClicked" text="角色网关" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                    <Label fx:id="roleGateLabel" text="未启动" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                    <Button fx:id="loginGateButton" mnemonicParsing="false" onAction="#onLoginGateClicked" text="登陆网关" GridPane.rowIndex="3" />
+                                    <Label fx:id="loginGateLabel" text="未启动" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <Button fx:id="rankPlugButton" mnemonicParsing="false" onAction="#onRankPlugClicked" text="排行榜插件" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                    <Label fx:id="rankPlugLabel" text="未启动" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets bottom="16.0" />
+                                 </VBox.margin>
+                </GridPane>
+                              <HBox alignment="CENTER_RIGHT">
+                                 <children>
+                                    <ChoiceBox fx:id="startModeChoiceBox">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </ChoiceBox>
+                  <Label text="时间：">
+                                       <padding>
+                                          <Insets left="8.0" right="8.0" />
+                                       </padding>
+                                    </Label>
+                                    <Spinner fx:id="hoursSpinner" editable="true">
+                                      <valueFactory>
+                                        <SpinnerValueFactory.IntegerSpinnerValueFactory max="23" min="0" />
+                                      </valueFactory>
+                                    </Spinner>
                   <Label text="小时">
-                    <padding>
-                      <Insets left="8.0" right="8.0" />
-                    </padding>
+                                       <padding>
+                                          <Insets left="8.0" right="8.0" />
+                                       </padding>
                   </Label>
-                                    <Spinner prefHeight="23.0" prefWidth="44.0" />
+                                    <Spinner fx:id="minutesSpinner" editable="true">
+                                      <valueFactory>
+                                        <SpinnerValueFactory.IntegerSpinnerValueFactory max="59" min="0" />
+                                      </valueFactory>
+                                    </Spinner>
                   <Label text="分钟">
                     <padding>
-                      <Insets left="8.0" right="8.0" />
+                      <Insets left="8.0" />
                     </padding>
                   </Label>
-                                    <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="234.0">
-                                       <children>
-                        <Label text="1. 延迟启动，自当前时间往后开始计时。" textFill="#dd4646" />
-                        <Label text="2. 定时启动，小于当前时间视为第二天。" textFill="#dd4646" />
-                                       </children>
-                                    </VBox>
                                  </children>
+                                 <padding>
+                                    <Insets bottom="8.0" top="8.0" />
+                                 </padding>
+                                 <VBox.margin>
+                                    <Insets bottom="16.0" />
+                                 </VBox.margin>
                               </HBox>
-                      <Button fx:id="startServerButton" mnemonicParsing="false" onAction="#onStartServerClicked" prefHeight="23.0" prefWidth="142.0" text="启动服务" />
+                      <TextArea fx:id="consoleTextArea" editable="false">
+                                 <VBox.margin>
+                                    <Insets bottom="16.0" />
+                                 </VBox.margin>
+                              </TextArea>
+                              <HBox alignment="CENTER">
+                                 <children>
+                                    <Button fx:id="allStartButton" mnemonicParsing="false" onAction="#onAllStartClicked" text="一键启动" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="8.0" top="8.0" />
+                                 </padding>
+                              </HBox>
                            </children>
                            <padding>
-                              <Insets bottom="24.0" top="24.0" />
+                              <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                            </padding>
                         </VBox>
               </children>
-                     <padding>
-                        <Insets left="16.0" right="16.0" />
-                     </padding>
             </AnchorPane>
           </content>
         </Tab>

@@ -16,7 +16,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
@@ -31,8 +35,8 @@ import youthm2.bootstrap.model.BootstrapModel;
 import youthm2.bootstrap.model.config.ProgramConfig;
 import youthm2.bootstrap.model.config.PublicServerConfig;
 import youthm2.bootstrap.model.config.ServerConfig;
-import youthm2.common.model.NetworkModel;
 import youthm2.common.Monitor;
+import youthm2.common.model.NetworkModel;
 
 /**
  * 引导程序的视图模型。
@@ -50,29 +54,29 @@ public final class BootstrapViewModel {
   private static final Integer MAX_TIMING_HOURS = 23;
   private static final Integer MAX_TIMING_MINUTES = 59;
 
-  @FXML Accordion controlAccordion;
-  @FXML TitledPane controlSwitchTitledPane;
-  @FXML TitledPane controlTimeTitledPane;
-
-  @FXML CheckBox databaseCheckBox;
-  @FXML CheckBox accountCheckBox;
-  @FXML CheckBox loggerCheckBox;
-  @FXML CheckBox coreCheckBox;
-  @FXML CheckBox gameCheckBox;
-  @FXML CheckBox roleCheckBox;
-  @FXML CheckBox loginCheckBox;
-  @FXML CheckBox rankCheckBox;
-
-  @FXML RadioButton normalModeRadioButton;
-  @FXML RadioButton delayModeRadioButton;
-  @FXML RadioButton timingModeRadioButton;
-  @FXML ToggleGroup startModeGroup;
-  @FXML TextField hoursTextField;
-  @FXML TextField minutesTextField;
-
+  /* 1. 控制面板 */
+  @FXML Button databaseServerButton;
+  @FXML Label databaseServerLabel;
+  @FXML Button accountServerButton;
+  @FXML Label accountServerLabel;
+  @FXML Button loggerServerButton;
+  @FXML Label loggerServerLabel;
+  @FXML Button coreServerButton;
+  @FXML Label coreServerLabel;
+  @FXML Button gameGateButton;
+  @FXML Label gameGateLabel;
+  @FXML Button roleGateButton;
+  @FXML Label roleGateLabel;
+  @FXML Button loginGateButton;
+  @FXML Label loginGateLabel;
+  @FXML Button rankPlugButton;
+  @FXML Label rankPlugLabel;
+  @FXML ChoiceBox<String> startModeChoiceBox;
+  @FXML Spinner<Integer> hoursSpinner;
+  @FXML Spinner<Integer> minutesSpinner;
   @FXML TextArea consoleTextArea;
-  @FXML Button startServerButton;
-
+  @FXML Button allStartButton;
+  /* 2. 参数配置 */
   @FXML Accordion parameterConfigAccordion;
   @FXML TitledPane basicConfigTitledPane;
   @FXML TextField homePathTextField;
@@ -80,7 +84,6 @@ public final class BootstrapViewModel {
   @FXML TextField gameNameTextField;
   @FXML TextField gameAddressTextField;
   @FXML CheckBox compoundActionCheckBox;
-
   @FXML RadioButton databaseRadioButton;
   @FXML RadioButton accountRadioButton;
   @FXML RadioButton loggerRadioButton;
@@ -98,6 +101,9 @@ public final class BootstrapViewModel {
   @FXML TextField publicServerTextField;
   @FXML TextField pathTextField;
 
+  private final ProgramGroupViewModel programGroupViewModel = new ProgramGroupViewModel();
+  private final StartModeViewModel startModeViewModel = new StartModeViewModel();
+
   private final BootstrapModel bootstrapModel = new BootstrapModel();
   private final BackupModel backupModel = new BackupModel();
 
@@ -113,6 +119,14 @@ public final class BootstrapViewModel {
     monitor.record("load config");
     showConsole("启动已就绪！");
     monitor.report("bootstrap view model initialized");
+  }
+
+  @FXML void onStartDatabaseServerClicked() {
+
+  }
+
+  @FXML void onStartAccountServerClicked() {
+
   }
 
   @FXML void onStartServerClicked() {
@@ -258,7 +272,7 @@ public final class BootstrapViewModel {
   }
 
   private void startServer() {
-    LocalDateTime targetTime = computeStartDateTime();
+    LocalDateTime targetTime = startModeViewModel.computeStartDateTime();
     bootstrapModel.startServer(targetTime, new Subscriber<String>() {
       @Override public void onStart() {
         bootstrapModel.state = BootstrapModel.State.STARTING;
@@ -349,24 +363,17 @@ public final class BootstrapViewModel {
   }
 
   private void initLayout() {
-    controlAccordion.setExpandedPane(controlSwitchTitledPane);
-    startModeGroup.selectToggle(normalModeRadioButton);
-    hoursTextField.setText(MIN_TIME.toString());
-    minutesTextField.setText(MIN_TIME.toString());
-    hoursTextField.setDisable(true);
-    minutesTextField.setDisable(true);
+    programGroupViewModel.init();
+    startModeViewModel.normalMode();
     consoleTextArea.clear();
+
     parameterConfigAccordion.setExpandedPane(basicConfigTitledPane);
     programSettingGroup.selectToggle(databaseRadioButton);
   }
 
   private void initEvent() {
-    startModeGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) ->
-        handleStartModeRadioChanged(newValue));
-    hoursTextField.textProperty().addListener((observable, oldValue, newValue) ->
-        handleHoursTextChanged(newValue, oldValue));
-    minutesTextField.textProperty().addListener((observable, oldValue, newValue) ->
-        handleMinutesTextChanged(newValue, oldValue));
+    startModeChoiceBox.selectionModelProperty().addListener((observable, oldValue, newValue) ->
+        handleStartModeChoiceChanged(newValue));
     programSettingGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) ->
         handleProgramSettingChanged(oldValue, newValue));
   }
@@ -374,14 +381,15 @@ public final class BootstrapViewModel {
   private void bindProperty() {
     // bindBidirectional 是指双向绑定，意味着数据改动会影响组件状态，同时组件状态改变会更新到数据。
     // 需要注意的是：绑定从一开始就将目标对象的值设置给调用者；解绑则只是移除了监听器。
-    databaseCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.database.enabled);
-    accountCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.account.enabled);
-    loggerCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.logger.enabled);
-    coreCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.core.enabled);
-    gameCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.game.enabled);
-    roleCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.role.enabled);
-    loginCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.login.enabled);
-    rankCheckBox.selectedProperty().bindBidirectional(bootstrapModel.config.rank.enabled);
+    programGroupViewModel.database.bind(databaseServerButton, databaseServerLabel);
+    programGroupViewModel.account.bind(accountServerButton, accountServerLabel);
+    programGroupViewModel.logger.bind(loggerServerButton, loggerServerLabel);
+    programGroupViewModel.core.bind(coreServerButton, coreServerLabel);
+    programGroupViewModel.game.bind(gameGateButton, gameGateLabel);
+    programGroupViewModel.role.bind(roleGateButton, roleGateLabel);
+    programGroupViewModel.login.bind(loginGateButton, loginGateLabel);
+    programGroupViewModel.rank.bind(rankPlugButton, rankPlugLabel);
+    startModeViewModel.bind(startModeChoiceBox, hoursSpinner, minutesSpinner);
 
     homePathTextField.textProperty().bindBidirectional(bootstrapModel.config.home);
     databaseNameTextField.textProperty().bindBidirectional(bootstrapModel.config.dbName);
@@ -405,72 +413,13 @@ public final class BootstrapViewModel {
     consoleTextArea.appendText(console);
   }
 
-  private LocalDateTime computeStartDateTime() {
-    LocalDateTime now = LocalDateTime.now();
-    String hoursText = hoursTextField.getText();
-    String minutesText = minutesTextField.getText();
-    int hours = Integer.parseInt(hoursText);
-    int minutes = Integer.parseInt(minutesText);
-    if (delayModeRadioButton.isSelected()) {
-      return now.plusHours(hours).plusMinutes(minutes);
-    }
-    if (timingModeRadioButton.isSelected()) {
-      LocalDateTime timing = LocalDateTime.of(now.toLocalDate(), LocalTime.of(hours, minutes));
-      // 如果现在已经超过定时，那么给定时加个鸡腿（加一天）
-      if (now.isAfter(timing)) {
-        timing = timing.plusDays(1);
-      }
-      return timing;
-    }
-    // 正常模式，直接启动
-    return now;
-  }
-
-  private void handleStartModeRadioChanged(Toggle newValue) {
-    boolean isNormalMode = newValue.equals(normalModeRadioButton);
-    hoursTextField.setDisable(isNormalMode);
-    minutesTextField.setDisable(isNormalMode);
-  }
-
-  private void handleHoursTextChanged(String newValue, String oldValue) {
-    if (Strings.isNullOrEmpty(newValue)) {
-      return;
-    }
-    if (!Pattern.matches(REGEX_NUMBER_HUNDRED, newValue) || newValue.length() >= 3) {
-      hoursTextField.setText(oldValue);
-      return;
-    }
-    try {
-      long value = Long.parseLong(newValue);
-      if (delayModeRadioButton.isSelected() && value > MAX_DELAY_HOURS) {
-        hoursTextField.setText(MAX_DELAY_HOURS.toString());
-      }
-      if (timingModeRadioButton.isSelected() && value > MAX_TIMING_HOURS) {
-        hoursTextField.setText(MAX_TIMING_HOURS.toString());
-      }
-    } catch (Exception e) {
-      hoursTextField.setText(oldValue);
-    }
-  }
-
-  private void handleMinutesTextChanged(String newValue, String oldValue) {
-    if (Strings.isNullOrEmpty(newValue)) {
-      return;
-    }
-    if (!Pattern.matches(REGEX_NUMBER_HUNDRED, newValue) || newValue.length() >= 3) {
-      minutesTextField.setText(oldValue);
-      return;
-    }
-    try {
-      long value = Long.parseLong(newValue);
-      if (delayModeRadioButton.isSelected() && value > MAX_DELAY_MINUTES) {
-        minutesTextField.setText(MAX_DELAY_MINUTES.toString());
-      }
-      if (timingModeRadioButton.isSelected() && value > MAX_TIMING_MINUTES) {
-        minutesTextField.setText(MAX_TIMING_MINUTES.toString());
-      }
-    } catch (Exception e) {
-      minutesTextField.setText(oldValue);
+  private void handleStartModeChoiceChanged(SingleSelectionModel<String> newValue) {
+    if (newValue.isSelected(0)) {
+      startModeViewModel.normalMode();
+    } else if (newValue.isSelected(1)) {
+      startModeViewModel.delayMode();
+    } else if (newValue.isSelected(2)) {
+      startModeViewModel.timingMode();
     }
   }
 
