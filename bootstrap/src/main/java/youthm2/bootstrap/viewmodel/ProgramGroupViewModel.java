@@ -1,6 +1,7 @@
 package youthm2.bootstrap.viewmodel;
 
 import com.google.common.base.Preconditions;
+import com.typesafe.config.Config;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -13,7 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 /**
- * ProgramGroupViewModel
+ * 程序按钮组视图模型。
  *
  * @author qiang.zhang
  */
@@ -38,7 +39,44 @@ final class ProgramGroupViewModel {
     rank.stopped();
   }
 
+  void update(Config config) {
+    Preconditions.checkNotNull(config, "config == null");
+    if (checkDisable(config.getConfig("database"))) {
+      database.disabled();
+    }
+    if (checkDisable(config.getConfig("account"))) {
+      account.disabled();
+    }
+    if (checkDisable(config.getConfig("logger"))) {
+      logger.disabled();
+    }
+    if (checkDisable(config.getConfig("core"))) {
+      core.disabled();
+    }
+    if (checkDisable(config.getConfig("game"))) {
+      game.disabled();
+    }
+    if (checkDisable(config.getConfig("role"))) {
+      role.disabled();
+    }
+    if (checkDisable(config.getConfig("login"))) {
+      login.disabled();
+    }
+    if (checkDisable(config.getConfig("rank"))) {
+      rank.disabled();
+    }
+  }
+
+  private boolean checkDisable(Config config) {
+    return config == null || !config.hasPath("enabled") || !config.getBoolean("enabled");
+  }
+
+  /**
+   * 程序视图模型。
+   */
   static final class ProgramViewModel {
+    private static final String TEXT_DISABLED = "禁用";
+    private static final Color COLOR_DISABLED = Color.valueOf("#D32F2F");
     private static final String TEXT_STOPPED = "未启动";
     private static final Color COLOR_STOPPED = Color.valueOf("#388E3C");
     private static final String TEXT_STARTING = "正在启动";
@@ -66,6 +104,12 @@ final class ProgramGroupViewModel {
       button.disableProperty().unbindBidirectional(disable);
       label.textProperty().unbindBidirectional(text);
       label.textFillProperty().unbindBidirectional(color);
+    }
+
+    void disabled() {
+      disable.setValue(true);
+      text.setValue(TEXT_DISABLED);
+      color.setValue(COLOR_DISABLED);
     }
 
     void stopped() {

@@ -24,10 +24,10 @@ final class StartModeViewModel {
   private static final String MODE_TIMING = "定时启动";
 
   private final StringProperty modeValue = new SimpleStringProperty();
-  private final BooleanProperty hoursDisable = new SimpleBooleanProperty(true);
+  private final BooleanProperty hoursDisable = new SimpleBooleanProperty();
   private final ObjectProperty<SpinnerValueFactory<Integer>> hoursValue =
       new SimpleObjectProperty<>(new IntegerSpinnerValueFactory(0, 23, 0));
-  private final BooleanProperty minutesDisable = new SimpleBooleanProperty(true);
+  private final BooleanProperty minutesDisable = new SimpleBooleanProperty();
   private final ObjectProperty<SpinnerValueFactory<Integer>> minutesValue =
       new SimpleObjectProperty<>(new IntegerSpinnerValueFactory(0, 59, 0));
 
@@ -51,19 +51,14 @@ final class StartModeViewModel {
     minutesSpinner.valueFactoryProperty().unbindBidirectional(minutesValue);
   }
 
-  void normalMode() {
-    hoursDisable.setValue(true);
-    minutesDisable.setValue(true);
-  }
-
-  void delayMode() {
-    hoursDisable.setValue(false);
-    minutesDisable.setValue(false);
-  }
-
-  void timingMode() {
-    hoursDisable.setValue(false);
-    minutesDisable.setValue(false);
+  void select(String selected) {
+    if (MODE_NORMAL.equals(selected)) {
+      normalMode();
+    } else if (MODE_DELAY.equals(selected)) {
+      delayMode();
+    } else if (MODE_TIMING.equals(selected)) {
+      timingMode();
+    }
   }
 
   LocalDateTime computeStartDateTime() {
@@ -75,5 +70,20 @@ final class StartModeViewModel {
       return StartModeModel.timing(hours, minutes);
     }
     return StartModeModel.normal();
+  }
+
+  void normalMode() {
+    hoursDisable.setValue(true);
+    minutesDisable.setValue(true);
+  }
+
+  private void delayMode() {
+    hoursDisable.setValue(false);
+    minutesDisable.setValue(false);
+  }
+
+  private void timingMode() {
+    hoursDisable.setValue(false);
+    minutesDisable.setValue(false);
   }
 }

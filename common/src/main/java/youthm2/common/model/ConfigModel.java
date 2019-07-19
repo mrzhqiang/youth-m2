@@ -24,8 +24,6 @@ public final class ConfigModel {
 
   public static Config load(File configFile) {
     Preconditions.checkNotNull(configFile, "config file == null");
-    Preconditions.checkState(configFile.isFile(), "config file is not file");
-    Preconditions.checkState(configFile.exists(), "config file is not exists");
     return ConfigFactory.parseFile(configFile);
   }
 
@@ -44,10 +42,8 @@ public final class ConfigModel {
     return primary.withFallback(loadDefault());
   }
 
-  public static void saveConfig(File configFile, String content) {
+  public static void save(File configFile, String content) {
     Preconditions.checkNotNull(configFile, "config file == null");
-    Preconditions.checkState(configFile.isFile(), "config file is not file");
-    Preconditions.checkState(configFile.exists(), "config file is not exists");
     Preconditions.checkNotNull(content, "content == null");
     FileModel.createOrExists(configFile);
     FileModel.onceWrite(configFile, content);

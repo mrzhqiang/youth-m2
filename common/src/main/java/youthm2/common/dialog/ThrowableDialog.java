@@ -8,31 +8,31 @@ import javafx.stage.Stage;
 import youthm2.common.model.AlertModel;
 import youthm2.common.model.LoggerModel;
 import youthm2.common.model.ThrowableModel;
-import youthm2.common.viewmodel.ErrorDialogViewModel;
+import youthm2.common.viewmodel.ThrowableDialogViewModel;
 
 /**
- * ErrorDialog
+ * 异常对话框。
  *
  * @author qiang.zhang
  */
-public final class ErrorDialog {
-  private ErrorDialog() {
+public final class ThrowableDialog {
+  private ThrowableDialog() {
     throw new AssertionError("No instance");
   }
 
   public static void show(Throwable throwable) {
-    show("一个意料之外的错误", throwable);
+    show("一个意料之外的异常", throwable);
   }
 
   public static void show(String title, Throwable throwable) {
     FXMLLoader loader = new FXMLLoader();
-    loader.setLocation(ErrorDialog.class.getResource("/error-dialog.fxml"));
+    loader.setLocation(ThrowableDialog.class.getResource("/throwable-dialog.fxml"));
     Stage stage = new Stage();
     try {
       Parent parent = loader.load();
       Scene scene = new Scene(parent);
       scene.getStylesheets()
-          .add(ErrorDialog.class.getResource("/application.css").toExternalForm());
+          .add(ThrowableDialog.class.getResource("/application.css").toExternalForm());
       stage.setScene(scene);
     } catch (IOException e) {
       LoggerModel.COMMON.error("创建错误对话框出错", e);
@@ -40,7 +40,7 @@ public final class ErrorDialog {
       return;
     }
     stage.setTitle("错误");
-    ErrorDialogViewModel viewModel = loader.getController();
+    ThrowableDialogViewModel viewModel = loader.getController();
     viewModel.setStage(stage)
         .setTitle(title)
         .setContent(throwable.getMessage())

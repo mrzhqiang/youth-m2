@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -34,7 +30,7 @@
           <content>
             <AnchorPane>
               <children>
-                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox spacing="24.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                 <GridPane>
                   <columnConstraints>
@@ -68,7 +64,7 @@
                                     <Label fx:id="rankPlugLabel" text="未启动" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                                  </children>
                                  <VBox.margin>
-                                    <Insets bottom="16.0" />
+                                    <Insets />
                                  </VBox.margin>
                 </GridPane>
                               <HBox alignment="CENTER_RIGHT">
@@ -83,7 +79,7 @@
                                           <Insets left="8.0" right="8.0" />
                                        </padding>
                                     </Label>
-                                    <Spinner fx:id="hoursSpinner" editable="true">
+                                    <Spinner fx:id="hoursSpinner" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefWidth="56.0">
                                       <valueFactory>
                                         <SpinnerValueFactory.IntegerSpinnerValueFactory max="23" min="0" />
                                       </valueFactory>
@@ -93,7 +89,7 @@
                                           <Insets left="8.0" right="8.0" />
                                        </padding>
                   </Label>
-                                    <Spinner fx:id="minutesSpinner" editable="true">
+                                    <Spinner fx:id="minutesSpinner" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefWidth="56.0">
                                       <valueFactory>
                                         <SpinnerValueFactory.IntegerSpinnerValueFactory max="59" min="0" />
                                       </valueFactory>
@@ -104,25 +100,19 @@
                     </padding>
                   </Label>
                                  </children>
-                                 <padding>
-                                    <Insets bottom="8.0" top="8.0" />
-                                 </padding>
                                  <VBox.margin>
-                                    <Insets bottom="16.0" />
+                                    <Insets />
                                  </VBox.margin>
                               </HBox>
                       <TextArea fx:id="consoleTextArea" editable="false">
                                  <VBox.margin>
-                                    <Insets bottom="16.0" />
+                                    <Insets />
                                  </VBox.margin>
                               </TextArea>
                               <HBox alignment="CENTER">
                                  <children>
                                     <Button fx:id="allStartButton" mnemonicParsing="false" onAction="#onAllStartClicked" text="一键启动" />
                                  </children>
-                                 <padding>
-                                    <Insets bottom="8.0" top="8.0" />
-                                 </padding>
                               </HBox>
                            </children>
                            <padding>
@@ -135,70 +125,106 @@
         </Tab>
         <Tab text="参数配置">
           <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+            <AnchorPane>
                      <children>
-                        <Accordion fx:id="parameterConfigAccordion" layoutX="14.0" layoutY="14.0" prefHeight="374.0" prefWidth="612.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
-                          <panes>
-                            <TitledPane fx:id="basicConfigTitledPane" animated="false" text="基本配置">
+                        <TabPane side="BOTTOM" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <tabs>
+                            <Tab text="1.基本配置">
                               <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                <AnchorPane>
                                        <children>
-                                          <GridPane layoutX="18.6" layoutY="19.6" prefHeight="166.0" prefWidth="591.0" AnchorPane.bottomAnchor="118.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                          <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columnConstraints>
-                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="271.0" minWidth="10.0" prefWidth="96.00000762939453" />
-                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="474.99999237060547" minWidth="10.0" prefWidth="474.99999237060547" />
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                             </columnConstraints>
                                             <rowConstraints>
                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
-                                                <Label text="游戏目录：" />
-                                                <Label text="数据库名称：" GridPane.rowIndex="1" />
-                                                <Label text="游戏名称：" GridPane.rowIndex="2" />
-                                                <Label text="游戏地址：" GridPane.rowIndex="3" />
-                                                <TextField fx:id="databaseNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <TextField fx:id="gameNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <TextField fx:id="gameAddressTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+                                                <GridPane>
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="308.0" minWidth="10.0" prefWidth="168.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="526.0" minWidth="10.0" prefWidth="440.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
                                                    <children>
-                                                      <TextField fx:id="homePathTextField" layoutY="12.0" prefHeight="23.0" prefWidth="474.0" />
-                                                      <Button layoutX="410.0" layoutY="12.0" mnemonicParsing="false" onAction="#onFoundGamePathClicked" text="浏览目录" />
+                                                      <Label text="游戏目录：" />
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
+                                                         <children>
+                                                            <TextField fx:id="homePathTextField" />
+                                                            <Button mnemonicParsing="false" onAction="#onFoundHomePathClicked" text="浏览目录" />
+                                                         </children>
+                                                      </HBox>
+                                                      <Label text="数据库名称：" GridPane.rowIndex="1" />
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <TextField fx:id="databaseNameTextField" />
+                                                         </children>
+                                                      </HBox>
+                                                      <Label text="游戏名称：" GridPane.rowIndex="2" />
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                         <children>
+                                                            <TextField fx:id="gameNameTextField" />
+                                                         </children>
+                                                      </HBox>
+                                                      <Label text="游戏地址：" GridPane.rowIndex="3" />
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                         <children>
+                                                            <TextField fx:id="gameAddressTextField" />
+                                                         </children>
+                                                      </HBox>
                                                    </children>
-                                                </AnchorPane>
+                                                </GridPane>
+                                                <GridPane GridPane.rowIndex="1">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <CheckBox fx:id="combineActionCheckBox" disable="true" mnemonicParsing="false" text="开启合成功能" />
+                                                      <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onBasicDefaultClicked" text="默认配置" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </GridPane>
+                                                <HBox alignment="BOTTOM_RIGHT" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <VBox alignment="CENTER" spacing="24.0">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" />
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </HBox>
                                              </children>
                                           </GridPane>
-                                          <Button layoutX="526.0" layoutY="303.0" mnemonicParsing="false" onAction="#onDefaultBasicConfigClicked" text="默认配置" />
-                                          <GridPane layoutX="20.0" layoutY="255.0" prefHeight="71.0" prefWidth="482.0">
-                                            <columnConstraints>
-                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                            </columnConstraints>
-                                            <rowConstraints>
-                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                            </rowConstraints>
-                                             <children>
-                                                <CheckBox fx:id="compoundActionCheckBox" disable="true" mnemonicParsing="false" text="开启合成功能" />
-                                             </children>
-                                          </GridPane>
-                                          <Label layoutX="19.0" layoutY="240.0" text="服务器功能：" />
                                        </children>
+                                       <padding>
+                                          <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                                       </padding>
                                     </AnchorPane>
                               </content>
-                            </TitledPane>
-                            <TitledPane animated="false" text="程序配置">
+                            </Tab>
+                            <Tab text="2.数据库">
                               <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                <AnchorPane>
                                        <children>
-                                          <GridPane layoutX="55.0" layoutY="14.0">
+                                          <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                             </columnConstraints>
                                             <rowConstraints>
@@ -207,52 +233,967 @@
                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
-                                                <Label text="服务器：" />
-                                                <Label text="网关：" GridPane.rowIndex="1" />
-                                                <Label text="插件：" GridPane.rowIndex="2" />
-                                                <RadioButton fx:id="databaseRadioButton" mnemonicParsing="false" selected="true" text="数据库服务" GridPane.columnIndex="1">
-                                                   <toggleGroup>
-                                                      <ToggleGroup fx:id="programSettingGroup" />
-                                                   </toggleGroup>
-                                                </RadioButton>
-                                                <RadioButton fx:id="accountRadioButton" mnemonicParsing="false" text="账号服务" toggleGroup="$programSettingGroup" GridPane.columnIndex="2" />
-                                                <RadioButton fx:id="loggerRadioButton" mnemonicParsing="false" text="日志服务" toggleGroup="$programSettingGroup" GridPane.columnIndex="3" />
-                                                <RadioButton fx:id="coreRadioButton" mnemonicParsing="false" text="核心服务" toggleGroup="$programSettingGroup" GridPane.columnIndex="4" />
-                                                <RadioButton fx:id="gameRadioButton" mnemonicParsing="false" text="游戏网关" toggleGroup="$programSettingGroup" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <RadioButton fx:id="roleRadioButton" mnemonicParsing="false" text="角色网关" toggleGroup="$programSettingGroup" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                <RadioButton fx:id="loginRadioButton" mnemonicParsing="false" text="登录网关" toggleGroup="$programSettingGroup" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                                <RadioButton fx:id="rankRadioButton" mnemonicParsing="false" text="排行榜插件" toggleGroup="$programSettingGroup" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <GridPane>
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <Label text="窗口位置：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标X：" />
+                                                                  <TextField fx:id="databaseXTextField" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标Y：" />
+                                                                  <TextField fx:id="databaseYTextField" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox spacing="8.0" GridPane.columnIndex="1">
+                                                         <children>
+                                                            <Label text="端口设定：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="程序端口：" />
+                                                                  <TextField fx:id="databasePortTextField" prefHeight="23.0" prefWidth="55.0" text="7200" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="服务端口：" />
+                                                                  <TextField fx:id="serverTextField" prefHeight="23.0" prefWidth="56.0" text="7300" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="通讯端口：" />
+                                                                  <TextField fx:id="publicServerTextField" prefHeight="23.0" prefWidth="55.0" text="7400" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane GridPane.rowIndex="1">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <CheckBox fx:id="enabledActionCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
+                                                            <Label disable="true" text="启动路径：" />
+                                                            <HBox>
+                                                               <children>
+                                                                  <TextField fx:id="pathTextField" disable="true" />
+                                                                  <Button disable="true" mnemonicParsing="false" onAction="#onFoundExeFileClicked" text="浏览文件" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onDefaultCurrentConfigClicked" text="默认配置" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </GridPane>
+                                                <HBox alignment="BOTTOM_RIGHT" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <VBox alignment="CENTER" spacing="24.0">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" />
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </HBox>
                                              </children>
                                           </GridPane>
-                                          <AnchorPane layoutX="14.0" layoutY="116.0" prefHeight="213.0" prefWidth="582.0">
-                                             <children>
-                                                <CheckBox fx:id="enabledActionCheckBox" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" selected="true" text="是否开启功能" />
-                                                <Label layoutX="14.0" layoutY="42.0" text="窗口位置：" />
-                                                <Label layoutX="14.0" layoutY="66.0" text="坐标X：" />
-                                                <Label layoutX="14.0" layoutY="93.0" text="坐标Y：" />
-                                                <TextField layoutX="58.0" layoutY="62.0" prefHeight="23.0" prefWidth="49.0" text="0" fx:id="xTextField" />
-                                                <TextField fx:id="yTextField" layoutX="58.0" layoutY="89.0" prefHeight="23.0" prefWidth="49.0" text="0" />
-                                                <Label layoutX="187.0" layoutY="42.0" text="端口设定：" />
-                                                <Label layoutX="187.0" layoutY="66.0" text="程序端口：" />
-                                                <TextField fx:id="portTextField" layoutX="247.0" layoutY="62.0" prefHeight="23.0" prefWidth="55.0" text="7200" />
-                                                <Label layoutX="316.0" layoutY="66.0" text="服务端口：" />
-                                                <TextField fx:id="serverTextField" layoutX="376.0" layoutY="62.0" prefHeight="23.0" prefWidth="56.0" text="7300" />
-                                                <Label layoutX="187.0" layoutY="93.0" text="通讯端口：" />
-                                                <TextField fx:id="publicServerTextField" layoutX="247.0" layoutY="89.0" prefHeight="23.0" prefWidth="55.0" text="7400" />
-                                                <Label layoutX="14.0" layoutY="126.0" text="启动路径：" />
-                                                <TextField fx:id="pathTextField" layoutX="74.0" layoutY="122.0" prefHeight="23.0" prefWidth="492.0" />
-                                                <Button layoutX="504.0" layoutY="122.0" mnemonicParsing="false" onAction="#onFoundExeFileClicked" text="浏览文件" />
-                                                <Button layoutX="504.0" layoutY="176.0" mnemonicParsing="false" onAction="#onDefaultCurrentConfigClicked" text="默认配置" />
-                                             </children>
-                                          </AnchorPane>
                                        </children>
+                                       <padding>
+                                          <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                                       </padding>
                                     </AnchorPane>
                               </content>
-                            </TitledPane>
-                          </panes>
-                        </Accordion>
-                        <Button layoutX="320.0" layoutY="414.0" mnemonicParsing="false" onAction="#onSaveAllConfigClicked" text="保存配置" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="340.0" AnchorPane.rightAnchor="236.0" AnchorPane.topAnchor="414.0" />
-                        <Button layoutX="236.0" layoutY="414.0" mnemonicParsing="false" onAction="#onReloadConfigClicked" text="重新加载" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="236.0" AnchorPane.rightAnchor="340.0" AnchorPane.topAnchor="414.0" />
+                            </Tab>
+                              <Tab text="3.账号">
+                                 <content>
+                                    <AnchorPane>
+                                       <children>
+                                          <GridPane prefHeight="422.0" prefWidth="640.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <GridPane>
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <Label text="窗口位置：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标X：" />
+                                                                  <TextField fx:id="databaseXTextField1" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标Y：" />
+                                                                  <TextField fx:id="databaseYTextField1" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox spacing="8.0" GridPane.columnIndex="1">
+                                                         <children>
+                                                            <Label text="端口设定：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="程序端口：" />
+                                                                  <TextField fx:id="databasePortTextField1" prefHeight="23.0" prefWidth="55.0" text="7200" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="服务端口：" />
+                                                                  <TextField fx:id="serverTextField1" prefHeight="23.0" prefWidth="56.0" text="7300" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="通讯端口：" />
+                                                                  <TextField fx:id="publicServerTextField1" prefHeight="23.0" prefWidth="55.0" text="7400" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane GridPane.rowIndex="1">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <CheckBox fx:id="enabledActionCheckBox1" mnemonicParsing="false" selected="true" text="是否开启功能" />
+                                                            <Label disable="true" text="启动路径：" />
+                                                            <HBox>
+                                                               <children>
+                                                                  <TextField fx:id="pathTextField1" disable="true" />
+                                                                  <Button disable="true" mnemonicParsing="false" onAction="#onFoundExeFileClicked" text="浏览文件" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onDefaultCurrentConfigClicked" text="默认配置" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </GridPane>
+                                                <HBox alignment="BOTTOM_RIGHT" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <VBox alignment="CENTER" spacing="24.0">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" />
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                                       </padding>
+                                    </AnchorPane>
+                                 </content>
+                              </Tab>
+                              <Tab text="4.日志">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <GridPane>
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <Label text="窗口位置：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标X：" />
+                                                                  <TextField fx:id="databaseXTextField11" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标Y：" />
+                                                                  <TextField fx:id="databaseYTextField11" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox spacing="8.0" GridPane.columnIndex="1">
+                                                         <children>
+                                                            <Label text="端口设定：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="程序端口：" />
+                                                                  <TextField fx:id="databasePortTextField11" prefHeight="23.0" prefWidth="55.0" text="7200" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="服务端口：" />
+                                                                  <TextField fx:id="serverTextField11" prefHeight="23.0" prefWidth="56.0" text="7300" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="通讯端口：" />
+                                                                  <TextField fx:id="publicServerTextField11" prefHeight="23.0" prefWidth="55.0" text="7400" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane GridPane.rowIndex="1">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <CheckBox fx:id="enabledActionCheckBox11" mnemonicParsing="false" selected="true" text="是否开启功能" />
+                                                            <Label disable="true" text="启动路径：" />
+                                                            <HBox>
+                                                               <children>
+                                                                  <TextField fx:id="pathTextField11" disable="true" />
+                                                                  <Button disable="true" mnemonicParsing="false" onAction="#onFoundExeFileClicked" text="浏览文件" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onDefaultCurrentConfigClicked" text="默认配置" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </GridPane>
+                                                <HBox alignment="BOTTOM_RIGHT" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <VBox alignment="CENTER" spacing="24.0">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" />
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                                       </padding>
+                                    </AnchorPane>
+                                 </content>
+                              </Tab>
+                              <Tab text="5.核心">
+                                 <content>
+                                    <AnchorPane>
+                                       <children>
+                                          <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <GridPane>
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <Label text="窗口位置：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标X：" />
+                                                                  <TextField fx:id="databaseXTextField12" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标Y：" />
+                                                                  <TextField fx:id="databaseYTextField12" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox spacing="8.0" GridPane.columnIndex="1">
+                                                         <children>
+                                                            <Label text="端口设定：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="程序端口：" />
+                                                                  <TextField fx:id="databasePortTextField12" prefHeight="23.0" prefWidth="55.0" text="7200" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="服务端口：" />
+                                                                  <TextField fx:id="serverTextField12" prefHeight="23.0" prefWidth="56.0" text="7300" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="通讯端口：" />
+                                                                  <TextField fx:id="publicServerTextField12" prefHeight="23.0" prefWidth="55.0" text="7400" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane GridPane.rowIndex="1">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <CheckBox fx:id="enabledActionCheckBox12" mnemonicParsing="false" selected="true" text="是否开启功能" />
+                                                            <Label disable="true" text="启动路径：" />
+                                                            <HBox>
+                                                               <children>
+                                                                  <TextField fx:id="pathTextField12" disable="true" />
+                                                                  <Button disable="true" mnemonicParsing="false" onAction="#onFoundExeFileClicked" text="浏览文件" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onDefaultCurrentConfigClicked" text="默认配置" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </GridPane>
+                                                <HBox alignment="BOTTOM_RIGHT" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <VBox alignment="CENTER" spacing="24.0">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" />
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                                       </padding>
+                                    </AnchorPane>
+                                 </content>
+                              </Tab>
+                              <Tab text="6.游戏">
+                                 <content>
+                                    <AnchorPane>
+                                       <children>
+                                          <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <GridPane>
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <Label text="窗口位置：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标X：" />
+                                                                  <TextField fx:id="databaseXTextField13" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标Y：" />
+                                                                  <TextField fx:id="databaseYTextField13" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox spacing="8.0" GridPane.columnIndex="1">
+                                                         <children>
+                                                            <Label text="端口设定：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="程序端口：" />
+                                                                  <TextField fx:id="databasePortTextField13" prefHeight="23.0" prefWidth="55.0" text="7200" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="服务端口：" />
+                                                                  <TextField fx:id="serverTextField13" prefHeight="23.0" prefWidth="56.0" text="7300" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="通讯端口：" />
+                                                                  <TextField fx:id="publicServerTextField13" prefHeight="23.0" prefWidth="55.0" text="7400" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane GridPane.rowIndex="1">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <CheckBox fx:id="enabledActionCheckBox13" mnemonicParsing="false" selected="true" text="是否开启功能" />
+                                                            <Label disable="true" text="启动路径：" />
+                                                            <HBox>
+                                                               <children>
+                                                                  <TextField fx:id="pathTextField13" disable="true" />
+                                                                  <Button disable="true" mnemonicParsing="false" onAction="#onFoundExeFileClicked" text="浏览文件" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onDefaultCurrentConfigClicked" text="默认配置" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </GridPane>
+                                                <HBox alignment="BOTTOM_RIGHT" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <VBox alignment="CENTER" spacing="24.0">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" />
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                                       </padding>
+                                    </AnchorPane>
+                                 </content>
+                              </Tab>
+                              <Tab text="7.角色">
+                                 <content>
+                                    <AnchorPane>
+                                       <children>
+                                          <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <GridPane>
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <Label text="窗口位置：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标X：" />
+                                                                  <TextField fx:id="databaseXTextField14" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标Y：" />
+                                                                  <TextField fx:id="databaseYTextField14" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox spacing="8.0" GridPane.columnIndex="1">
+                                                         <children>
+                                                            <Label text="端口设定：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="程序端口：" />
+                                                                  <TextField fx:id="databasePortTextField14" prefHeight="23.0" prefWidth="55.0" text="7200" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="服务端口：" />
+                                                                  <TextField fx:id="serverTextField14" prefHeight="23.0" prefWidth="56.0" text="7300" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="通讯端口：" />
+                                                                  <TextField fx:id="publicServerTextField14" prefHeight="23.0" prefWidth="55.0" text="7400" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane GridPane.rowIndex="1">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <CheckBox fx:id="enabledActionCheckBox14" mnemonicParsing="false" selected="true" text="是否开启功能" />
+                                                            <Label disable="true" text="启动路径：" />
+                                                            <HBox>
+                                                               <children>
+                                                                  <TextField fx:id="pathTextField14" disable="true" />
+                                                                  <Button disable="true" mnemonicParsing="false" onAction="#onFoundExeFileClicked" text="浏览文件" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onDefaultCurrentConfigClicked" text="默认配置" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </GridPane>
+                                                <HBox alignment="BOTTOM_RIGHT" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <GridPane>
+                                                        <columnConstraints>
+                                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" text="上一步" GridPane.columnIndex="1" />
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                                       </padding>
+                                    </AnchorPane>
+                                 </content>
+                              </Tab>
+                              <Tab text="8.登陆">
+                                 <content>
+                                    <AnchorPane>
+                                       <children>
+                                          <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <GridPane>
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <Label text="窗口位置：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标X：" />
+                                                                  <TextField fx:id="databaseXTextField15" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标Y：" />
+                                                                  <TextField fx:id="databaseYTextField15" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox spacing="8.0" GridPane.columnIndex="1">
+                                                         <children>
+                                                            <Label text="端口设定：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="程序端口：" />
+                                                                  <TextField fx:id="databasePortTextField15" prefHeight="23.0" prefWidth="55.0" text="7200" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="服务端口：" />
+                                                                  <TextField fx:id="serverTextField15" prefHeight="23.0" prefWidth="56.0" text="7300" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="通讯端口：" />
+                                                                  <TextField fx:id="publicServerTextField15" prefHeight="23.0" prefWidth="55.0" text="7400" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane GridPane.rowIndex="1">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <CheckBox fx:id="enabledActionCheckBox15" mnemonicParsing="false" selected="true" text="是否开启功能" />
+                                                            <Label disable="true" text="启动路径：" />
+                                                            <HBox>
+                                                               <children>
+                                                                  <TextField fx:id="pathTextField15" disable="true" />
+                                                                  <Button disable="true" mnemonicParsing="false" onAction="#onFoundExeFileClicked" text="浏览文件" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onDefaultCurrentConfigClicked" text="默认配置" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </GridPane>
+                                                <HBox alignment="BOTTOM_RIGHT" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <GridPane>
+                                                        <columnConstraints>
+                                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" text="上一步" GridPane.columnIndex="1" />
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                                       </padding>
+                                    </AnchorPane>
+                                 </content>
+                              </Tab>
+                              <Tab text="9.排行榜">
+                                 <content>
+                                    <AnchorPane>
+                                       <children>
+                                          <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <GridPane>
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <Label text="窗口位置：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标X：" />
+                                                                  <TextField fx:id="databaseXTextField16" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="坐标Y：" />
+                                                                  <TextField fx:id="databaseYTextField16" text="0" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox spacing="8.0" GridPane.columnIndex="1">
+                                                         <children>
+                                                            <Label text="端口设定：" />
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="程序端口：" />
+                                                                  <TextField fx:id="databasePortTextField16" prefHeight="23.0" prefWidth="55.0" text="7200" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="服务端口：" />
+                                                                  <TextField fx:id="serverTextField16" prefHeight="23.0" prefWidth="56.0" text="7300" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT">
+                                                               <children>
+                                                                  <Label text="通讯端口：" />
+                                                                  <TextField fx:id="publicServerTextField16" prefHeight="23.0" prefWidth="55.0" text="7400" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane GridPane.rowIndex="1">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <VBox spacing="8.0">
+                                                         <children>
+                                                            <CheckBox fx:id="enabledActionCheckBox16" mnemonicParsing="false" selected="true" text="是否开启功能" />
+                                                            <Label disable="true" text="启动路径：" />
+                                                            <HBox>
+                                                               <children>
+                                                                  <TextField fx:id="pathTextField16" disable="true" />
+                                                                  <Button disable="true" mnemonicParsing="false" onAction="#onFoundExeFileClicked" text="浏览文件" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onDefaultCurrentConfigClicked" text="默认配置" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </GridPane>
+                                                <HBox alignment="BOTTOM_RIGHT" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <GridPane>
+                                                        <columnConstraints>
+                                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" text="上一步" GridPane.columnIndex="1" />
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                                       </padding>
+                                    </AnchorPane>
+                                 </content>
+                              </Tab>
+                              <Tab text="10.保存配置">
+                                 <content>
+                                    <AnchorPane>
+                                       <children>
+                                          <GridPane prefHeight="422.0" prefWidth="640.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <HBox alignment="BOTTOM_RIGHT" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <GridPane>
+                                                        <columnConstraints>
+                                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#onReloadConfigClicked" text="重新加载" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" onAction="#onSaveAllConfigClicked" text="保存配置" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" text="上一步" GridPane.columnIndex="1" />
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                                       </padding>
+                                    </AnchorPane>
+                                 </content>
+                              </Tab>
+                          </tabs>
+                        </TabPane>
                      </children>
             </AnchorPane>
           </content>

@@ -1,15 +1,10 @@
 package youthm2.bootstrap.viewmodel;
 
 import com.google.common.base.Strings;
-import helper.DateTimeHelper;
+import com.typesafe.config.Config;
 import java.io.File;
-import java.sql.Date;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Locale;
 import java.util.Optional;
-import java.util.regex.Pattern;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
@@ -19,7 +14,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -46,13 +40,6 @@ import youthm2.common.model.NetworkModel;
  * @author qiang.zhang
  */
 public final class BootstrapViewModel {
-  private static final String FORMAT_CONSOLE = "[%s]: %s\r\n";
-  private static final String REGEX_NUMBER_HUNDRED = "[0-9]+";
-  private static final Integer MIN_TIME = 0;
-  private static final Integer MAX_DELAY_HOURS = 99;
-  private static final Integer MAX_DELAY_MINUTES = 59;
-  private static final Integer MAX_TIMING_HOURS = 23;
-  private static final Integer MAX_TIMING_MINUTES = 59;
 
   /* 1. 控制面板 */
   @FXML Button databaseServerButton;
@@ -103,6 +90,8 @@ public final class BootstrapViewModel {
 
   private final ProgramGroupViewModel programGroupViewModel = new ProgramGroupViewModel();
   private final StartModeViewModel startModeViewModel = new StartModeViewModel();
+  private final ConsoleViewModel consoleViewModel = new ConsoleViewModel();
+  private final AllStartViewModel allStartViewModel = new AllStartViewModel();
 
   private final BootstrapModel bootstrapModel = new BootstrapModel();
   private final BackupModel backupModel = new BackupModel();
@@ -110,15 +99,11 @@ public final class BootstrapViewModel {
   @FXML void initialize() {
     Monitor monitor = Monitor.getInstance();
     initLayout();
-    monitor.record("init layout");
-    initEvent();
-    monitor.record("init event");
-    bindProperty();
-    monitor.record("bind property");
     loadConfig();
-    monitor.record("load config");
-    showConsole("启动已就绪！");
-    monitor.report("bootstrap view model initialized");
+    initEvent();
+    bindProperty();
+    consoleViewModel.append("启动已就绪！");
+    monitor.report("initialized");
   }
 
   @FXML void onStartDatabaseServerClicked() {
@@ -245,7 +230,9 @@ public final class BootstrapViewModel {
     alert.setHeaderText("是否重新加载所有配置？");
     alert.showAndWait()
         .filter(buttonType -> buttonType == ButtonType.OK)
-        .ifPresent(buttonType -> bootstrapModel.loadConfig());
+        .ifPresent(buttonType -> bootstrapModel.loadConfig(config -> {
+
+        }));
   }
 
   @FXML void onSaveAllConfigClicked() {
@@ -268,7 +255,6 @@ public final class BootstrapViewModel {
   private void cancelStartServer() {
     bootstrapModel.cancelStart();
     bootstrapModel.state = BootstrapModel.State.INITIALIZED;
-    startServerButton.setText(bootstrapModel.state.toString());
   }
 
   private void startServer() {
@@ -276,7 +262,6 @@ public final class BootstrapViewModel {
     bootstrapModel.startServer(targetTime, new Subscriber<String>() {
       @Override public void onStart() {
         bootstrapModel.state = BootstrapModel.State.STARTING;
-        startServerButton.setText(bootstrapModel.state.toString());
       }
 
       @Override public void onCompleted() {
@@ -287,15 +272,13 @@ public final class BootstrapViewModel {
       @Override public void onError(Throwable throwable) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText("");
-        showConsole(throwable.getMessage());
+        consoleViewModel.append(throwable.getMessage());
         bootstrapModel.state = BootstrapModel.State.INITIALIZED;
-        startServerButton.setText(bootstrapModel.state.toString());
       }
 
       @Override public void onNext(String s) {
-        showConsole(s);
+        consoleViewModel.append(s);
         bootstrapModel.state = BootstrapModel.State.RUNNING;
-        startServerButton.setText(bootstrapModel.state.toString());
       }
     });
   }
@@ -363,17 +346,14 @@ public final class BootstrapViewModel {
   }
 
   private void initLayout() {
-    programGroupViewModel.init();
-    startModeViewModel.normalMode();
     consoleTextArea.clear();
-
     parameterConfigAccordion.setExpandedPane(basicConfigTitledPane);
     programSettingGroup.selectToggle(databaseRadioButton);
   }
 
   private void initEvent() {
     startModeChoiceBox.selectionModelProperty().addListener((observable, oldValue, newValue) ->
-        handleStartModeChoiceChanged(newValue));
+        startModeViewModel.select(newValue.getSelectedItem()));
     programSettingGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) ->
         handleProgramSettingChanged(oldValue, newValue));
   }
@@ -390,6 +370,8 @@ public final class BootstrapViewModel {
     programGroupViewModel.login.bind(loginGateButton, loginGateLabel);
     programGroupViewModel.rank.bind(rankPlugButton, rankPlugLabel);
     startModeViewModel.bind(startModeChoiceBox, hoursSpinner, minutesSpinner);
+    consoleViewModel.bind(consoleTextArea);
+    allStartViewModel.bind(allStartButton);
 
     homePathTextField.textProperty().bindBidirectional(bootstrapModel.config.home);
     databaseNameTextField.textProperty().bindBidirectional(bootstrapModel.config.dbName);
@@ -398,29 +380,14 @@ public final class BootstrapViewModel {
     compoundActionCheckBox.selectedProperty()
         .bindBidirectional(bootstrapModel.config.compoundAction);
     bindTargetConfig(databaseRadioButton);
-    // 其他组件不需要双向绑定，比如启动模式单选按钮组，点击切换又不影响配置。
-    // 再比如控制台文本区域，只显示每次启动关闭时的信息，不需要保存到配置。
   }
 
   private void loadConfig() {
-    bootstrapModel.loadConfig();
+    bootstrapModel.loadConfig(config -> {
+      Config bootstrap = config.getConfig("bootstrap");
+      programGroupViewModel.update(bootstrap);
+    });
     backupModel.loadConfig();
-  }
-
-  private void showConsole(String message) {
-    String timestamp = DateTimeHelper.format(Date.from(Instant.now()));
-    String console = String.format(Locale.getDefault(), FORMAT_CONSOLE, timestamp, message);
-    consoleTextArea.appendText(console);
-  }
-
-  private void handleStartModeChoiceChanged(SingleSelectionModel<String> newValue) {
-    if (newValue.isSelected(0)) {
-      startModeViewModel.normalMode();
-    } else if (newValue.isSelected(1)) {
-      startModeViewModel.delayMode();
-    } else if (newValue.isSelected(2)) {
-      startModeViewModel.timingMode();
-    }
   }
 
   private void handleProgramSettingChanged(Toggle oldValue, Toggle newValue) {

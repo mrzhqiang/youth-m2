@@ -2,15 +2,12 @@ package youthm2.bootstrap.model;
 
 import com.google.common.base.Preconditions;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import javax.annotation.Nullable;
 import org.controlsfx.dialog.ExceptionDialog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
@@ -19,7 +16,9 @@ import rx.schedulers.Schedulers;
 import youthm2.bootstrap.model.config.BootstrapConfig;
 import youthm2.common.Environment;
 import youthm2.common.Json;
+import youthm2.common.dialog.ThrowableDialog;
 import youthm2.common.exception.FileException;
+import youthm2.common.model.ConfigModel;
 import youthm2.common.model.FileModel;
 
 /**
@@ -28,8 +27,6 @@ import youthm2.common.model.FileModel;
  * @author mrzhqiang
  */
 public final class BootstrapModel {
-  private static final Logger LOGGER = LoggerFactory.getLogger("bootstrap");
-  private static final Config DEFAULT_CONFIG = ConfigFactory.load();
   private static final String CONFIG_FILE = "bootstrap.json";
   private static final String CONFIG_BOOTSTRAP = "bootstrap";
   private static final String CONFIG_DATABASE = "database";
@@ -58,26 +55,30 @@ public final class BootstrapModel {
 
   private Subscription subscription = null;
 
-  public void loadConfig() {
-    File configFile = getConfigFile();
-    // 以 configFile 为主，缺失的由默认配置 reference.conf 填补
-    Config conf = ConfigFactory.parseFile(configFile).withFallback(DEFAULT_CONFIG);
-    // 只接受其中的 bootstrap 节点
-    Config bootstrap = conf.getConfig(CONFIG_BOOTSTRAP);
-    loadBootstrapConfig(bootstrap);
-    loadDatabaseConfig(bootstrap);
-    loadAccountConfig(bootstrap);
-    loadLoggerConfig(bootstrap);
-    loadCoreConfig(bootstrap);
-    loadGameConfig(bootstrap);
-    loadRoleConfig(bootstrap);
-    loadLoginConfig(bootstrap);
-    loadRankConfig(bootstrap);
+  public void loadConfig(OnLoadConfigListener listener) {
+    Preconditions.checkNotNull(listener, "listener == null");
+    Observable.just(getConfigFile())
+        .subscribeOn(Schedulers.io())
+        .map(ConfigModel::load)
+        .map(ConfigModel::mergeDefault)
+        .observeOn(mainScheduler)
+        .subscribe(new Subscriber<Config>() {
+          @Override public void onCompleted() {
+            // no-op
+          }
+
+          @Override public void onError(Throwable e) {
+            ThrowableDialog.show(e);
+          }
+
+          @Override public void onNext(Config config) {
+            listener.onLoaded(config);
+          }
+        });
   }
 
   public void loadBootstrapConfig(@Nullable Config bootstrap) {
     if (bootstrap == null) {
-      bootstrap = DEFAULT_CONFIG.getConfig(CONFIG_BOOTSTRAP);
     }
     config.home.setValue(bootstrap.getString("home"));
     config.dbName.setValue(bootstrap.getString("dbName"));
@@ -89,56 +90,48 @@ public final class BootstrapModel {
 
   public void loadDatabaseConfig(@Nullable Config bootstrap) {
     if (bootstrap == null) {
-      bootstrap = DEFAULT_CONFIG.getConfig(CONFIG_BOOTSTRAP);
     }
     config.database.onLoad(bootstrap.getConfig(CONFIG_DATABASE));
   }
 
   public void loadAccountConfig(@Nullable Config bootstrap) {
     if (bootstrap == null) {
-      bootstrap = DEFAULT_CONFIG.getConfig(CONFIG_BOOTSTRAP);
     }
     config.account.onLoad(bootstrap.getConfig(CONFIG_ACCOUNT));
   }
 
   public void loadLoggerConfig(@Nullable Config bootstrap) {
     if (bootstrap == null) {
-      bootstrap = DEFAULT_CONFIG.getConfig(CONFIG_BOOTSTRAP);
     }
     config.logger.onLoad(bootstrap.getConfig(CONFIG_LOGGER1));
   }
 
   public void loadCoreConfig(@Nullable Config bootstrap) {
     if (bootstrap == null) {
-      bootstrap = DEFAULT_CONFIG.getConfig(CONFIG_BOOTSTRAP);
     }
     config.core.onLoad(bootstrap.getConfig(CONFIG_CORE));
   }
 
   public void loadGameConfig(@Nullable Config bootstrap) {
     if (bootstrap == null) {
-      bootstrap = DEFAULT_CONFIG.getConfig(CONFIG_BOOTSTRAP);
     }
     config.game.onLoad(bootstrap.getConfig(CONFIG_GAME));
   }
 
   public void loadLoginConfig(@Nullable Config bootstrap) {
     if (bootstrap == null) {
-      bootstrap = DEFAULT_CONFIG.getConfig(CONFIG_BOOTSTRAP);
     }
     config.login.onLoad(bootstrap.getConfig(CONFIG_LOGIN));
   }
 
   public void loadRoleConfig(@Nullable Config bootstrap) {
     if (bootstrap == null) {
-      bootstrap = DEFAULT_CONFIG.getConfig(CONFIG_BOOTSTRAP);
     }
     config.role.onLoad(bootstrap.getConfig(CONFIG_ROLE));
   }
 
   public void loadRankConfig(@Nullable Config bootstrap) {
     if (bootstrap == null) {
-      bootstrap = DEFAULT_CONFIG.getConfig(CONFIG_BOOTSTRAP);
     }
     config.rank.onLoad(bootstrap.getConfig(CONFIG_RANK));
   }
@@ -190,12 +183,12 @@ public final class BootstrapModel {
   private File getConfigFile() {
     File configFile;
     if (Environment.isDebug()) {
-      // DEBUG 模式，就读取 sample 目录下的配置。
+      // DEBUG 模式，读取 sample 目录下的配置。
       configFile = new File(DEBUG_ROOT_DIR, CONFIG_FILE);
     } else {
       // 非 DEBUG 模式，读取当前目录下的配置。
-      // 注意：直接在 IDEA 中 Run 的话，那么使用的是内置配置。
-      configFile = new File(CONFIG_FILE);
+      // 注意：直接在 IDEA 中 Run 的话，那么使用内置的默认配置。
+      configFile = new File(Environment.workDirectory(), CONFIG_FILE);
     }
     return configFile;
   }
@@ -264,5 +257,9 @@ public final class BootstrapModel {
     public String toString() {
       return label;
     }
+  }
+
+  public interface OnLoadConfigListener {
+    void onLoaded(Config config);
   }
 }

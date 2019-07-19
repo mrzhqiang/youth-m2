@@ -10,7 +10,7 @@ import youthm2.common.model.LoggerModel;
 import youthm2.common.viewmodel.TextDialogViewModel;
 
 /**
- * TextDialog
+ * 文本对话框。
  *
  * @author qiang.zhang
  */
