@@ -202,12 +202,20 @@
                                                 </GridPane>
                                                 <HBox alignment="BOTTOM_RIGHT" GridPane.rowIndex="2">
                                                    <children>
-                                                      <VBox alignment="CENTER" spacing="24.0">
+                                                      <GridPane>
+                                                         <columnConstraints>
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
                                                          <children>
-                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" />
-                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" GridPane.rowIndex="1" />
                                                          </children>
-                                                      </VBox>
+                                                      </GridPane>
                                                    </children>
                                                 </HBox>
                                              </children>
@@ -248,13 +256,13 @@
                                                             <HBox alignment="CENTER_LEFT">
                                                                <children>
                                                                   <Label text="坐标X：" />
-                                                                  <TextField fx:id="databaseXTextField" text="0" />
+                                                                  <Spinner fx:id="databaseXSpinner" />
                                                                </children>
                                                             </HBox>
                                                             <HBox alignment="CENTER_LEFT">
                                                                <children>
                                                                   <Label text="坐标Y：" />
-                                                                  <TextField fx:id="databaseYTextField" text="0" />
+                                                                  <Spinner fx:id="databaseYSpinner" />
                                                                </children>
                                                             </HBox>
                                                          </children>
@@ -265,21 +273,16 @@
                                                             <HBox alignment="CENTER_LEFT">
                                                                <children>
                                                                   <Label text="程序端口：" />
-                                                                  <TextField fx:id="databasePortTextField" prefHeight="23.0" prefWidth="55.0" text="7200" />
+                                                                  <TextField fx:id="databasePortTextField" prefWidth="64.0" text="7200" />
                                                                </children>
                                                             </HBox>
                                                             <HBox alignment="CENTER_LEFT">
                                                                <children>
                                                                   <Label text="服务端口：" />
-                                                                  <TextField fx:id="serverTextField" prefHeight="23.0" prefWidth="56.0" text="7300" />
+                                                                  <TextField fx:id="databaseServerPortTextField" prefWidth="64.0" text="7300" />
                                                                </children>
                                                             </HBox>
-                                                            <HBox alignment="CENTER_LEFT">
-                                                               <children>
-                                                                  <Label text="通讯端口：" />
-                                                                  <TextField fx:id="publicServerTextField" prefHeight="23.0" prefWidth="55.0" text="7400" />
-                                                               </children>
-                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT" />
                                                          </children>
                                                       </VBox>
                                                    </children>
@@ -296,31 +299,40 @@
                                                    <children>
                                                       <VBox spacing="8.0">
                                                          <children>
-                                                            <CheckBox fx:id="enabledActionCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
+                                                            <CheckBox fx:id="databaseEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                             <Label disable="true" text="启动路径：" />
                                                             <HBox>
                                                                <children>
-                                                                  <TextField fx:id="pathTextField" disable="true" />
-                                                                  <Button disable="true" mnemonicParsing="false" onAction="#onFoundExeFileClicked" text="浏览文件" />
+                                                                  <TextField fx:id="databasePathTextField" disable="true" />
+                                                                  <Button disable="true" mnemonicParsing="false" onAction="#onFoundDatabaseFileClicked" text="浏览文件" />
                                                                </children>
                                                             </HBox>
                                                          </children>
                                                       </VBox>
                                                       <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                          <children>
-                                                            <Button mnemonicParsing="false" onAction="#onDefaultCurrentConfigClicked" text="默认配置" />
+                                                            <Button mnemonicParsing="false" onAction="#onDatabaseDefaultConfigClicked" text="默认配置" />
                                                          </children>
                                                       </HBox>
                                                    </children>
                                                 </GridPane>
                                                 <HBox alignment="BOTTOM_RIGHT" GridPane.rowIndex="2">
                                                    <children>
-                                                      <VBox alignment="CENTER" spacing="24.0">
+                                                      <GridPane>
+                                                         <columnConstraints>
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
                                                          <children>
-                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" />
-                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" />
+                                                            <Button mnemonicParsing="false" onAction="#onDatabaseNextStepClicked" text="下一步" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" onAction="#onDatabaseReloadClicked" text="重新加载" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" onAction="#onDatabaseLastStepClicked" text="上一步" GridPane.columnIndex="1" />
                                                          </children>
-                                                      </VBox>
+                                                      </GridPane>
                                                    </children>
                                                 </HBox>
                                              </children>
@@ -361,13 +373,13 @@
                                                             <HBox alignment="CENTER_LEFT">
                                                                <children>
                                                                   <Label text="坐标X：" />
-                                                                  <TextField fx:id="databaseXTextField1" text="0" />
+                                                                  <Spinner fx:id="accountXSpinner" />
                                                                </children>
                                                             </HBox>
                                                             <HBox alignment="CENTER_LEFT">
                                                                <children>
                                                                   <Label text="坐标Y：" />
-                                                                  <TextField fx:id="databaseYTextField1" text="0" />
+                                                                  <Spinner fx:id="accountYSpinner" />
                                                                </children>
                                                             </HBox>
                                                          </children>
@@ -428,12 +440,21 @@
                                                 </GridPane>
                                                 <HBox alignment="BOTTOM_RIGHT" GridPane.rowIndex="2">
                                                    <children>
-                                                      <VBox alignment="CENTER" spacing="24.0">
+                                                      <GridPane>
+                                                         <columnConstraints>
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
                                                          <children>
-                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" />
-                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" text="上一步" GridPane.columnIndex="1" />
                                                          </children>
-                                                      </VBox>
+                                                      </GridPane>
                                                    </children>
                                                 </HBox>
                                              </children>
@@ -767,12 +788,21 @@
                                                 </GridPane>
                                                 <HBox alignment="BOTTOM_RIGHT" GridPane.rowIndex="2">
                                                    <children>
-                                                      <VBox alignment="CENTER" spacing="24.0">
+                                                      <GridPane>
+                                                         <columnConstraints>
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
                                                          <children>
-                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" />
-                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicNextClicked" text="下一步" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" onAction="#onBasicReloadClicked" text="重新加载" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" text="上一步" GridPane.columnIndex="1" />
                                                          </children>
-                                                      </VBox>
+                                                      </GridPane>
                                                    </children>
                                                 </HBox>
                                              </children>
