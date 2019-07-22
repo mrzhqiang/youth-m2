@@ -2,6 +2,7 @@ package youthm2.common.model;
 
 import com.google.common.base.Preconditions;
 import java.util.Optional;
+import java.util.function.Predicate;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javax.annotation.Nullable;
@@ -64,5 +65,9 @@ public final class AlertModel {
     alert.setHeaderText(error.getMessage());
     alert.setContentText(ThrowableModel.print(error));
     alert.show();
+  }
+
+  public static Predicate<? super ButtonType> isOK() {
+    return type -> ButtonType.OK == type;
   }
 }

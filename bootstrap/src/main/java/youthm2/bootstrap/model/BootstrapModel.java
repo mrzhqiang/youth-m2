@@ -37,11 +37,10 @@ public final class BootstrapModel {
   private static final String CONFIG_ROLE = "role";
   private static final String CONFIG_LOGIN = "login";
   private static final String CONFIG_RANK = "rank";
-  private static final String DEBUG_ROOT_DIR = "sample";
 
   public final BootstrapConfig config = new BootstrapConfig();
 
-  public State state = State.INITIALIZED;
+  public State state;
 
   private final ProgramModel databaseModel = new ProgramModel(config.database);
   private final ProgramModel accountModel = new ProgramModel(config.account);
@@ -184,7 +183,7 @@ public final class BootstrapModel {
     File configFile;
     if (Environment.isDebug()) {
       // DEBUG 模式，读取 sample 目录下的配置。
-      configFile = new File(DEBUG_ROOT_DIR, CONFIG_FILE);
+      configFile = new File(Environment.debugDirectory(), CONFIG_FILE);
     } else {
       // 非 DEBUG 模式，读取当前目录下的配置。
       // 注意：直接在 IDEA 中 Run 的话，那么使用内置的默认配置。
@@ -257,9 +256,5 @@ public final class BootstrapModel {
     public String toString() {
       return label;
     }
-  }
-
-  public interface OnLoadConfigListener {
-    void onLoaded(Config config);
   }
 }

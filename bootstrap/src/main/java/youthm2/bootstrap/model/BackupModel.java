@@ -7,10 +7,16 @@ import com.typesafe.config.ConfigFactory;
 import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import rx.Observable;
+import rx.Scheduler;
+import rx.schedulers.Schedulers;
 import youthm2.bootstrap.model.backup.BackupData;
 import youthm2.common.Environment;
+import youthm2.common.model.ConfigModel;
+import youthm2.common.model.SchedulerModel;
 
 /**
  * 文件备份管理器。
@@ -21,6 +27,9 @@ public final class BackupModel {
   private static final String BACKUP_FILE = "backup.json";
 
   public final ObservableList<BackupData> dataList = FXCollections.observableArrayList();
+  private final Scheduler mainScheduler = Schedulers.from(Platform::runLater);
+
+  public int status;
 
   public void start() {
 
@@ -30,13 +39,13 @@ public final class BackupModel {
 
   }
 
-  public void loadConfig() {
-    File backupFile;
-    if (Environment.isDebug()) {
-      backupFile = new File("sample", BACKUP_FILE);
-    } else {
-      backupFile = new File(BACKUP_FILE);
-    }
+  public void loadConfig(OnLoadConfigListener listener) {
+    Preconditions.checkNotNull(listener, "listener == null");
+    Observable.just(getBackupFile())
+        .subscribeOn(Schedulers.io())
+        .map(ConfigModel::load)
+        .observeOn(SchedulerModel.main());
+    File backupFile = getBackupFile();
     Config config = ConfigFactory.parseFile(backupFile);
     if (config.hasPath("dataList")) {
       List<String> backupList = config.getStringList("dataList");
@@ -46,6 +55,16 @@ public final class BackupModel {
           .map(this::toBackupData)
           .collect(Collectors.toList()));
     }
+  }
+
+  private File getBackupFile() {
+    File backupFile;
+    if (Environment.isDebug()) {
+      backupFile = new File(Environment.debugDirectory(), BACKUP_FILE);
+    } else {
+      backupFile = new File(Environment.workDirectory(), BACKUP_FILE);
+    }
+    return backupFile;
   }
 
   private BackupData toBackupData(Config config) {
@@ -59,5 +78,9 @@ public final class BackupModel {
     data.backupEnabled.setValue(config.getBoolean("backupEnabled"));
     data.zipEnabled.setValue(config.getBoolean("zipEnabled"));
     return data;
+  }
+
+  public void initialized() {
+
   }
 }

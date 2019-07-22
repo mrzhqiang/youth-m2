@@ -21,7 +21,7 @@
 
 <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="youthm2.bootstrap.viewmodel.BootstrapViewModel">
   <children>
-    <TabPane layoutX="24.0" layoutY="24.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <TabPane fx:id="pageTabPane" layoutX="24.0" layoutY="24.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <effect>
         <Blend />
       </effect>
@@ -111,7 +111,7 @@
                               </TextArea>
                               <HBox alignment="CENTER">
                                  <children>
-                                    <Button fx:id="allStartButton" mnemonicParsing="false" onAction="#onAllStartClicked" text="一键启动" />
+                                    <Button fx:id="startGameButton" mnemonicParsing="false" onAction="#onStartGameClicked" text="一键启动" />
                                  </children>
                               </HBox>
                            </children>
@@ -127,7 +127,7 @@
           <content>
             <AnchorPane>
                      <children>
-                        <TabPane side="BOTTOM" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TabPane fx:id="configTabPane" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <tabs>
                             <Tab text="1.基本配置">
                               <content>
@@ -273,13 +273,13 @@
                                                             <HBox alignment="CENTER_LEFT">
                                                                <children>
                                                                   <Label text="程序端口：" />
-                                                                  <TextField fx:id="databasePortTextField" prefWidth="64.0" text="7200" />
+                                                                  <Spinner fx:id="databasePortSpinner" />
                                                                </children>
                                                             </HBox>
                                                             <HBox alignment="CENTER_LEFT">
                                                                <children>
                                                                   <Label text="服务端口：" />
-                                                                  <TextField fx:id="databaseServerPortTextField" prefWidth="64.0" text="7300" />
+                                                                  <Spinner fx:id="databaseServerPortSpinner" />
                                                                </children>
                                                             </HBox>
                                                             <HBox alignment="CENTER_LEFT" />

@@ -44,6 +44,11 @@
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jdk8</artifactId>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/io.reactivex/rxjava -->
+    <dependency>
+      <groupId>io.reactivex</groupId>
+      <artifactId>rxjava</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
