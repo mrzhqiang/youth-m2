@@ -12,9 +12,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import rx.Observable;
 import rx.Scheduler;
+import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import youthm2.bootstrap.model.backup.BackupData;
 import youthm2.common.Environment;
+import youthm2.common.dialog.ThrowableDialog;
 import youthm2.common.model.ConfigModel;
 import youthm2.common.model.SchedulerModel;
 
@@ -25,6 +27,10 @@ import youthm2.common.model.SchedulerModel;
  */
 public final class BackupModel {
   private static final String BACKUP_FILE = "backup.json";
+
+  public interface OnLoadDataListener {
+    void onLoaded(List<BackupData> dataList);
+  }
 
   public final ObservableList<BackupData> dataList = FXCollections.observableArrayList();
   private final Scheduler mainScheduler = Schedulers.from(Platform::runLater);
@@ -39,22 +45,31 @@ public final class BackupModel {
 
   }
 
-  public void loadConfig(OnLoadConfigListener listener) {
+  public void loadConfig(OnLoadDataListener listener) {
     Preconditions.checkNotNull(listener, "listener == null");
     Observable.just(getBackupFile())
         .subscribeOn(Schedulers.io())
         .map(ConfigModel::load)
-        .observeOn(SchedulerModel.main());
-    File backupFile = getBackupFile();
-    Config config = ConfigFactory.parseFile(backupFile);
-    if (config.hasPath("dataList")) {
-      List<String> backupList = config.getStringList("dataList");
-      dataList.addAll(backupList.stream()
-          .filter(s -> !Strings.isNullOrEmpty(s) && config.hasPath(s))
-          .map(config::getConfig)
-          .map(this::toBackupData)
-          .collect(Collectors.toList()));
-    }
+        .filter(config -> config.hasPath("dataList"))
+        .map(config -> config.getStringList("dataList").stream()
+            .filter(s -> Strings.isNullOrEmpty(s) && config.hasPath(s))
+            .map(config::getConfig)
+            .map(this::toBackupData)
+            .collect(Collectors.toList()))
+        .observeOn(SchedulerModel.main())
+        .subscribe(new Subscriber<List<BackupData>>() {
+          @Override public void onCompleted() {
+            // no-op
+          }
+
+          @Override public void onError(Throwable e) {
+            ThrowableDialog.show(e);
+          }
+
+          @Override public void onNext(List<BackupData> dataList) {
+            listener.onLoaded(dataList);
+          }
+        });
   }
 
   private File getBackupFile() {

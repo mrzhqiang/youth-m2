@@ -46,6 +46,18 @@ final class ControlViewModel {
   final ConsoleViewModel console = new ConsoleViewModel();
   final StartGameViewModel startGame = new StartGameViewModel();
 
+  void init() {
+    database.stopped();
+    account.stopped();
+    logger.stopped();
+    core.stopped();
+    game.stopped();
+    role.stopped();
+    login.stopped();
+    rank.stopped();
+    startMode.normalMode();
+  }
+
   void update(Config config) {
     Preconditions.checkNotNull(config, "config == null");
     database.disabled(config.getConfig("database"));
@@ -82,12 +94,6 @@ final class ControlViewModel {
       // 需要注意的是：绑定从一开始就将目标对象的值设置给调用者；解绑则只是移除了监听器。
       button.disableProperty().bindBidirectional(disable);
       label.textProperty().bindBidirectional(text);
-      label.textFillProperty().bindBidirectional(color);
-    }
-
-    void unBind(Button button, Label label) {
-      button.disableProperty().unbindBidirectional(disable);
-      label.textProperty().unbindBidirectional(text);
       label.textFillProperty().bindBidirectional(color);
     }
 
@@ -149,19 +155,11 @@ final class ControlViewModel {
         startMode.getItems().addAll(MODE_NORMAL, MODE_DELAY, MODE_TIMING);
       }
       startMode.valueProperty().bindBidirectional(modeValue);
+      startMode.getSelectionModel().select(MODE_NORMAL);
       hours.disableProperty().bindBidirectional(hoursDisable);
       hours.valueFactoryProperty().bindBidirectional(hoursValue);
       minutes.disableProperty().bindBidirectional(minutesDisable);
       minutes.valueFactoryProperty().bindBidirectional(minutesValue);
-    }
-
-    void unBind(ChoiceBox<String> startMode, Spinner<Integer> hours, Spinner<Integer> minutes) {
-      startMode.getItems().removeAll(MODE_NORMAL, MODE_DELAY, MODE_TIMING);
-      startMode.valueProperty().unbindBidirectional(modeValue);
-      hours.disableProperty().unbindBidirectional(hoursDisable);
-      hours.valueFactoryProperty().unbindBidirectional(hoursValue);
-      minutes.disableProperty().unbindBidirectional(minutesDisable);
-      minutes.valueFactoryProperty().unbindBidirectional(minutesValue);
     }
 
     void select(String selected) {
@@ -227,14 +225,6 @@ final class ControlViewModel {
       textArea.textProperty().bindBidirectional(text);
     }
 
-    void unBind(TextArea textArea) {
-      if (changeListener != null) {
-        newMessage.removeListener(changeListener);
-        changeListener = null;
-      }
-      textArea.textProperty().unbindBidirectional(text);
-    }
-
     void clean() {
       text.setValue("");
     }
@@ -266,11 +256,6 @@ final class ControlViewModel {
     void bind(Button button) {
       button.textProperty().bindBidirectional(text);
       button.disableProperty().bindBidirectional(disable);
-    }
-
-    void unBind(Button button) {
-      button.textProperty().unbindBidirectional(text);
-      button.disableProperty().unbindBidirectional(disable);
     }
 
     void stopped() {

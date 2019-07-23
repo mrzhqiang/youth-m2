@@ -12,6 +12,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
+import javax.annotation.Nullable;
 
 import static javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 
@@ -43,12 +44,7 @@ final class ConfigViewModel {
 
   void update(Config config) {
     Preconditions.checkNotNull(config, "config == null");
-    homePath.setValue(config.getString("home"));
-    databaseName.setValue(config.getString("dbName"));
-    gameName.setValue(config.getString("gameName"));
-    gameAddress.setValue(config.getString("gameAddress"));
-    combineAction.setValue(config.getBoolean("combineAction"));
-
+    updateBasic(config);
     database.update(config.getConfig("database"));
     account.update(config.getConfig("account"));
     logger.update(config.getConfig("logger"));
@@ -59,6 +55,14 @@ final class ConfigViewModel {
     rank.update(config.getConfig("rank"));
   }
 
+  void updateBasic(Config config) {
+    homePath.setValue(config.getString("home"));
+    databaseName.setValue(config.getString("dbName"));
+    gameName.setValue(config.getString("gameName"));
+    gameAddress.setValue(config.getString("gameAddress"));
+    combineAction.setValue(config.getBoolean("combineAction"));
+  }
+
   void bind(TextField homePath, TextField dbName, TextField gameName, TextField gameAddress,
       CheckBox combineAction) {
     homePath.textProperty().bindBidirectional(this.homePath);
@@ -66,15 +70,6 @@ final class ConfigViewModel {
     gameName.textProperty().bindBidirectional(this.gameName);
     gameAddress.textProperty().bindBidirectional(this.gameAddress);
     combineAction.selectedProperty().bindBidirectional(this.combineAction);
-  }
-
-  void unBind(TextField homePath, TextField dbName, TextField gameName, TextField gameAddress,
-      CheckBox combineAction) {
-    homePath.textProperty().unbindBidirectional(this.homePath);
-    dbName.textProperty().unbindBidirectional(this.databaseName);
-    gameName.textProperty().bindBidirectional(this.gameName);
-    gameAddress.textProperty().unbindBidirectional(this.gameAddress);
-    combineAction.textProperty().unbindBidirectional(this.combineAction);
   }
 
   /**
@@ -104,12 +99,14 @@ final class ConfigViewModel {
     }
 
     void bind(Spinner<Integer> x, Spinner<Integer> y, CheckBox enabled, TextField path,
-        Spinner<Integer> port) {
+        @Nullable Spinner<Integer> port) {
       x.valueFactoryProperty().bindBidirectional(this.x);
       y.valueFactoryProperty().bindBidirectional(this.y);
       enabled.selectedProperty().bindBidirectional(this.enabled);
       path.textProperty().bindBidirectional(this.path);
-      port.valueFactoryProperty().bindBidirectional(this.port);
+      if (port != null) {
+        port.valueFactoryProperty().bindBidirectional(this.port);
+      }
     }
   }
 

@@ -5,11 +5,9 @@ import com.typesafe.config.Config;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
-import javafx.application.Platform;
 import javax.annotation.Nullable;
 import org.controlsfx.dialog.ExceptionDialog;
 import rx.Observable;
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -20,6 +18,7 @@ import youthm2.common.dialog.ThrowableDialog;
 import youthm2.common.exception.FileException;
 import youthm2.common.model.ConfigModel;
 import youthm2.common.model.FileModel;
+import youthm2.common.model.SchedulerModel;
 
 /**
  * 引导模型。
@@ -38,6 +37,10 @@ public final class BootstrapModel {
   private static final String CONFIG_LOGIN = "login";
   private static final String CONFIG_RANK = "rank";
 
+  public interface OnLoadConfigListener {
+    void onLoaded(Config config);
+  }
+
   public final BootstrapConfig config = new BootstrapConfig();
 
   public State state;
@@ -50,7 +53,6 @@ public final class BootstrapModel {
   private final ProgramModel roleModel = new ProgramModel(config.role);
   private final ProgramModel loginModel = new ProgramModel(config.login);
   private final ProgramModel rankModel = new ProgramModel(config.rank);
-  private final Scheduler mainScheduler = Schedulers.from(Platform::runLater);
 
   private Subscription subscription = null;
 
@@ -60,7 +62,29 @@ public final class BootstrapModel {
         .subscribeOn(Schedulers.io())
         .map(ConfigModel::load)
         .map(ConfigModel::mergeDefault)
-        .observeOn(mainScheduler)
+        .observeOn(SchedulerModel.main())
+        .subscribe(new Subscriber<Config>() {
+          @Override public void onCompleted() {
+            // no-op
+          }
+
+          @Override public void onError(Throwable e) {
+            ThrowableDialog.show(e);
+          }
+
+          @Override public void onNext(Config config) {
+            listener.onLoaded(config);
+          }
+        });
+  }
+
+  public void loadDefaultConfig(OnLoadConfigListener listener) {
+    Preconditions.checkNotNull(listener, "listener == null");
+    Observable.just("")
+        .subscribeOn(Schedulers.io())
+        .map(s -> ConfigModel.loadDefault())
+        .map(config -> config.getConfig("bootstrap"))
+        .observeOn(SchedulerModel.main())
         .subscribe(new Subscriber<Config>() {
           @Override public void onCompleted() {
             // no-op
@@ -161,7 +185,7 @@ public final class BootstrapModel {
         //.filter(aLong -> startLoginServer())
         //.filter(aLong -> startRankServer())
         // 回调就需要更新 UI，此时应该放到主线程上运行
-        .observeOn(mainScheduler)
+        .observeOn(SchedulerModel.main())
         .subscribe(subscriber);
   }
 

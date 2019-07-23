@@ -13,9 +13,12 @@ public final class SchedulerModel {
   private SchedulerModel() {
   }
 
-  private static final Scheduler mainScheduler = Schedulers.from(Platform::runLater);
+  private enum Holder {
+    INSTANCE;
+    private final Scheduler main = Schedulers.from(Platform::runLater);
+  }
 
   public static Scheduler main() {
-    return mainScheduler;
+    return Holder.INSTANCE.main;
   }
 }
