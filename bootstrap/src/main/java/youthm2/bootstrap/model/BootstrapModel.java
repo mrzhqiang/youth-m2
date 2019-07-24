@@ -2,21 +2,18 @@ package youthm2.bootstrap.model;
 
 import com.google.common.base.Preconditions;
 import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Nullable;
-import org.controlsfx.dialog.ExceptionDialog;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.schedulers.Schedulers;
 import youthm2.bootstrap.model.config.BootstrapConfig;
 import youthm2.common.Environment;
 import youthm2.common.Json;
 import youthm2.common.dialog.ThrowableDialog;
 import youthm2.common.exception.FileException;
-import youthm2.common.model.ConfigModel;
 import youthm2.common.model.FileModel;
 import youthm2.common.model.SchedulerModel;
 
@@ -27,63 +24,48 @@ import youthm2.common.model.SchedulerModel;
  */
 public final class BootstrapModel {
   private static final String CONFIG_FILE = "bootstrap.json";
-  private static final String CONFIG_BOOTSTRAP = "bootstrap";
-  private static final String CONFIG_DATABASE = "database";
-  private static final String CONFIG_ACCOUNT = "account";
-  private static final String CONFIG_LOGGER1 = "logger";
-  private static final String CONFIG_CORE = "core";
-  private static final String CONFIG_GAME = "game";
-  private static final String CONFIG_ROLE = "role";
-  private static final String CONFIG_LOGIN = "login";
-  private static final String CONFIG_RANK = "rank";
 
-  public interface OnLoadConfigListener {
-    void onLoaded(Config config);
+  private static final String CONFIG_BOOTSTRAP = "bootstrap";
+
+  public interface OnConfigLoadListener {
+    void onLoaded(BootstrapConfig config);
   }
 
-  public final BootstrapConfig config = new BootstrapConfig();
+  public interface OnStartServerListener {
+    void onStart();
+
+    void onError(Throwable e);
+
+    void onCompleted();
+  }
 
   public State state;
 
-  private final ProgramModel databaseModel = new ProgramModel(config.database);
-  private final ProgramModel accountModel = new ProgramModel(config.account);
-  private final ProgramModel loggerModel = new ProgramModel(config.logger);
-  private final ProgramModel coreModel = new ProgramModel(config.core);
-  private final ProgramModel gameModel = new ProgramModel(config.game);
-  private final ProgramModel roleModel = new ProgramModel(config.role);
-  private final ProgramModel loginModel = new ProgramModel(config.login);
-  private final ProgramModel rankModel = new ProgramModel(config.rank);
-
-  private Subscription subscription = null;
-
-  public void loadConfig(OnLoadConfigListener listener) {
+  public void loadConfig(OnConfigLoadListener listener) {
     Preconditions.checkNotNull(listener, "listener == null");
+    // just 方法表示传入几个参数，就执行几次任务
     Observable.just(getConfigFile())
+        // 丢到 IO 线程池执行，subscribeOn 方法只能被调用一次，多次调用无效
         .subscribeOn(Schedulers.io())
-        .map(ConfigModel::load)
-        .map(ConfigModel::mergeDefault)
+        // 通过解析方法读取文件内容
+        .map(ConfigFactory::parseFile)
+        // 未填写的内容由默认配置补充
+        .map(config -> config.withFallback(ConfigFactory.load()))
+        .filter(config -> config.hasPath(CONFIG_BOOTSTRAP))
+        .map(config -> config.getConfig(CONFIG_BOOTSTRAP))
+        .map(BootstrapConfig::of)
+        // 订阅在主线程，可以更新 UI
         .observeOn(SchedulerModel.main())
-        .subscribe(new Subscriber<Config>() {
-          @Override public void onCompleted() {
-            // no-op
-          }
-
-          @Override public void onError(Throwable e) {
-            ThrowableDialog.show(e);
-          }
-
-          @Override public void onNext(Config config) {
-            listener.onLoaded(config);
-          }
-        });
+        .subscribe(listener::onLoaded, e -> ThrowableDialog.show("加载配置出错", e));
   }
 
-  public void loadDefaultConfig(OnLoadConfigListener listener) {
+  public void loadDefaultConfig(OnConfigLoadListener listener) {
     Preconditions.checkNotNull(listener, "listener == null");
+    // empty 方法是为了立即执行完成回调，比如在执行过程中发现问题，立即 flatMap 一个 empty，从而结束此次任务
+    // 所以这里不能用 empty，而应该是 just 一个空串
     Observable.just("")
         .subscribeOn(Schedulers.io())
-        .map(s -> ConfigModel.loadDefault())
-        .map(config -> config.getConfig("bootstrap"))
+        .map(s -> ConfigFactory.load())
         .observeOn(SchedulerModel.main())
         .subscribe(new Subscriber<Config>() {
           @Override public void onCompleted() {
@@ -95,88 +77,20 @@ public final class BootstrapModel {
           }
 
           @Override public void onNext(Config config) {
-            listener.onLoaded(config);
+            listener.onLoaded(BootstrapConfig.of(config.getConfig("bootstrap")));
           }
         });
   }
 
-  public void loadBootstrapConfig(@Nullable Config bootstrap) {
-    if (bootstrap == null) {
-    }
-    config.home.setValue(bootstrap.getString("home"));
-    config.dbName.setValue(bootstrap.getString("dbName"));
-    config.gameName.setValue(bootstrap.getString("gameName"));
-    config.gameAddress.setValue(bootstrap.getString("gameAddress"));
-    config.backupAction.setValue(bootstrap.getBoolean("backupAction"));
-    config.compoundAction.setValue(bootstrap.getBoolean("compoundAction"));
-  }
-
-  public void loadDatabaseConfig(@Nullable Config bootstrap) {
-    if (bootstrap == null) {
-    }
-    config.database.onLoad(bootstrap.getConfig(CONFIG_DATABASE));
-  }
-
-  public void loadAccountConfig(@Nullable Config bootstrap) {
-    if (bootstrap == null) {
-    }
-    config.account.onLoad(bootstrap.getConfig(CONFIG_ACCOUNT));
-  }
-
-  public void loadLoggerConfig(@Nullable Config bootstrap) {
-    if (bootstrap == null) {
-    }
-    config.logger.onLoad(bootstrap.getConfig(CONFIG_LOGGER1));
-  }
-
-  public void loadCoreConfig(@Nullable Config bootstrap) {
-    if (bootstrap == null) {
-    }
-    config.core.onLoad(bootstrap.getConfig(CONFIG_CORE));
-  }
-
-  public void loadGameConfig(@Nullable Config bootstrap) {
-    if (bootstrap == null) {
-    }
-    config.game.onLoad(bootstrap.getConfig(CONFIG_GAME));
-  }
-
-  public void loadLoginConfig(@Nullable Config bootstrap) {
-    if (bootstrap == null) {
-    }
-    config.login.onLoad(bootstrap.getConfig(CONFIG_LOGIN));
-  }
-
-  public void loadRoleConfig(@Nullable Config bootstrap) {
-    if (bootstrap == null) {
-    }
-    config.role.onLoad(bootstrap.getConfig(CONFIG_ROLE));
-  }
-
-  public void loadRankConfig(@Nullable Config bootstrap) {
-    if (bootstrap == null) {
-    }
-    config.rank.onLoad(bootstrap.getConfig(CONFIG_RANK));
-  }
-
-  public void saveConfig() {
-    File configFile = getConfigFile();
-    try {
-      FileModel.createOrExists(configFile);
-      FileModel.onceWrite(configFile, Json.prettyPrint(config.toJsonNode()));
-    } catch (FileException e) {
-      new ExceptionDialog(e).show();
-    }
-  }
-
-  public void startServer(LocalDateTime targetTime, Subscriber<String> subscriber) {
+  public void startServer(LocalDateTime targetTime, OnStartServerListener listener) {
     Preconditions.checkNotNull(targetTime, "target time == null");
-    Preconditions.checkNotNull(subscriber, "subscriber == null");
-    subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
-        // 是否抵达目标时间
+    Preconditions.checkNotNull(listener, "listener == null");
+    // interval 方法是间隔一段时间执行任务，与 timer 不同的是，这个方法是永久重复执行，直到被取消订阅
+    Observable.interval(0, 1, TimeUnit.SECONDS)
+        // 是否满足预期时间
         .filter(aLong -> LocalDateTime.now().isAfter(targetTime))
-        // RxJava 只是一种异步调度神器，实现逻辑还放在私有方法里
-        .map(aLong -> startDatabaseServer())
+        // RxJava 只是一种异步调度器，建议组装一下逻辑实现
+        .filter(aLong -> startDatabaseServer())
         //.filter(aLong -> startAccountServer())
         //.filter(aLong -> startLoggerServer())
         //.filter(aLong -> startCoreServer())
@@ -186,13 +100,40 @@ public final class BootstrapModel {
         //.filter(aLong -> startRankServer())
         // 回调就需要更新 UI，此时应该放到主线程上运行
         .observeOn(SchedulerModel.main())
-        .subscribe(subscriber);
+        .subscribe(new Subscriber<Long>() {
+          @Override public void onStart() {
+            listener.onStart();
+          }
+
+          @Override public void onCompleted() {
+            // the method will not be call
+          }
+
+          @Override public void onError(Throwable e) {
+            listener.onError(e);
+          }
+
+          @Override public void onNext(Long aLong) {
+            listener.onCompleted();
+          }
+        });
+  }
+
+  private boolean startDatabaseServer() {
+    return false;
+  }
+
+  public void saveConfig(BootstrapConfig config) {
+    File configFile = getConfigFile();
+    try {
+      FileModel.createOrExists(configFile);
+      FileModel.onceWrite(configFile, Json.prettyPrint(Json.toJson(config)));
+    } catch (FileException e) {
+      ThrowableDialog.show(e);
+    }
   }
 
   public void cancelStart() {
-    if (subscription != null && !subscription.isUnsubscribed()) {
-      subscription.unsubscribe();
-    }
   }
 
   public void stopServer() {
@@ -216,45 +157,32 @@ public final class BootstrapModel {
     return configFile;
   }
 
-  private String startDatabaseServer() {
-    databaseModel.start();
-    databaseModel.check();
-    return "";
-  }
-
   private Boolean startAccountServer() {
-    accountModel.start();
-    return accountModel.check();
+    return false;
   }
 
   private Boolean startLoggerServer() {
-    loggerModel.start();
-    return loggerModel.check();
+    return false;
   }
 
   private Boolean startCoreServer() {
-    coreModel.start();
-    return coreModel.check();
+    return false;
   }
 
   private Boolean startGameServer() {
-    gameModel.start();
-    return gameModel.check();
+    return false;
   }
 
   private Boolean startRoleServer() {
-    roleModel.start();
-    return roleModel.check();
+    return false;
   }
 
   private Boolean startLoginServer() {
-    loginModel.start();
-    return loginModel.check();
+    return false;
   }
 
   private Boolean startRankServer() {
-    rankModel.start();
-    return rankModel.check();
+    return false;
   }
 
   public enum State {

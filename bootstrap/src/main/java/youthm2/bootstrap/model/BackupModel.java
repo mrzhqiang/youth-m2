@@ -17,7 +17,6 @@ import rx.schedulers.Schedulers;
 import youthm2.bootstrap.model.backup.BackupData;
 import youthm2.common.Environment;
 import youthm2.common.dialog.ThrowableDialog;
-import youthm2.common.model.ConfigModel;
 import youthm2.common.model.SchedulerModel;
 
 /**
@@ -49,7 +48,7 @@ public final class BackupModel {
     Preconditions.checkNotNull(listener, "listener == null");
     Observable.just(getBackupFile())
         .subscribeOn(Schedulers.io())
-        .map(ConfigModel::load)
+        .map(ConfigFactory::parseFile)
         .filter(config -> config.hasPath("dataList"))
         .map(config -> config.getStringList("dataList").stream()
             .filter(s -> Strings.isNullOrEmpty(s) && config.hasPath(s))

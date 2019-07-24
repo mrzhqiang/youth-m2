@@ -2,7 +2,6 @@ package youthm2.bootstrap.viewmodel;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.typesafe.config.Config;
 import helper.DateTimeHelper;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -26,6 +25,7 @@ import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import youthm2.bootstrap.model.config.BootstrapConfig;
 
 /**
  * 控制面板视图模型。
@@ -46,7 +46,7 @@ final class ControlViewModel {
   final ConsoleViewModel console = new ConsoleViewModel();
   final StartGameViewModel startGame = new StartGameViewModel();
 
-  void init() {
+  void prepare() {
     database.stopped();
     account.stopped();
     logger.stopped();
@@ -56,18 +56,20 @@ final class ControlViewModel {
     login.stopped();
     rank.stopped();
     startMode.normalMode();
+    console.clean();
+    startGame.stopped();
   }
 
-  void update(Config config) {
-    Preconditions.checkNotNull(config, "config == null");
-    database.disabled(config.getConfig("database"));
-    account.disabled(config.getConfig("account"));
-    logger.disabled(config.getConfig("logger"));
-    core.disabled(config.getConfig("core"));
-    game.disabled(config.getConfig("game"));
-    role.disabled(config.getConfig("role"));
-    login.disabled(config.getConfig("login"));
-    rank.disabled(config.getConfig("rank"));
+  void update(BootstrapConfig config) {
+    Preconditions.checkNotNull(config, "bootstrap config == null");
+    database.checkEnabled(config.database.enabled);
+    account.checkEnabled(config.account.enabled);
+    logger.checkEnabled(config.logger.enabled);
+    core.checkEnabled(config.core.enabled);
+    game.checkEnabled(config.game.enabled);
+    role.checkEnabled(config.role.enabled);
+    login.checkEnabled(config.login.enabled);
+    rank.checkEnabled(config.rank.enabled);
   }
 
   /**
@@ -75,15 +77,15 @@ final class ControlViewModel {
    */
   static final class StartProgramViewModel {
     private static final String TEXT_DISABLED = "禁用";
-    private static final Color COLOR_DISABLED = Color.valueOf("#D32F2F");
+    private static final Color COLOR_DISABLED = Color.valueOf("#CFD8DC");
     private static final String TEXT_STOPPED = "未启动";
-    private static final Color COLOR_STOPPED = Color.valueOf("#388E3C");
+    private static final Color COLOR_STOPPED = Color.valueOf("#455A64");
     private static final String TEXT_STARTING = "正在启动";
-    private static final Color COLOR_STARTING = Color.valueOf("#FFA000");
+    private static final Color COLOR_STARTING = Color.valueOf("#9E9E9E");
     private static final String TEXT_STARTED = "已启动";
-    private static final Color COLOR_STARTED = Color.valueOf("#D32F2F");
+    private static final Color COLOR_STARTED = Color.valueOf("#388E3C");
     private static final String TEXT_STOPPING = "正在停止";
-    private static final Color COLOR_STOPPING = Color.valueOf("#9E9E9E");
+    private static final Color COLOR_STOPPING = Color.valueOf("#F57C00");
 
     final BooleanProperty disable = new SimpleBooleanProperty();
     final StringProperty text = new SimpleStringProperty();
@@ -97,9 +99,9 @@ final class ControlViewModel {
       label.textFillProperty().bindBidirectional(color);
     }
 
-    void disabled(Config config) {
-      if (config == null || !config.hasPath("enabled") || !config.getBoolean("enabled")) {
-        disable.setValue(true);
+    void checkEnabled(boolean enabled) {
+      if (!enabled) {
+        this.disable.setValue(true);
         text.setValue(TEXT_DISABLED);
         color.setValue(COLOR_DISABLED);
       }
@@ -155,6 +157,7 @@ final class ControlViewModel {
         startMode.getItems().addAll(MODE_NORMAL, MODE_DELAY, MODE_TIMING);
       }
       startMode.valueProperty().bindBidirectional(modeValue);
+      modeValue.addListener((observable, oldValue, newValue) -> select(newValue));
       startMode.getSelectionModel().select(MODE_NORMAL);
       hours.disableProperty().bindBidirectional(hoursDisable);
       hours.valueFactoryProperty().bindBidirectional(hoursValue);
@@ -162,34 +165,22 @@ final class ControlViewModel {
       minutes.valueFactoryProperty().bindBidirectional(minutesValue);
     }
 
-    void select(String selected) {
-      if (MODE_NORMAL.equals(selected)) {
-        normalMode();
-      } else if (MODE_DELAY.equals(selected)) {
-        delayMode();
-      } else if (MODE_TIMING.equals(selected)) {
-        timingMode();
-      }
-    }
-
     LocalDateTime computeStartDateTime() {
+      LocalDateTime now = LocalDateTime.now();
       Integer hours = hoursValue.getValue().getValue();
       Integer minutes = minutesValue.getValue().getValue();
       if (MODE_DELAY.equals(modeValue.get())) {
-        return LocalDateTime.now().plusHours(hours).plusMinutes(minutes);
-      } else if (MODE_TIMING.equals(modeValue.get())) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime timing = LocalDateTime.of(now.toLocalDate(), LocalTime.of(hours, minutes));
-        // 如果现在已经超过定时，那么给定时加个鸡腿（加一天）
-        if (now.isAfter(timing)) {
-          timing = timing.plusDays(1);
-        }
-        return timing;
+        return now.plusHours(hours).plusMinutes(minutes);
       }
-      return LocalDateTime.now();
+      if (MODE_TIMING.equals(modeValue.get())) {
+        LocalDateTime timing = LocalDateTime.of(now.toLocalDate(), LocalTime.of(hours, minutes));
+        // 如果现在已经超过定时，那么给定时加个鸡腿
+        return now.isAfter(timing) ? timing.plusDays(1) : timing;
+      }
+      return now;
     }
 
-    void normalMode() {
+    private void normalMode() {
       hoursDisable.setValue(true);
       minutesDisable.setValue(true);
     }
@@ -202,6 +193,16 @@ final class ControlViewModel {
     private void timingMode() {
       hoursDisable.setValue(false);
       minutesDisable.setValue(false);
+    }
+
+    private void select(String selected) {
+      if (MODE_NORMAL.equals(selected)) {
+        normalMode();
+      } else if (MODE_DELAY.equals(selected)) {
+        delayMode();
+      } else if (MODE_TIMING.equals(selected)) {
+        timingMode();
+      }
     }
   }
 
@@ -225,10 +226,6 @@ final class ControlViewModel {
       textArea.textProperty().bindBidirectional(text);
     }
 
-    void clean() {
-      text.setValue("");
-    }
-
     void append(String message) {
       if (Strings.isNullOrEmpty(message)) {
         return;
@@ -236,6 +233,10 @@ final class ControlViewModel {
       String timestamp = DateTimeHelper.format(Date.from(Instant.now()));
       String console = String.format(Locale.getDefault(), FORMAT_CONSOLE, timestamp, message);
       newMessage.setValue(console);
+    }
+
+    private void clean() {
+      text.setValue("");
     }
   }
 

@@ -23,12 +23,20 @@ public final class AlertModel {
     throw new AssertionError("No instance");
   }
 
+  public static void show(String message) {
+    show(message, null);
+  }
+
   public static void show(String message, @Nullable String content) {
     Preconditions.checkNotNull(message, "message == null");
     Alert alert = new Alert(Alert.AlertType.NONE);
     alert.setHeaderText(message);
     alert.setContentText(content);
     alert.show();
+  }
+
+  public static void showInfo(String message) {
+    showInfo(message, null);
   }
 
   public static void showInfo(String message, @Nullable String content) {
@@ -40,6 +48,10 @@ public final class AlertModel {
     alert.show();
   }
 
+  public static void showWarn(String message) {
+    showWarn(message, null);
+  }
+
   public static void showWarn(String message, @Nullable String content) {
     Preconditions.checkNotNull(message, "message == null");
     Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -47,6 +59,10 @@ public final class AlertModel {
     alert.setHeaderText(message);
     alert.setContentText(content);
     alert.show();
+  }
+
+  public static Optional<ButtonType> waitConfirm(String message) {
+    return waitConfirm(message, null);
   }
 
   public static Optional<ButtonType> waitConfirm(String message, @Nullable String content) {
