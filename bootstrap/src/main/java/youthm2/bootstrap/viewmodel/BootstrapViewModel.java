@@ -19,6 +19,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import youthm2.bootstrap.model.BackupModel;
 import youthm2.bootstrap.model.BootstrapModel;
+import youthm2.bootstrap.model.program.Program;
 import youthm2.common.Monitor;
 import youthm2.common.dialog.ThrowableDialog;
 import youthm2.common.model.AlertModel;
@@ -255,9 +256,10 @@ public final class BootstrapViewModel {
 
   private void startServer() {
     LocalDateTime targetTime = controlViewModel.startMode.computeStartDateTime();
-    bootstrapModel.startServer(targetTime, new BootstrapModel.OnStartServerListener() {
+    bootstrapModel.updateProgram(configViewModel.config());
+    bootstrapModel.startProgram(targetTime, new BootstrapModel.OnStartProgramListener() {
       @Override public void onStart() {
-        bootstrapModel.state = BootstrapModel.State.STARTING;
+        controlViewModel.console.append("开始启动服务..");
         controlViewModel.startGame.starting();
       }
 
@@ -265,15 +267,26 @@ public final class BootstrapViewModel {
         LoggerModel.BOOTSTRAP.error("一键启动出错", throwable);
         ThrowableDialog.show(throwable);
         controlViewModel.console.append(throwable.getMessage());
-        bootstrapModel.state = BootstrapModel.State.INITIALIZED;
         controlViewModel.startGame.stopped();
       }
 
-      @Override public void onCompleted() {
-        controlViewModel.console.append("一键启动完毕。");
-        bootstrapModel.state = BootstrapModel.State.RUNNING;
-        controlViewModel.startGame.running();
-        // todo check all server running status
+      @Override public void onFinish(Program program) {
+        if (program == null) {
+          controlViewModel.console.append("一键启动完毕。");
+          controlViewModel.startGame.running();
+          return;
+        }
+        switch (program) {
+          case DATABASE:
+            controlViewModel.database.started();
+          case ACCOUNT:
+          case LOGGER:
+          case CORE:
+          case GAME:
+          case ROLE:
+          case LOGIN:
+          case RANK:
+        }
       }
     });
   }

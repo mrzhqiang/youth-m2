@@ -38,5 +38,6 @@ public final class Database extends Application {
           .ifPresent(buttonType -> System.exit(-1));
     }
     monitor.report("database started");
+    System.out.println("ok");
   }
 }

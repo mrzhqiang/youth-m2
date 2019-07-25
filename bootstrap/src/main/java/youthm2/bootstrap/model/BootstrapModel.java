@@ -10,6 +10,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import youthm2.bootstrap.model.config.BootstrapConfig;
+import youthm2.bootstrap.model.program.Program;
 import youthm2.common.Environment;
 import youthm2.common.Json;
 import youthm2.common.dialog.ThrowableDialog;
@@ -31,13 +32,15 @@ public final class BootstrapModel {
     void onLoaded(BootstrapConfig config);
   }
 
-  public interface OnStartServerListener {
+  public interface OnStartProgramListener {
     void onStart();
 
     void onError(Throwable e);
 
-    void onCompleted();
+    void onFinish(Program program);
   }
+
+  public final ProgramModel programModel = new ProgramModel();
 
   public State state;
 
@@ -82,26 +85,48 @@ public final class BootstrapModel {
         });
   }
 
-  public void startServer(LocalDateTime targetTime, OnStartServerListener listener) {
-    Preconditions.checkNotNull(targetTime, "target time == null");
+  public void updateProgram(BootstrapConfig config) {
+    Preconditions.checkNotNull(config, "bootstrap config == null");
+    Program.DATABASE.from(config.database);
+    Program.ACCOUNT.from(config.account);
+    Program.LOGGER.from(config.logger);
+    Program.CORE.from(config.core);
+    Program.GAME.from(config.game);
+    Program.ROLE.from(config.role);
+    Program.LOGIN.from(config.login);
+    Program.RANK.from(config.rank);
+  }
+
+  public void startProgram(LocalDateTime time, OnStartProgramListener listener) {
+    Preconditions.checkNotNull(time, "target time == null");
     Preconditions.checkNotNull(listener, "listener == null");
     // interval 方法是间隔一段时间执行任务，与 timer 不同的是，这个方法是永久重复执行，直到被取消订阅
     Observable.interval(0, 1, TimeUnit.SECONDS)
         // 是否满足预期时间
-        .filter(aLong -> LocalDateTime.now().isAfter(targetTime))
+        .filter(aLong -> LocalDateTime.now().isAfter(time))
         // RxJava 只是一种异步调度器，建议组装一下逻辑实现
-        .filter(aLong -> startDatabaseServer())
-        //.filter(aLong -> startAccountServer())
-        //.filter(aLong -> startLoggerServer())
-        //.filter(aLong -> startCoreServer())
-        //.filter(aLong -> startGameServer())
-        //.filter(aLong -> startRoleServer())
-        //.filter(aLong -> startLoginServer())
-        //.filter(aLong -> startRankServer())
+        .filter(aLong -> programModel.start(Program.DATABASE))
+        // todo 应该把程序状态对外暴露，而不是留在内部判断
+        .doOnNext(aLong -> listener.onFinish(Program.DATABASE))
+        .filter(aLong -> programModel.start(Program.ACCOUNT))
+        .doOnNext(aLong -> listener.onFinish(Program.ACCOUNT))
+        .filter(aLong -> programModel.start(Program.LOGGER))
+        .doOnNext(aLong -> listener.onFinish(Program.LOGGER))
+        .filter(aLong -> programModel.start(Program.CORE))
+        .doOnNext(aLong -> listener.onFinish(Program.CORE))
+        .filter(aLong -> programModel.start(Program.GAME))
+        .doOnNext(aLong -> listener.onFinish(Program.GAME))
+        .filter(aLong -> programModel.start(Program.ROLE))
+        .doOnNext(aLong -> listener.onFinish(Program.ROLE))
+        .filter(aLong -> programModel.start(Program.LOGIN))
+        .doOnNext(aLong -> listener.onFinish(Program.LOGIN))
+        .filter(aLong -> programModel.start(Program.RANK))
+        .doOnNext(aLong -> listener.onFinish(Program.RANK))
         // 回调就需要更新 UI，此时应该放到主线程上运行
         .observeOn(SchedulerModel.main())
         .subscribe(new Subscriber<Long>() {
           @Override public void onStart() {
+            state = BootstrapModel.State.STARTING;
             listener.onStart();
           }
 
@@ -110,17 +135,16 @@ public final class BootstrapModel {
           }
 
           @Override public void onError(Throwable e) {
+            state = BootstrapModel.State.INITIALIZED;
             listener.onError(e);
           }
 
           @Override public void onNext(Long aLong) {
-            listener.onCompleted();
+            state = BootstrapModel.State.RUNNING;
+            unsubscribe();
+            listener.onFinish(null);
           }
         });
-  }
-
-  private boolean startDatabaseServer() {
-    return false;
   }
 
   public void saveConfig(BootstrapConfig config) {
@@ -155,34 +179,6 @@ public final class BootstrapModel {
       configFile = new File(Environment.workDirectory(), CONFIG_FILE);
     }
     return configFile;
-  }
-
-  private Boolean startAccountServer() {
-    return false;
-  }
-
-  private Boolean startLoggerServer() {
-    return false;
-  }
-
-  private Boolean startCoreServer() {
-    return false;
-  }
-
-  private Boolean startGameServer() {
-    return false;
-  }
-
-  private Boolean startRoleServer() {
-    return false;
-  }
-
-  private Boolean startLoginServer() {
-    return false;
-  }
-
-  private Boolean startRankServer() {
-    return false;
   }
 
   public enum State {
