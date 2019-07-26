@@ -9,23 +9,21 @@ import com.typesafe.config.Config;
  * @author qiang.zhang
  */
 public class ProgramConfig {
-  static final String CONFIG_ENABLED = "enabled";
-  static final String CONFIG_X = "x";
-  static final String CONFIG_Y = "y";
-  static final String CONFIG_PATH = "path";
+  private static final String CONFIG_ENABLED = "enabled";
+  private static final String CONFIG_X = "x";
+  private static final String CONFIG_Y = "y";
+  private static final String CONFIG_PATH = "path";
 
-  public int x;
-  public int y;
-  public boolean enabled;
+  public Integer x;
+  public Integer y;
+  public Boolean enabled;
   public String path;
 
-  static ProgramConfig of(Config program) {
-    Preconditions.checkNotNull(program, "program config == null");
-    ProgramConfig config = new ProgramConfig();
-    config.x = program.getInt(CONFIG_X);
-    config.y = program.getInt(CONFIG_Y);
-    config.enabled = program.getBoolean(CONFIG_ENABLED);
-    config.path = program.getString(CONFIG_PATH);
-    return config;
+  public void update(Config config) {
+    Preconditions.checkNotNull(config, "config == null");
+    x = config.getInt(CONFIG_X);
+    y = config.getInt(CONFIG_Y);
+    enabled = config.getBoolean(CONFIG_ENABLED);
+    path = config.getString(CONFIG_PATH);
   }
 }

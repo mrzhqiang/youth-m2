@@ -4,11 +4,10 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import org.controlsfx.dialog.ExceptionDialog;
-import org.slf4j.LoggerFactory;
 import youthm2.common.Monitor;
+import youthm2.common.dialog.ThrowableDialog;
+import youthm2.common.model.LoggerModel;
 
 /**
  * 数据库服务。
@@ -17,10 +16,6 @@ import youthm2.common.Monitor;
  */
 public final class Database extends Application {
   private static final String TITLE = "数据库服务 - 青春引擎";
-
-  public static void main(String[] args) {
-    launch(args);
-  }
 
   @Override
   public void start(Stage primaryStage) {
@@ -31,13 +26,9 @@ public final class Database extends Application {
       primaryStage.setScene(new Scene(root));
       primaryStage.show();
     } catch (Exception e) {
-      LoggerFactory.getLogger("database").error("数据库服务启动失败！", e);
-      new ExceptionDialog(e)
-          .showAndWait()
-          .filter(buttonType -> buttonType == ButtonType.OK)
-          .ifPresent(buttonType -> System.exit(-1));
+      LoggerModel.DATABASE.error("数据库服务启动失败！", e);
+      ThrowableDialog.show(e);
     }
     monitor.report("database started");
-    System.out.println("ok");
   }
 }

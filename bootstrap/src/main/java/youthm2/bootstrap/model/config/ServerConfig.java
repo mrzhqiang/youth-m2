@@ -1,6 +1,5 @@
 package youthm2.bootstrap.model.config;
 
-import com.google.common.base.Preconditions;
 import com.typesafe.config.Config;
 
 /**
@@ -9,21 +8,17 @@ import com.typesafe.config.Config;
  * @author qiang.zhang
  */
 public class ServerConfig extends ProgramConfig {
-  static final String CONFIG_PORT = "port";
-  static final String CONFIG_SERVER_PORT = "serverPort";
+  private static final String CONFIG_PORT = "port";
+  private static final String CONFIG_SERVER_PORT = "serverPort";
 
-  public int port;
-  public int serverPort;
+  public Integer port;
+  public Integer serverPort;
 
-  static ServerConfig of(Config server) {
-    Preconditions.checkNotNull(server, "server config == null");
-    ServerConfig config = new ServerConfig();
-    config.x = server.getInt(CONFIG_X);
-    config.y = server.getInt(CONFIG_Y);
-    config.port = server.getInt(CONFIG_PORT);
-    config.serverPort = server.getInt(CONFIG_SERVER_PORT);
-    config.enabled = server.getBoolean(CONFIG_ENABLED);
-    config.path = server.getString(CONFIG_PATH);
-    return config;
+  @Override public void update(Config config) {
+    super.update(config);
+    port = config.getInt(CONFIG_PORT);
+    if (config.hasPath(CONFIG_SERVER_PORT)) {
+      serverPort = config.getInt(CONFIG_SERVER_PORT);
+    }
   }
 }

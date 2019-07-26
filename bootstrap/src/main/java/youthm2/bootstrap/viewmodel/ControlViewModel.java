@@ -1,6 +1,5 @@
 package youthm2.bootstrap.viewmodel;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import helper.DateTimeHelper;
 import java.time.Instant;
@@ -41,35 +40,21 @@ final class ControlViewModel {
   final StartProgramViewModel role = new StartProgramViewModel();
   final StartProgramViewModel login = new StartProgramViewModel();
   final StartProgramViewModel rank = new StartProgramViewModel();
-
   final StartModeViewModel startMode = new StartModeViewModel();
   final ConsoleViewModel console = new ConsoleViewModel();
   final StartGameViewModel startGame = new StartGameViewModel();
 
-  void prepare() {
-    database.stopped();
-    account.stopped();
-    logger.stopped();
-    core.stopped();
-    game.stopped();
-    role.stopped();
-    login.stopped();
-    rank.stopped();
-    startMode.normalMode();
-    console.clean();
-    startGame.stopped();
-  }
-
   void update(BootstrapConfig config) {
-    Preconditions.checkNotNull(config, "bootstrap config == null");
-    database.checkEnabled(config.database.enabled);
-    account.checkEnabled(config.account.enabled);
-    logger.checkEnabled(config.logger.enabled);
-    core.checkEnabled(config.core.enabled);
-    game.checkEnabled(config.game.enabled);
-    role.checkEnabled(config.role.enabled);
-    login.checkEnabled(config.login.enabled);
-    rank.checkEnabled(config.rank.enabled);
+    if (config != null) {
+      database.checkEnabled(config.database.enabled);
+      account.checkEnabled(config.account.enabled);
+      logger.checkEnabled(config.logger.enabled);
+      core.checkEnabled(config.core.enabled);
+      game.checkEnabled(config.game.enabled);
+      role.checkEnabled(config.role.enabled);
+      login.checkEnabled(config.login.enabled);
+      rank.checkEnabled(config.rank.enabled);
+    }
   }
 
   /**
@@ -87,9 +72,9 @@ final class ControlViewModel {
     private static final String TEXT_STOPPING = "正在停止";
     private static final Color COLOR_STOPPING = Color.valueOf("#F57C00");
 
-    final BooleanProperty disable = new SimpleBooleanProperty();
-    final StringProperty text = new SimpleStringProperty();
-    final Property<Paint> color = new SimpleObjectProperty<>();
+    final BooleanProperty disable = new SimpleBooleanProperty(false);
+    final StringProperty text = new SimpleStringProperty(TEXT_STOPPED);
+    final Property<Paint> color = new SimpleObjectProperty<>(COLOR_STOPPED);
 
     void bind(Button button, Label label) {
       // bindBidirectional 是指双向绑定，意味着数据改动会影响组件状态，同时组件状态改变会更新到数据。
@@ -145,10 +130,10 @@ final class ControlViewModel {
         new IntegerSpinnerValueFactory(0, 59, 0);
 
     final StringProperty modeValue = new SimpleStringProperty();
-    final BooleanProperty hoursDisable = new SimpleBooleanProperty();
+    final BooleanProperty hoursDisable = new SimpleBooleanProperty(true);
     final ObjectProperty<SpinnerValueFactory<Integer>> hoursValue =
         new SimpleObjectProperty<>(HOURS_VALUE_FACTORY);
-    final BooleanProperty minutesDisable = new SimpleBooleanProperty();
+    final BooleanProperty minutesDisable = new SimpleBooleanProperty(true);
     final ObjectProperty<SpinnerValueFactory<Integer>> minutesValue =
         new SimpleObjectProperty<>(MINUTES_VALUE_FACTORY);
 
@@ -180,7 +165,7 @@ final class ControlViewModel {
       return now;
     }
 
-    private void normalMode() {
+    void normalMode() {
       hoursDisable.setValue(true);
       minutesDisable.setValue(true);
     }
@@ -223,6 +208,7 @@ final class ControlViewModel {
         changeListener = (observable, oldValue, newValue) -> textArea.appendText(newValue);
         newMessage.addListener(changeListener);
       }
+      textArea.clear();
       textArea.textProperty().bindBidirectional(text);
     }
 
@@ -235,7 +221,7 @@ final class ControlViewModel {
       newMessage.setValue(console);
     }
 
-    private void clean() {
+    void clean() {
       text.setValue("");
     }
   }
@@ -247,12 +233,13 @@ final class ControlViewModel {
    */
   static final class StartGameViewModel {
     private static final String LABEL_STOPPED = "一键启动";
+    private static final String LABEL_WAITING = "等待启动";
     private static final String LABEL_STARTING = "正在启动";
     private static final String LABEL_RUNNING = "正在运行";
     private static final String LABEL_STOPPING = "正在停止";
 
-    private final StringProperty text = new SimpleStringProperty();
-    private final BooleanProperty disable = new SimpleBooleanProperty();
+    private final StringProperty text = new SimpleStringProperty(LABEL_STOPPED);
+    private final BooleanProperty disable = new SimpleBooleanProperty(false);
 
     void bind(Button button) {
       button.textProperty().bindBidirectional(text);
@@ -261,6 +248,11 @@ final class ControlViewModel {
 
     void stopped() {
       text.setValue(LABEL_STOPPED);
+      disable.setValue(false);
+    }
+
+    void waiting() {
+      text.setValue(LABEL_WAITING);
       disable.setValue(false);
     }
 

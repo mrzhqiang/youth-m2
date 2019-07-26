@@ -4,6 +4,8 @@ import com.google.common.base.Strings;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -19,6 +21,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import youthm2.bootstrap.model.BackupModel;
 import youthm2.bootstrap.model.BootstrapModel;
+import youthm2.bootstrap.model.ConfigModel;
+import youthm2.bootstrap.model.config.BootstrapConfig;
 import youthm2.bootstrap.model.program.Program;
 import youthm2.common.Monitor;
 import youthm2.common.dialog.ThrowableDialog;
@@ -31,13 +35,25 @@ import youthm2.common.model.NetworkModel;
  * 引导程序的视图模型。
  * <p>
  * 所谓视图模型，就是将视图与模型进行双向绑定，以便任何一方改变时，另外一方都会同时更新。
+ * <p>
+ * 因此，先做一个小约定，视图模型中只存在对 视图 和 模型 的调用，通常界面相关的改动都通过双向绑定发出通知。
+ * <p>
+ * 比如：
+ * <pre>
+ * 用户与界面交互：user >>> view >>> view model >>> object property
+ * 模型与界面交互：model >>> object property >>> view model >>> view
+ * </pre>
+ * <p>
+ * MVVM 架构模式最主要的就是 view model，它相当于 MVC 中的 C，MVP 中的 P，但比它们更容易拆分。
+ * <p>
+ * 拆分的目的是为了面向对象，将界面逐渐解耦成一个个视图模型。
  *
  * @author qiang.zhang
  */
 public final class BootstrapViewModel {
   /* 1. 控制面板 */
   @FXML Button databaseServerButton;
-  /* 1.1 启动程序*/
+  /* 1.1 启动程序 */
   @FXML TabPane pageTabPane;
   @FXML Label databaseServerLabel;
   @FXML Button accountServerButton;
@@ -124,23 +140,30 @@ public final class BootstrapViewModel {
   @FXML Spinner<Integer> rankYSpinner;
   @FXML CheckBox rankEnabledCheckBox;
   @FXML TextField rankPathTextField;
+  /* 3. 备份管理 */
+  /* 4. 数据清理 */
 
   private final ControlViewModel controlViewModel = new ControlViewModel();
-  private final ConfigViewModel configViewModel = new ConfigViewModel();
+  private final SettingViewModel settingViewModel = new SettingViewModel();
 
+  private final ConfigModel configModel = new ConfigModel();
   private final BootstrapModel bootstrapModel = new BootstrapModel();
   private final BackupModel backupModel = new BackupModel();
 
+  private final ObjectProperty<State> state = new SimpleObjectProperty<>();
+
   @FXML void initialize() {
     Monitor monitor = Monitor.getInstance();
-    initLayout();
-    prepareLayout();
+    bindLayout();
+    addEvent();
+    prepareStart();
     loadConfig();
     controlViewModel.console.append("启动已就绪...");
     monitor.report("initialized");
   }
 
-  private void initLayout() {
+  private void bindLayout() {
+    /* 控制面板 */
     controlViewModel.database.bind(databaseServerButton, databaseServerLabel);
     controlViewModel.account.bind(accountServerButton, accountServerLabel);
     controlViewModel.logger.bind(loggerServerButton, loggerServerLabel);
@@ -152,95 +175,103 @@ public final class BootstrapViewModel {
     controlViewModel.startMode.bind(startModeChoiceBox, hoursSpinner, minutesSpinner);
     controlViewModel.console.bind(consoleTextArea);
     controlViewModel.startGame.bind(startGameButton);
-
-    configViewModel.bind(homePathTextField, databaseNameTextField, gameNameTextField,
+    /* 参数配置 */
+    settingViewModel.bind(homePathTextField, databaseNameTextField, gameNameTextField,
         gameAddressTextField, backupActionCheckBox, combineActionCheckBox, wishActionCheckBox);
-    configViewModel.database.bind(databaseXSpinner, databaseYSpinner, databaseEnabledCheckBox,
+    settingViewModel.database.bind(databaseXSpinner, databaseYSpinner, databaseEnabledCheckBox,
         databasePathTextField, databasePortSpinner, databaseServerPortSpinner);
-    configViewModel.account.bind(accountXSpinner, accountYSpinner, accountEnabledCheckBox,
+    settingViewModel.account.bind(accountXSpinner, accountYSpinner, accountEnabledCheckBox,
         accountPathTextField, accountPortSpinner, accountServerPortSpinner,
         accountPublicPortSpinner);
-    configViewModel.logger.bind(loggerXSpinner, loggerYSpinner, loggerEnabledCheckBox,
+    settingViewModel.logger.bind(loggerXSpinner, loggerYSpinner, loggerEnabledCheckBox,
         loggerPathTextField, loggerPortSpinner, null);
-    configViewModel.core.bind(coreXSpinner, coreYSpinner, coreEnabledCheckBox, corePathTextField,
+    settingViewModel.core.bind(coreXSpinner, coreYSpinner, coreEnabledCheckBox, corePathTextField,
         corePortSpinner, coreServerPortSpinner);
-    configViewModel.game.bind(gameXSpinner, gameYSpinner, gameEnabledCheckBox, gamePathTextField,
+    settingViewModel.game.bind(gameXSpinner, gameYSpinner, gameEnabledCheckBox, gamePathTextField,
         gamePortSpinner);
-    configViewModel.role.bind(roleXSpinner, roleYSpinner, roleEnabledCheckBox, rolePathTextField,
+    settingViewModel.role.bind(roleXSpinner, roleYSpinner, roleEnabledCheckBox, rolePathTextField,
         rolePortSpinner);
-    configViewModel.login.bind(loginXSpinner, loginYSpinner, loginEnabledCheckBox,
+    settingViewModel.login.bind(loginXSpinner, loginYSpinner, loginEnabledCheckBox,
         loginPathTextField, loginPortSpinner);
-    configViewModel.rank.bind(rankXSpinner, rankYSpinner, rankEnabledCheckBox, rankPathTextField);
+    settingViewModel.rank.bind(rankXSpinner, rankYSpinner, rankEnabledCheckBox, rankPathTextField);
   }
 
-  private void prepareLayout() {
-    bootstrapModel.state = BootstrapModel.State.INITIALIZED;
+  private void addEvent() {
+    state.addListener((observable, oldValue, newValue) -> {
+      switch (newValue) {
+        case INITIALIZED:
+          controlViewModel.update(settingViewModel.config.get());
+          controlViewModel.startGame.stopped();
+          break;
+        case WAITING:
+          controlViewModel.startGame.waiting();
+          break;
+        case STARTING:
+          controlViewModel.startGame.starting();
+          break;
+        case RUNNING:
+          controlViewModel.startGame.running();
+          break;
+        case STOPPING:
+          controlViewModel.startGame.stopping();
+          break;
+      }
+    });
+  }
+
+  private void prepareStart() {
+    state.setValue(State.INITIALIZED);
     backupModel.status = 0;
     pageTabPane.getSelectionModel().select(0);
     configTabPane.getSelectionModel().select(0);
-    controlViewModel.prepare();
     // todo start list clear from apple m2
   }
 
   private void loadConfig() {
-    bootstrapModel.loadConfig(config -> {
-      controlViewModel.update(config);
-      configViewModel.update(config);
-      configViewModel.database.update(config.database);
-      configViewModel.account.update(config.account);
-      configViewModel.logger.update(config.logger);
-      configViewModel.core.update(config.core);
-      configViewModel.game.update(config.game);
-      configViewModel.role.update(config.role);
-      configViewModel.login.update(config.login);
-      configViewModel.rank.update(config.rank);
-      controlViewModel.console.append("配置加载完毕.");
+    configModel.load(newValue -> {
+      settingViewModel.config.setValue(newValue);
+      controlViewModel.console.append("配置加载成功.");
     });
     backupModel.loadConfig(dataList -> {
       // TODO: 2019/7/23 显示备份数据到表格中
+      // TODO: 2019/7/23 判断是否启动备份系统，是就去启动它
     });
-    // TODO: 2019/7/23 判断是否启动备份系统，是就去启动它
   }
 
   @FXML void onDatabaseServerClicked() {
-    controlViewModel.database.started();
   }
 
   @FXML void onAccountServerClicked() {
-    controlViewModel.account.started();
   }
 
   @FXML void onLoggerServerClicked() {
-    controlViewModel.logger.started();
   }
 
   @FXML void onCoreServerClicked() {
-    controlViewModel.core.started();
   }
 
   @FXML void onGameGateClicked() {
-    controlViewModel.game.started();
   }
 
   @FXML void onRoleGateClicked() {
-    controlViewModel.role.started();
   }
 
   @FXML void onLoginGateClicked() {
-    controlViewModel.login.started();
   }
 
   @FXML void onRankPlugClicked() {
-    controlViewModel.rank.started();
   }
 
   @FXML void onStartGameClicked() {
-    Optional<ButtonType> optional =
-        AlertModel.waitConfirm(bootstrapModel.state.getMessage())
-            .filter(AlertModel.isOK());
-    switch (bootstrapModel.state) {
+    State state = this.state.get();
+    String message = state.getMessage();
+    Optional<ButtonType> optional = AlertModel.waitConfirm(message).filter(AlertModel.isOK());
+    switch (state) {
       case INITIALIZED:
-        optional.ifPresent(buttonType -> startServer());
+        optional.ifPresent(buttonType -> attemptStart());
+        break;
+      case WAITING:
+        optional.ifPresent(type -> cancelWaiting());
         break;
       case STARTING:
         optional.ifPresent(buttonType -> cancelStartServer());
@@ -254,41 +285,50 @@ public final class BootstrapViewModel {
     }
   }
 
-  private void startServer() {
-    LocalDateTime targetTime = controlViewModel.startMode.computeStartDateTime();
-    bootstrapModel.updateProgram(configViewModel.config());
-    bootstrapModel.startProgram(targetTime, new BootstrapModel.OnStartProgramListener() {
-      @Override public void onStart() {
-        controlViewModel.console.append("开始启动服务..");
-        controlViewModel.startGame.starting();
-      }
-
+  private void attemptStart() {
+    state.setValue(State.WAITING);
+    controlViewModel.console.append("准备一键启动..");
+    LocalDateTime time = controlViewModel.startMode.computeStartDateTime();
+    bootstrapModel.waiting(time, new BootstrapModel.OnWaitingListener() {
       @Override public void onError(Throwable throwable) {
-        LoggerModel.BOOTSTRAP.error("一键启动出错", throwable);
-        ThrowableDialog.show(throwable);
+        state.setValue(State.INITIALIZED);
+        LoggerModel.BOOTSTRAP.error("等待启动时出错", throwable);
         controlViewModel.console.append(throwable.getMessage());
-        controlViewModel.startGame.stopped();
+        ThrowableDialog.show(throwable);
       }
 
-      @Override public void onFinish(Program program) {
-        if (program == null) {
-          controlViewModel.console.append("一键启动完毕。");
-          controlViewModel.startGame.running();
-          return;
-        }
-        switch (program) {
-          case DATABASE:
-            controlViewModel.database.started();
-          case ACCOUNT:
-          case LOGGER:
-          case CORE:
-          case GAME:
-          case ROLE:
-          case LOGIN:
-          case RANK:
-        }
+      @Override public void onFinish() {
+        BootstrapConfig config = settingViewModel.config.get();
+        startServer(config);
       }
     });
+  }
+
+  private void startServer(BootstrapConfig config) {
+    state.setValue(State.STARTING);
+    bootstrapModel.start(config, new BootstrapModel.OnStartListener() {
+      @Override public void onError(Throwable e) {
+        state.setValue(State.INITIALIZED);
+        LoggerModel.BOOTSTRAP.error("启动时出错", e);
+        controlViewModel.console.append(e.getMessage());
+        ThrowableDialog.show(e);
+      }
+
+      @Override public void onStart(Program program) {
+        //controlViewModel.console.append(message);
+      }
+
+      @Override public void onFinish() {
+        state.setValue(State.RUNNING);
+        controlViewModel.console.append("启动完毕");
+      }
+    });
+  }
+
+  private void cancelWaiting() {
+    state.setValue(State.INITIALIZED);
+    bootstrapModel.stopWaiting();
+    controlViewModel.console.append("已取消启动。");
   }
 
   @FXML void onFoundHomePathClicked() {
@@ -337,7 +377,7 @@ public final class BootstrapViewModel {
   }
 
   private String getHomePath() {
-    String home = configViewModel.homePath.getValue();
+    String home = settingViewModel.homePath.getValue();
     if (Strings.isNullOrEmpty(home)) {
       home = System.getProperty("user.dir");
     }
@@ -349,57 +389,57 @@ public final class BootstrapViewModel {
     switch (selectionModel.getSelectedIndex()) {
       default:
       case 0:
-        AlertModel.waitConfirm("恢复默认基本配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadDefaultConfig(configViewModel::update));
+        //AlertModel.waitConfirm("恢复默认基本配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadDefaultConfig(settingViewModel::update));
         break;
       case 1:
-        AlertModel.waitConfirm("恢复默认数据库配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadDefaultConfig(
-                config -> configViewModel.database.update(config.database)));
+        //AlertModel.waitConfirm("恢复默认数据库配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadDefaultConfig(
+        //        config -> settingViewModel.database.update(config.database)));
         break;
       case 2:
-        AlertModel.waitConfirm("恢复默认账号配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadDefaultConfig(
-                config -> configViewModel.account.update(config.account)));
+        //AlertModel.waitConfirm("恢复默认账号配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadDefaultConfig(
+        //        config -> settingViewModel.account.update(config.account)));
         break;
       case 3:
-        AlertModel.waitConfirm("恢复默认日志配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadDefaultConfig(
-                config -> configViewModel.logger.update(config.logger)));
+        //AlertModel.waitConfirm("恢复默认日志配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadDefaultConfig(
+        //        config -> settingViewModel.logger.update(config.logger)));
         break;
       case 4:
-        AlertModel.waitConfirm("恢复默认核心配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadDefaultConfig(
-                config -> configViewModel.core.update(config.core)));
+        //AlertModel.waitConfirm("恢复默认核心配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadDefaultConfig(
+        //        config -> settingViewModel.core.update(config.core)));
         break;
       case 5:
-        AlertModel.waitConfirm("恢复默认游戏配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadDefaultConfig(
-                config -> configViewModel.game.update(config.game)));
+        //AlertModel.waitConfirm("恢复默认游戏配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadDefaultConfig(
+        //        config -> settingViewModel.game.update(config.game)));
         break;
       case 6:
-        AlertModel.waitConfirm("恢复默认角色配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadDefaultConfig(
-                config -> configViewModel.role.update(config.role)));
+        //AlertModel.waitConfirm("恢复默认角色配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadDefaultConfig(
+        //        config -> settingViewModel.role.update(config.role)));
         break;
       case 7:
-        AlertModel.waitConfirm("恢复默认登陆配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadDefaultConfig(
-                config -> configViewModel.login.update(config.login)));
+        //AlertModel.waitConfirm("恢复默认登陆配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadDefaultConfig(
+        //        config -> settingViewModel.login.update(config.login)));
         break;
       case 8:
-        AlertModel.waitConfirm("恢复默认排行榜配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadDefaultConfig(
-                config -> configViewModel.rank.update(config.rank)));
+        //AlertModel.waitConfirm("恢复默认排行榜配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadDefaultConfig(
+        //        config -> settingViewModel.rank.update(config.rank)));
         break;
     }
   }
@@ -409,57 +449,57 @@ public final class BootstrapViewModel {
     switch (selectionModel.getSelectedIndex()) {
       default:
       case 0:
-        AlertModel.waitConfirm("重新加载基本配置？", "此操作将恢复当前配置为最近一次数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadConfig(configViewModel::update));
+        //AlertModel.waitConfirm("重新加载基本配置？", "此操作将恢复当前配置为最近一次数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadConfig(settingViewModel::update));
         break;
       case 1:
-        AlertModel.waitConfirm("重新加载数据库配置？", "此操作将恢复当前配置为最近一次数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadConfig(
-                config -> configViewModel.database.update(config.database)));
+        //AlertModel.waitConfirm("重新加载数据库配置？", "此操作将恢复当前配置为最近一次数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadConfig(
+        //        config -> settingViewModel.database.update(config.database)));
         break;
       case 2:
-        AlertModel.waitConfirm("重新加载账号配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadConfig(
-                config -> configViewModel.account.update(config.account)));
+        //AlertModel.waitConfirm("重新加载账号配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadConfig(
+        //        config -> settingViewModel.account.update(config.account)));
         break;
       case 3:
-        AlertModel.waitConfirm("重新加载日志配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadConfig(
-                config -> configViewModel.logger.update(config.logger)));
+        //AlertModel.waitConfirm("重新加载日志配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadConfig(
+        //        config -> settingViewModel.logger.update(config.logger)));
         break;
       case 4:
-        AlertModel.waitConfirm("重新加载核心配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadConfig(
-                config -> configViewModel.core.update(config.core)));
+        //AlertModel.waitConfirm("重新加载核心配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadConfig(
+        //        config -> settingViewModel.core.update(config.core)));
         break;
       case 5:
-        AlertModel.waitConfirm("重新加载游戏配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadConfig(
-                config -> configViewModel.game.update(config.game)));
+        //AlertModel.waitConfirm("重新加载游戏配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadConfig(
+        //        config -> settingViewModel.game.update(config.game)));
         break;
       case 6:
-        AlertModel.waitConfirm("重新加载角色配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadConfig(
-                config -> configViewModel.role.update(config.role)));
+        //AlertModel.waitConfirm("重新加载角色配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadConfig(
+        //        config -> settingViewModel.role.update(config.role)));
         break;
       case 7:
-        AlertModel.waitConfirm("重新加载登陆配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadConfig(
-                config -> configViewModel.login.update(config.login)));
+        //AlertModel.waitConfirm("重新加载登陆配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadConfig(
+        //        config -> settingViewModel.login.update(config.login)));
         break;
       case 8:
-        AlertModel.waitConfirm("重新加载排行榜配置？", "此操作将恢复当前配置为内置默认数值。")
-            .filter(AlertModel.isOK())
-            .ifPresent(type -> bootstrapModel.loadConfig(
-                config -> configViewModel.rank.update(config.rank)));
+        //AlertModel.waitConfirm("重新加载排行榜配置？", "此操作将恢复当前配置为内置默认数值。")
+        //    .filter(AlertModel.isOK())
+        //    .ifPresent(type -> bootstrapModel.loadConfig(
+        //        config -> settingViewModel.rank.update(config.rank)));
         break;
     }
   }
@@ -475,10 +515,10 @@ public final class BootstrapViewModel {
   }
 
   @FXML void onConfigSaveClicked() {
-    AlertModel.waitConfirm("保存当前所有配置？", "此操作将重新生成配置文件。")
-        .filter(AlertModel.isOK())
-        .map(type -> checkConfig())
-        .ifPresent(type -> bootstrapModel.saveConfig(configViewModel.config()));
+    //AlertModel.waitConfirm("保存当前所有配置？", "此操作将重新生成配置文件。")
+    //    .filter(AlertModel.isOK())
+    //    .map(type -> checkConfig())
+    //    .ifPresent(type -> bootstrapModel.saveConfig(settingViewModel.config()));
   }
 
   private void cancelStopServer() {
@@ -486,16 +526,16 @@ public final class BootstrapViewModel {
   }
 
   private void stopServer() {
-    bootstrapModel.stopServer();
+    bootstrapModel.stop();
   }
 
   private void cancelStartServer() {
     bootstrapModel.cancelStart();
-    bootstrapModel.state = BootstrapModel.State.INITIALIZED;
+    //bootstrapModel.state = BootstrapModel.State.INITIALIZED;
   }
 
   private boolean checkConfig() {
-    String home = configViewModel.homePath.getValue().trim();
+    String home = settingViewModel.homePath.getValue().trim();
     File file = new File(home);
     if (Strings.isNullOrEmpty(home) || !file.isDirectory() || !file.exists()) {
       Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -504,21 +544,21 @@ public final class BootstrapViewModel {
       homePathTextField.requestFocus();
       return false;
     }
-    if (Strings.isNullOrEmpty(configViewModel.databaseName.getValue().trim())) {
+    if (Strings.isNullOrEmpty(settingViewModel.databaseName.getValue().trim())) {
       Alert alert = new Alert(Alert.AlertType.WARNING);
       alert.setHeaderText("无效的数据库名称，请检查");
       alert.show();
       databaseNameTextField.requestFocus();
       return false;
     }
-    if (Strings.isNullOrEmpty(configViewModel.gameName.getValue().trim())) {
+    if (Strings.isNullOrEmpty(settingViewModel.gameName.getValue().trim())) {
       Alert alert = new Alert(Alert.AlertType.WARNING);
       alert.setHeaderText("无效的游戏名称，请检查");
       alert.show();
       gameNameTextField.requestFocus();
       return false;
     }
-    String address = configViewModel.gameHost.getValue();
+    String address = settingViewModel.gameHost.getValue();
     if (Strings.isNullOrEmpty(address) || !NetworkModel.isAddressV4(address)) {
       Alert alert = new Alert(Alert.AlertType.WARNING);
       alert.setHeaderText("无效的游戏 IP 地址，请检查");
@@ -527,5 +567,31 @@ public final class BootstrapViewModel {
       return false;
     }
     return true;
+  }
+
+  public enum State {
+    INITIALIZED("启动服务", "是否启动服务？"),
+    WAITING("停止等待", "是否停止等待？"),
+    STARTING("正在启动..", "正在启动，是否停止？"),
+    RUNNING("停止服务", "是否停止服务？"),
+    STOPPING("正在停止..", "正在停止，是否取消？"),
+    ;
+
+    private final String label;
+    private final String message;
+
+    State(String label, String message) {
+      this.label = label;
+      this.message = message;
+    }
+
+    public String getMessage() {
+      return message;
+    }
+
+    @Override
+    public String toString() {
+      return label;
+    }
   }
 }

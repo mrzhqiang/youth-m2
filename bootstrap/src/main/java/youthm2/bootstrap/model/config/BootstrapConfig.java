@@ -4,11 +4,13 @@ import com.google.common.base.Preconditions;
 import com.typesafe.config.Config;
 
 /**
- * BootstrapConfig
+ * 引导程序配置。
  *
  * @author qiang.zhang
  */
 public final class BootstrapConfig {
+  private static final String CONFIG_BOOTSTRAP = "bootstrap";
+
   private static final String HOME_PATH = "homePath";
   private static final String DB_NAME = "dbName";
   private static final String GAME_NAME = "gameName";
@@ -34,17 +36,20 @@ public final class BootstrapConfig {
   public boolean combineAction;
   public boolean wishAction;
 
-  public ServerConfig database;
-  public MonServerConfig account;
-  public ServerConfig logger;
-  public ServerConfig core;
-  public GateConfig game;
-  public GateConfig role;
-  public GateConfig login;
-  public ProgramConfig rank;
+  public final ServerConfig database = new ServerConfig();
+  public final MonServerConfig account = new MonServerConfig();
+  public final ServerConfig logger = new ServerConfig();
+  public final ServerConfig core = new ServerConfig();
+  public final GateConfig game = new GateConfig();
+  public final GateConfig role = new GateConfig();
+  public final GateConfig login = new GateConfig();
+  public final ProgramConfig rank = new GateConfig();
 
   public static BootstrapConfig of(Config config) {
     Preconditions.checkNotNull(config, "config == null");
+    Preconditions.checkState(config.hasPath(CONFIG_BOOTSTRAP),
+        "not found %s path", CONFIG_BOOTSTRAP);
+    config = config.getConfig(CONFIG_BOOTSTRAP);
     BootstrapConfig bootstrap = new BootstrapConfig();
     bootstrap.homePath = config.getString(HOME_PATH);
     bootstrap.dbName = config.getString(DB_NAME);
@@ -53,14 +58,14 @@ public final class BootstrapConfig {
     bootstrap.backupAction = config.getBoolean(BACKUP_ACTION);
     bootstrap.combineAction = config.getBoolean(COMBINE_ACTION);
     bootstrap.wishAction = config.getBoolean(WISH_ACTION);
-    bootstrap.database = ServerConfig.of(config.getConfig(CONFIG_DATABASE));
-    bootstrap.account = MonServerConfig.of(config.getConfig(CONFIG_ACCOUNT));
-    bootstrap.logger = ServerConfig.of(config.getConfig(CONFIG_LOGGER));
-    bootstrap.core = ServerConfig.of(config.getConfig(CONFIG_CORE));
-    bootstrap.game = GateConfig.of(config.getConfig(CONFIG_GAME));
-    bootstrap.role = GateConfig.of(config.getConfig(CONFIG_ROLE));
-    bootstrap.login = GateConfig.of(config.getConfig(CONFIG_LOGIN));
-    bootstrap.rank = ProgramConfig.of(config.getConfig(CONFIG_RANK));
+    bootstrap.database.update(config.getConfig(CONFIG_DATABASE));
+    bootstrap.account.update(config.getConfig(CONFIG_ACCOUNT));
+    bootstrap.logger.update(config.getConfig(CONFIG_LOGGER));
+    bootstrap.core.update(config.getConfig(CONFIG_CORE));
+    bootstrap.game.update(config.getConfig(CONFIG_GAME));
+    bootstrap.role.update(config.getConfig(CONFIG_ROLE));
+    bootstrap.login.update(config.getConfig(CONFIG_LOGIN));
+    bootstrap.rank.update(config.getConfig(CONFIG_RANK));
     return bootstrap;
   }
 }

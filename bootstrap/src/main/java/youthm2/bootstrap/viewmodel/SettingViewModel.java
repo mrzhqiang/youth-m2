@@ -1,6 +1,5 @@
 package youthm2.bootstrap.viewmodel;
 
-import com.google.common.base.Preconditions;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -25,7 +24,7 @@ import static javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactor
  *
  * @author qiang.zhang
  */
-final class ConfigViewModel {
+final class SettingViewModel {
   private static final IntegerSpinnerValueFactory LOCATION_VALUE_FACTORY =
       new IntegerSpinnerValueFactory(0, 9999, 0);
   private static final IntegerSpinnerValueFactory PORT_VALUE_FACTORY =
@@ -48,15 +47,27 @@ final class ConfigViewModel {
   final GateConfigViewModel login = new GateConfigViewModel();
   final ProgramConfigViewModel rank = new ProgramConfigViewModel();
 
-  void update(BootstrapConfig config) {
-    Preconditions.checkNotNull(config, "bootstrap config == null");
-    homePath.setValue(config.homePath);
-    databaseName.setValue(config.dbName);
-    gameName.setValue(config.gameName);
-    gameHost.setValue(config.gameHost);
-    backupAction.setValue(config.backupAction);
-    combineAction.setValue(config.combineAction);
-    wishAction.setValue(config.wishAction);
+  final ObjectProperty<BootstrapConfig> config = new SimpleObjectProperty<>();
+
+  SettingViewModel() {
+    // 单方向的更新，用于加载 config 时的逻辑实现，简化外部调用
+    config.addListener((observable, oldValue, newValue) -> {
+      homePath.setValue(newValue.homePath);
+      databaseName.setValue(newValue.dbName);
+      gameName.setValue(newValue.gameName);
+      gameHost.setValue(newValue.gameHost);
+      backupAction.setValue(newValue.backupAction);
+      combineAction.setValue(newValue.combineAction);
+      wishAction.setValue(newValue.wishAction);
+      database.config.setValue(newValue.database);
+      account.config.setValue(newValue.account);
+      logger.config.setValue(newValue.logger);
+      core.config.setValue(newValue.core);
+      game.config.setValue(newValue.game);
+      role.config.setValue(newValue.role);
+      login.config.setValue(newValue.login);
+      rank.config.setValue(newValue.rank);
+    });
   }
 
   void bind(TextField homePath, TextField dbName, TextField gameName, TextField gameAddress,
@@ -68,26 +79,6 @@ final class ConfigViewModel {
     backupAction.selectedProperty().bindBidirectional(this.backupAction);
     combineAction.selectedProperty().bindBidirectional(this.combineAction);
     wishAction.selectedProperty().bindBidirectional(this.wishAction);
-  }
-
-  BootstrapConfig config() {
-    BootstrapConfig config = new BootstrapConfig();
-    config.homePath = homePath.get();
-    config.dbName = databaseName.get();
-    config.gameName = gameName.get();
-    config.gameHost = gameHost.get();
-    config.backupAction = backupAction.get();
-    config.combineAction = combineAction.get();
-    config.wishAction = wishAction.get();
-    config.database = database.get();
-    config.account = account.get();
-    config.logger = logger.get();
-    config.core = core.get();
-    config.game = game.get();
-    config.role = role.get();
-    config.login = login.get();
-    config.rank = rank.get();
-    return config;
   }
 
   /**
@@ -103,12 +94,15 @@ final class ConfigViewModel {
     final BooleanProperty enabled = new SimpleBooleanProperty();
     final StringProperty path = new SimpleStringProperty();
 
-    void update(ProgramConfig config) {
-      Preconditions.checkNotNull(config, "config == null");
-      x.getValue().setValue(config.x);
-      y.getValue().setValue(config.y);
-      enabled.setValue(config.enabled);
-      path.setValue(config.path);
+    final ObjectProperty<ProgramConfig> config = new SimpleObjectProperty<>();
+
+    ProgramConfigViewModel() {
+      config.addListener((observable, oldValue, newValue) -> {
+        x.get().setValue(newValue.x);
+        y.get().setValue(newValue.y);
+        enabled.setValue(newValue.enabled);
+        path.setValue(newValue.path);
+      });
     }
 
     void bind(Spinner<Integer> x, Spinner<Integer> y, CheckBox enabled, TextField path) {
@@ -117,45 +111,31 @@ final class ConfigViewModel {
       enabled.selectedProperty().bindBidirectional(this.enabled);
       path.textProperty().bindBidirectional(this.path);
     }
-
-    ProgramConfig get() {
-      ProgramConfig config = new ProgramConfig();
-      config.x = x.get().getValue();
-      config.y = y.get().getValue();
-      config.enabled = enabled.get();
-      config.path = path.get();
-      return config;
-    }
   }
 
   /**
    * 网关配置视图模型。
-   *
-   * @author qiang.zhang
    */
   static class GateConfigViewModel extends ProgramConfigViewModel {
     final ObjectProperty<SpinnerValueFactory<Integer>> port =
         new SimpleObjectProperty<>(PORT_VALUE_FACTORY);
 
-    void update(GateConfig config) {
-      super.update(config);
-      port.getValue().setValue(config.port);
+    final ObjectProperty<GateConfig> config = new SimpleObjectProperty<>();
+
+    GateConfigViewModel() {
+      config.addListener((observable, oldValue, newValue) -> {
+        x.get().setValue(newValue.x);
+        y.get().setValue(newValue.y);
+        enabled.setValue(newValue.enabled);
+        path.setValue(newValue.path);
+        port.get().setValue(newValue.port);
+      });
     }
 
     void bind(Spinner<Integer> x, Spinner<Integer> y, CheckBox enabled, TextField path,
         Spinner<Integer> port) {
       super.bind(x, y, enabled, path);
       port.valueFactoryProperty().bindBidirectional(this.port);
-    }
-
-    GateConfig get() {
-      GateConfig config = new GateConfig();
-      config.x = x.get().getValue();
-      config.y = y.get().getValue();
-      config.enabled = enabled.get();
-      config.path = path.get();
-      config.port = port.get().getValue();
-      return config;
     }
   }
 
@@ -168,10 +148,19 @@ final class ConfigViewModel {
     final ObjectProperty<SpinnerValueFactory<Integer>> serverPort =
         new SimpleObjectProperty<>(PORT_VALUE_FACTORY);
 
-    void update(ServerConfig config) {
-      super.update(config);
-      port.getValue().setValue(config.port);
-      serverPort.getValue().setValue(config.serverPort);
+    final ObjectProperty<ServerConfig> config = new SimpleObjectProperty<>();
+
+    ServerConfigViewModel() {
+      config.addListener((observable, oldValue, newValue) -> {
+        x.get().setValue(newValue.x);
+        y.get().setValue(newValue.y);
+        enabled.setValue(newValue.enabled);
+        path.setValue(newValue.path);
+        port.get().setValue(newValue.port);
+        if (newValue.serverPort != null) {
+          serverPort.get().setValue(newValue.serverPort);
+        }
+      });
     }
 
     void bind(Spinner<Integer> x, Spinner<Integer> y, CheckBox enabled, TextField path,
@@ -182,17 +171,6 @@ final class ConfigViewModel {
         serverPort.valueFactoryProperty().bindBidirectional(this.serverPort);
       }
     }
-
-    ServerConfig get() {
-      ServerConfig config = new ServerConfig();
-      config.x = x.get().getValue();
-      config.y = y.get().getValue();
-      config.enabled = enabled.get();
-      config.path = path.get();
-      config.port = port.get().getValue();
-      config.serverPort = serverPort.get().getValue();
-      return config;
-    }
   }
 
   /**
@@ -202,27 +180,23 @@ final class ConfigViewModel {
     final ObjectProperty<SpinnerValueFactory<Integer>> monPort =
         new SimpleObjectProperty<>(PORT_VALUE_FACTORY);
 
-    void update(MonServerConfig config) {
-      super.update(config);
-      monPort.getValue().setValue(config.monPort);
+    final ObjectProperty<MonServerConfig> config = new SimpleObjectProperty<>();
+
+    MonServerConfigViewModel() {
+      config.addListener((observable, oldValue, newValue) -> {
+        x.get().setValue(newValue.x);
+        y.get().setValue(newValue.y);
+        enabled.setValue(newValue.enabled);
+        path.setValue(newValue.path);
+        port.get().setValue(newValue.port);
+        serverPort.get().setValue(newValue.serverPort);
+      });
     }
 
     void bind(Spinner<Integer> x, Spinner<Integer> y, CheckBox enabled, TextField path,
         Spinner<Integer> port, Spinner<Integer> serverPort, Spinner<Integer> publicPort) {
       super.bind(x, y, enabled, path, port, serverPort);
       publicPort.valueFactoryProperty().bindBidirectional(this.monPort);
-    }
-
-    MonServerConfig get() {
-      MonServerConfig config = new MonServerConfig();
-      config.x = x.get().getValue();
-      config.y = y.get().getValue();
-      config.enabled = enabled.get();
-      config.path = path.get();
-      config.port = port.get().getValue();
-      config.serverPort = serverPort.get().getValue();
-      config.monPort = monPort.get().getValue();
-      return config;
     }
   }
 }
