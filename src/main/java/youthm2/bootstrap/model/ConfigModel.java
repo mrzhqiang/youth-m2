@@ -3,17 +3,16 @@ package youthm2.bootstrap.model;
 import com.google.common.base.Preconditions;
 import com.typesafe.config.ConfigFactory;
 import java.io.File;
-import rx.Observable;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 import youthm2.bootstrap.model.config.BootstrapConfig;
-import youthm2.common.Json;
 import youthm2.common.dialog.ThrowableDialog;
 import youthm2.common.model.FileModel;
 import youthm2.common.model.SchedulerModel;
 
-import static youthm2.common.Environment.debugDirectory;
-import static youthm2.common.Environment.isDebug;
-import static youthm2.common.Environment.workDirectory;
+//import static youthm2.common.Environment.debugDirectory;
+//import static youthm2.common.Environment.isDebug;
+//import static youthm2.common.Environment.workDirectory;
 
 /**
  * 配置模型。
@@ -61,7 +60,7 @@ public final class ConfigModel {
     Observable.just(getConfigFile())
         .subscribeOn(Schedulers.io())
         .doOnNext(FileModel::createOrExists)
-        .doOnNext(file -> FileModel.onceWrite(file, Json.prettyPrint(Json.toJson(config))))
+        //.doOnNext(file -> FileModel.onceWrite(file, Json.prettyPrint(Json.toJson(config))))
         .map(file -> config)
         .observeOn(SchedulerModel.main())
         .subscribe(listener::onSaved, e -> ThrowableDialog.show("保存配置出错", e));
@@ -69,7 +68,7 @@ public final class ConfigModel {
 
   private File getConfigFile() {
     // debug 模式是指，在 IDEA 中调试程序，其他 IDE 暂未支持。
-    String parent = isDebug() ? debugDirectory() : workDirectory();
-    return new File(parent, CONFIG_FILE);
+    //String parent = isDebug() ? debugDirectory() : workDirectory();
+    return new File(/*parent, */CONFIG_FILE);
   }
 }

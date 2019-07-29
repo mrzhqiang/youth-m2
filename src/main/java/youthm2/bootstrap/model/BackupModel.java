@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import rx.Observable;
-import rx.Scheduler;
-import rx.Subscriber;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+//import io.reactivex.Subscriber;
+import io.reactivex.schedulers.Schedulers;
 import youthm2.bootstrap.model.backup.BackupData;
-import youthm2.common.Environment;
+//import youthm2.common.Environment;
 import youthm2.common.dialog.ThrowableDialog;
 import youthm2.common.model.SchedulerModel;
 
@@ -56,7 +56,7 @@ public final class BackupModel {
             .map(this::toBackupData)
             .collect(Collectors.toList()))
         .observeOn(SchedulerModel.main())
-        .subscribe(new Subscriber<List<BackupData>>() {
+        .subscribe(/*new Subscriber<List<BackupData>>() {
           @Override public void onCompleted() {
             // no-op
           }
@@ -68,16 +68,16 @@ public final class BackupModel {
           @Override public void onNext(List<BackupData> dataList) {
             listener.onLoaded(dataList);
           }
-        });
+        }*/);
   }
 
   private File getBackupFile() {
     File backupFile;
-    if (Environment.isDebug()) {
-      backupFile = new File(Environment.debugDirectory(), BACKUP_FILE);
-    } else {
-      backupFile = new File(Environment.workDirectory(), BACKUP_FILE);
-    }
+    //if (Environment.isDebug()) {
+      backupFile = new File(/*Environment.debugDirectory(), */BACKUP_FILE);
+    //} else {
+    //  backupFile = new File(Environment.workDirectory(), BACKUP_FILE);
+    //}
     return backupFile;
   }
 

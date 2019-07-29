@@ -1,8 +1,8 @@
 package youthm2.common.model;
 
 import javafx.application.Platform;
-import rx.Scheduler;
-import rx.schedulers.Schedulers;
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * SchedulerModel
