@@ -1,9 +1,9 @@
 {
   "bootstrap" : {
-    "home" : "./sample",
+    "homePath" : "./sample",
     "dbName" : "兰达尔引擎",
     "gameName" : "兰达尔第一季",
-    "gameAddress" : "127.0.0.1",
+    "gameHost" : "127.0.0.1",
     "backupAction" : true,
     "database" : {
       "enabled" : true,
@@ -63,7 +63,6 @@
       "enabled" : true,
       "x" : "200",
       "y" : "0",
-      "port" : "0",
       "path" : "/plugin/rank/rank.exe"
     }
   }
