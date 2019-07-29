@@ -43,6 +43,8 @@
         <jackson.version>2.9.9</jackson.version>
         <!-- 异步处理 -->
         <rxjava.version>1.3.8</rxjava.version>
+        <rxjava2.version>2.2.10</rxjava2.version>
+        <rxjava2fx.version>2.2.2</rxjava2fx.version>
         <!-- 扩展组件 -->
         <controlsfx.version>8.40.15</controlsfx.version>
     </properties>
@@ -104,11 +106,15 @@
                 <artifactId>rxjava</artifactId>
                 <version>${rxjava.version}</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
             <dependency>
-                <groupId>org.controlsfx</groupId>
-                <artifactId>controlsfx</artifactId>
-                <version>${controlsfx.version}</version>
+                <groupId>io.reactivex.rxjava2</groupId>
+                <artifactId>rxjava</artifactId>
+                <version>${rxjava2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.reactivex.rxjava2</groupId>
+                <artifactId>rxjavafx</artifactId>
+                <version>${rxjava2fx.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
