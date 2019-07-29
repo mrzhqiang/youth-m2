@@ -6,10 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="core" />
-        <module name="database" />
-        <module name="common" />
-        <module name="bootstrap" />
+        <module name="youth-m2" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -17,7 +14,7 @@
       <module name="common" target="1.8" />
       <module name="core" target="1.8" />
       <module name="database" target="1.8" />
-      <module name="youth-m2" target="1.5" />
+      <module name="youth-m2" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

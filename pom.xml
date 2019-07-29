@@ -1,165 +1,129 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <!-- 项目声明 -->
-    <groupId>com.github.mrzhqiang.youth-m2</groupId>
-    <artifactId>root</artifactId>
-    <version>1.0</version>
-    <packaging>pom</packaging>
+  <!-- 项目声明 -->
+  <groupId>com.github.mrzhqiang</groupId>
+  <artifactId>youth-m2</artifactId>
+  <version>1.0</version>
 
-    <!-- 项目资料 -->
-    <name>Youth M2 (Parent)</name>
-    <description>Java platform game engine ported from apple-m2.</description>
-    <url>https://github.com/mrzhqiang/youth-m2</url>
+  <!-- 项目属性 -->
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- JDK 版本 -->
+    <java.version>1.8</java.version>
+    <!-- 测试框架 -->
+    <junit.version>4.12</junit.version>
+    <!-- 日志打印 -->
+    <slf4j.version>1.7.25</slf4j.version>
+    <logback.version>1.2.3</logback.version>
+    <!-- 辅助工具 -->
+    <helper.version>2018.1.2</helper.version>
+    <!-- 异步处理 -->
+    <rxjava2.version>2.2.10</rxjava2.version>
+    <rxjava2fx.version>2.2.2</rxjava2fx.version>
+  </properties>
 
-    <modules>
-        <!-- 公共模块 -->
-        <module>common</module>
-        <!-- 核心服务 -->
-        <module>core</module>
-        <!-- 引导启动 -->
-        <module>bootstrap</module>
-        <!-- 数据库服务 -->
-        <module>database</module>
-        <!-- TODO more module -->
-    </modules>
+  <!-- 依赖管理 -->
+  <dependencies>
+    <!-- https://mvnrepository.com/artifact/junit/junit -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>${logback.version}</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.github.mrzhqiang.helper/helper -->
+    <dependency>
+      <groupId>com.github.mrzhqiang.helper</groupId>
+      <artifactId>helper</artifactId>
+      <version>${helper.version}</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.github.mrzhqiang.helper.database/api -->
+    <dependency>
+      <groupId>com.github.mrzhqiang.helper.database</groupId>
+      <artifactId>api</artifactId>
+      <version>${helper.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.github.mrzhqiang.helper.database/db-redis -->
+    <dependency>
+      <groupId>com.github.mrzhqiang.helper.database</groupId>
+      <artifactId>db-redis</artifactId>
+      <version>${helper.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.reactivex.rxjava2</groupId>
+      <artifactId>rxjava</artifactId>
+      <version>${rxjava2.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.reactivex.rxjava2</groupId>
+      <artifactId>rxjavafx</artifactId>
+      <version>${rxjava2fx.version}</version>
+    </dependency>
+  </dependencies>
 
-    <!-- 项目属性 -->
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- JDK 版本 -->
-        <java.version>1.8</java.version>
-        <!-- 测试框架 -->
-        <junit.version>4.12</junit.version>
-        <!-- 日志打印 -->
-        <slf4j.version>1.7.25</slf4j.version>
-        <logback.version>1.2.3</logback.version>
-        <!-- 辅助工具 -->
-        <helper.version>2018.1.2</helper.version>
-        <!-- json 工具 -->
-        <jackson.version>2.9.9</jackson.version>
-        <!-- 异步处理 -->
-        <rxjava.version>1.3.8</rxjava.version>
-        <rxjava2.version>2.2.10</rxjava2.version>
-        <rxjava2fx.version>2.2.2</rxjava2fx.version>
-        <!-- 扩展组件 -->
-        <controlsfx.version>8.40.15</controlsfx.version>
-    </properties>
-
-    <!-- 依赖管理 -->
-    <dependencyManagement>
-        <dependencies>
-            <!-- https://mvnrepository.com/artifact/junit/junit -->
+  <!-- 项目构建 -->
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.6.1</version>
+          <configuration>
+            <compilerId>javac-with-errorprone</compilerId>
+            <forceJavacCompilerUse>true</forceJavacCompilerUse>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+          </configuration>
+          <dependencies>
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
+              <groupId>org.codehaus.plexus</groupId>
+              <artifactId>plexus-compiler-javac-errorprone</artifactId>
+              <version>2.8.1</version>
             </dependency>
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_core</artifactId>
+              <version>2.0.16</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>${logback.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/com.github.mrzhqiang.helper/helper -->
-            <dependency>
-                <groupId>com.github.mrzhqiang.helper</groupId>
-                <artifactId>helper</artifactId>
-                <version>${helper.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jdk8 -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-jdk8</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/io.reactivex/rxjava -->
-            <dependency>
-                <groupId>io.reactivex</groupId>
-                <artifactId>rxjava</artifactId>
-                <version>${rxjava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.reactivex.rxjava2</groupId>
-                <artifactId>rxjava</artifactId>
-                <version>${rxjava2.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.reactivex.rxjava2</groupId>
-                <artifactId>rxjavafx</artifactId>
-                <version>${rxjava2fx.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <!-- 项目构建 -->
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.1</version>
-                    <configuration>
-                        <compilerId>javac-with-errorprone</compilerId>
-                        <forceJavacCompilerUse>true</forceJavacCompilerUse>
-                        <source>${java.version}</source>
-                        <target>${java.version}</target>
-                    </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.codehaus.plexus</groupId>
-                            <artifactId>plexus-compiler-javac-errorprone</artifactId>
-                            <version>2.8.1</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>com.google.errorprone</groupId>
-                            <artifactId>error_prone_core</artifactId>
-                            <version>2.0.16</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <!-- 本地化打包插件 -->
-                <!-- 使用 jfx:native 在 IDEA 右侧的 Maven 中运行即可 -->
-                <!-- 或者运行全部命令：mvn jfx:native -->
-                <plugin>
-                    <groupId>com.zenjava</groupId>
-                    <artifactId>javafx-maven-plugin</artifactId>
-                    <version>8.8.3</version>
-                    <configuration>
-                        <vendor>Youth M2</vendor>
-                        <!-- 这里为了一键打包，随便填了个入口类 -->
-                        <mainClass>root.Root</mainClass>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+          </dependencies>
+        </plugin>
+        <!-- 本地化打包插件 -->
+        <!-- 使用 jfx:native 在 IDEA 右侧的 Maven 中运行即可 -->
+        <!-- 或者运行全部命令：mvn jfx:native -->
+        <plugin>
+          <groupId>com.zenjava</groupId>
+          <artifactId>javafx-maven-plugin</artifactId>
+          <version>8.8.3</version>
+          <configuration>
+            <vendor>Youth M2</vendor>
+            <!-- 这里为了一键打包，随便填了个入口类 -->
+            <mainClass>root.Root</mainClass>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 </project>
