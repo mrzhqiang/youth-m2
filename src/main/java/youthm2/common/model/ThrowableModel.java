@@ -27,9 +27,4 @@ public final class ThrowableModel {
     }
     return builder.toString();
   }
-
-  public static void main(String[] args) {
-    System.out.println(print(new RuntimeException("print me")));
-    System.out.println(printStackTrace());
-  }
 }

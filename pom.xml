@@ -7,7 +7,7 @@
   <!-- 项目声明 -->
   <groupId>com.github.mrzhqiang</groupId>
   <artifactId>youth-m2</artifactId>
-  <version>1.0</version>
+  <version>2019.1.0</version>
 
   <!-- 项目属性 -->
   <properties>
@@ -21,8 +21,9 @@
     <logback.version>1.2.3</logback.version>
     <!-- 辅助工具 -->
     <helper.version>2018.1.2</helper.version>
-    <!-- 异步处理 -->
+    <!-- 逻辑异步处理 -->
     <rxjava2.version>2.2.10</rxjava2.version>
+    <!-- 组件异步处理 -->
     <rxjava2fx.version>2.2.2</rxjava2fx.version>
   </properties>
 

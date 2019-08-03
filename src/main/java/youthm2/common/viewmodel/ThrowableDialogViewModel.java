@@ -1,11 +1,11 @@
 package youthm2.common.viewmodel;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
+import java.net.URL;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import youthm2.common.dialog.TextDialog;
 import youthm2.common.model.ThrowableModel;
 
 /**
@@ -14,6 +14,30 @@ import youthm2.common.model.ThrowableModel;
  * @author qiang.zhang
  */
 public final class ThrowableDialogViewModel {
+  private static final URL FXML =
+      ThrowableDialogViewModel.class.getResource("/throwable-dialog.fxml");
+  private static final URL CSS =
+      ThrowableDialogViewModel.class.getResource("/common.css");
+
+  public static void show(String title, Throwable throwable) {
+    try {
+      FXMLLoader loader = new FXMLLoader(FXML);
+      Scene scene = new Scene(loader.load());
+      scene.getStylesheets().add(CSS.toExternalForm());
+      Stage stage = new Stage();
+      stage.setTitle("错误");
+      stage.setScene(scene);
+      ThrowableDialogViewModel viewModel = loader.getController();
+      viewModel.errorDialogTitle.setText(title);
+      viewModel.errorDialogContent.setText(throwable.getMessage());
+      viewModel.debugInfo = ThrowableModel.print(throwable);
+      viewModel.stage = stage;
+      stage.showAndWait();
+    } catch (Exception e) {
+      AlertViewModel.showError(e);
+    }
+  }
+
   @FXML Label errorDialogTitle;
   @FXML Label errorDialogContent;
 
@@ -21,36 +45,10 @@ public final class ThrowableDialogViewModel {
   private String debugInfo;
 
   @FXML void onShowDetailsClicked() {
-    TextDialog.show(debugInfo);
+    TextDialogViewModel.show(debugInfo);
   }
 
   @FXML void onCloseClicked() {
     stage.close();
-  }
-
-  public ThrowableDialogViewModel setTitle(String title) {
-    errorDialogTitle.setText(title);
-    return this;
-  }
-
-  public ThrowableDialogViewModel setContent(String content) {
-    errorDialogContent.setText(content);
-    return this;
-  }
-
-  public ThrowableDialogViewModel setStage(Stage stage) {
-    Preconditions.checkNotNull(stage, "stage == null");
-    this.stage = stage;
-    return this;
-  }
-
-  public ThrowableDialogViewModel setDebugInfo(String debugInfo) {
-    this.debugInfo =
-        Strings.isNullOrEmpty(debugInfo) ? ThrowableModel.printStackTrace() : debugInfo;
-    return this;
-  }
-
-  public void showAndWait() {
-    stage.showAndWait();
   }
 }

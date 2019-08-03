@@ -1,12 +1,12 @@
 package youthm2.bootstrap.model;
 
 import com.google.common.base.Preconditions;
+import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import youthm2.bootstrap.model.config.BootstrapConfig;
 import youthm2.bootstrap.model.program.Program;
-import youthm2.common.model.SchedulerModel;
 
 /**
  * 引导模型。
@@ -35,7 +35,7 @@ public final class BootstrapModel {
         .filter(aLong -> LocalDateTime.now().isAfter(time))
         // RxJava 只是一种异步调度器，建议组装一下逻辑实现
         // 回调就需要更新 UI，此时应该放到主线程上运行
-        .observeOn(SchedulerModel.main())
+        .observeOn(JavaFxScheduler.platform())
         // interval 不会自动结束，所以 onCompleted 不会调用到，并且需要主动调用 unsubscribe 去结束
         .subscribe(/*new Subscriber<Long>() {
           @Override public void onCompleted() {

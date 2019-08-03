@@ -2,13 +2,12 @@ package youthm2.bootstrap.model;
 
 import com.google.common.base.Preconditions;
 import com.typesafe.config.ConfigFactory;
+import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import java.io.File;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import youthm2.bootstrap.model.config.BootstrapConfig;
-import youthm2.common.dialog.ThrowableDialog;
 import youthm2.common.model.FileModel;
-import youthm2.common.model.SchedulerModel;
 
 //import static youthm2.common.Environment.debugDirectory;
 //import static youthm2.common.Environment.isDebug;
@@ -39,7 +38,7 @@ public final class ConfigModel {
         .map(config -> config.withFallback(ConfigFactory.load()))
         .map(BootstrapConfig::of)
         // 订阅在主线程，可以更新 UI
-        .observeOn(SchedulerModel.main())
+        .observeOn(JavaFxScheduler.platform())
         .subscribe(listener::onLoaded, e -> ThrowableDialog.show("加载配置出错", e));
   }
 
@@ -51,7 +50,7 @@ public final class ConfigModel {
         .subscribeOn(Schedulers.io())
         .map(s -> ConfigFactory.load())
         .map(BootstrapConfig::of)
-        .observeOn(SchedulerModel.main())
+        .observeOn(JavaFxScheduler.platform())
         .subscribe(listener::onLoaded, e -> ThrowableDialog.show("加载默认配置出错", e));
   }
 
@@ -62,7 +61,7 @@ public final class ConfigModel {
         .doOnNext(FileModel::createOrExists)
         //.doOnNext(file -> FileModel.onceWrite(file, Json.prettyPrint(Json.toJson(config))))
         .map(file -> config)
-        .observeOn(SchedulerModel.main())
+        .observeOn(JavaFxScheduler.platform())
         .subscribe(listener::onSaved, e -> ThrowableDialog.show("保存配置出错", e));
   }
 

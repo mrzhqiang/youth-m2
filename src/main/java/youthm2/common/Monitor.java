@@ -4,15 +4,19 @@ import youthm2.common.monitor.SimpleMonitor;
 
 /**
  * 监视器。
+ * <p>
+ * 这是一个简单的监视器，主要用来打印时间戳信息，看看哪些步骤花费的时间较长，以提供优化方向。
+ *
+ * @author mrzhqiang
  */
 public interface Monitor {
   /**
    * 返回监视器的具体实现。
+   * <p>
+   * 注意，这个方法每次调用都返回一个新的实例，并且需要在 IDEA 中以调试模式运行，才会真正去打印时间戳。
    */
   static Monitor getInstance() {
-    // 当前仅在 IDEA 中调试，因此只判断 IDEA 调试模式下的系统参数
     if (Boolean.parseBoolean(System.getProperty("intellij.debug.agent"))) {
-      // 调试模式下，才具备监视器的真正功能。
       return new SimpleMonitor();
     }
     return EMPTY;

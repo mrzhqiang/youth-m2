@@ -1,4 +1,4 @@
-package youthm2.common.model;
+package youthm2.common.viewmodel;
 
 import java.io.File;
 import java.util.Optional;
@@ -7,12 +7,12 @@ import javafx.stage.FileChooser;
 import javax.annotation.Nullable;
 
 /**
- * 选择弹窗模型。
+ * 选择弹窗视图模型。
  *
  * @author qiang.zhang
  */
-public final class ChooserModel {
-  private ChooserModel() {
+public final class ChooserViewModel {
+  private ChooserViewModel() {
     throw new AssertionError("No instance");
   }
 

@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import youthm2.common.dialog.ThrowableDialog;
 import youthm2.common.Monitor;
 import youthm2.common.model.LoggerModel;
 
@@ -46,7 +45,7 @@ public final class Bootstrap extends Application {
     } catch (Exception e) {
       String msg = "引导程序启动失败！";
       LoggerModel.BOOTSTRAP.error(msg, e);
-      ThrowableDialog.show(msg, e);
+      //ThrowableDialog.show(msg, e);
     }
     monitor.report("bootstrap started");
   }

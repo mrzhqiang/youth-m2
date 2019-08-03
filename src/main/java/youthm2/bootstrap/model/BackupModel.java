@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,8 +17,6 @@ import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 import youthm2.bootstrap.model.backup.BackupData;
 //import youthm2.common.Environment;
-import youthm2.common.dialog.ThrowableDialog;
-import youthm2.common.model.SchedulerModel;
 
 /**
  * 文件备份管理器。
@@ -55,7 +54,7 @@ public final class BackupModel {
             .map(config::getConfig)
             .map(this::toBackupData)
             .collect(Collectors.toList()))
-        .observeOn(SchedulerModel.main())
+        .observeOn(JavaFxScheduler.platform())
         .subscribe(/*new Subscriber<List<BackupData>>() {
           @Override public void onCompleted() {
             // no-op
