@@ -1,5 +1,6 @@
 package youthm2.bootstrap;
 
+import java.net.URL;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import youthm2.common.Monitor;
 import youthm2.common.model.LoggerModel;
+import youthm2.common.viewmodel.ThrowableDialogViewModel;
 
 /**
  * 引导程序。
@@ -26,6 +28,10 @@ import youthm2.common.model.LoggerModel;
  */
 public final class Bootstrap extends Application {
   private static final String TITLE = "引导程序 - 青春引擎";
+  private static final URL FXML =
+      Bootstrap.class.getResource("/youthm2/bootstrap/application.fxml");
+  private static final URL CSS =
+      Bootstrap.class.getResource("/youthm2/bootstrap/application.css");
 
   public static void main(String[] args) {
     launch(args);
@@ -33,20 +39,19 @@ public final class Bootstrap extends Application {
 
   @Override
   public void start(Stage primaryStage) {
-    Monitor monitor = Monitor.getInstance();
     try {
-      // Read file fxml and draw interface.
-      Parent root = FXMLLoader.load(getClass().getResource("/bootstrap-layout.fxml"));
+      Monitor monitor = Monitor.getInstance();
       primaryStage.setTitle(TITLE);
+      Parent root = FXMLLoader.load(FXML);
       Scene scene = new Scene(root);
-      scene.getStylesheets().add(getClass().getResource("/application.css").toExternalForm());
+      scene.getStylesheets().add(CSS.toExternalForm());
       primaryStage.setScene(scene);
       primaryStage.show();
+      monitor.report("bootstrap started");
     } catch (Exception e) {
       String msg = "引导程序启动失败！";
       LoggerModel.BOOTSTRAP.error(msg, e);
-      //ThrowableDialog.show(msg, e);
+      ThrowableDialogViewModel.show(msg, e);
     }
-    monitor.report("bootstrap started");
   }
 }

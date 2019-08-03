@@ -15,17 +15,17 @@ import youthm2.common.model.ThrowableModel;
  */
 public final class ThrowableDialogViewModel {
   private static final URL FXML =
-      ThrowableDialogViewModel.class.getResource("/throwable-dialog.fxml");
+      ThrowableDialogViewModel.class.getResource("/youthm2/common/throwable-dialog.fxml");
   private static final URL CSS =
-      ThrowableDialogViewModel.class.getResource("/common.css");
+      ThrowableDialogViewModel.class.getResource("/youthm2/common/common.css");
 
   public static void show(String title, Throwable throwable) {
     try {
+      Stage stage = new Stage();
+      stage.setTitle("错误");
       FXMLLoader loader = new FXMLLoader(FXML);
       Scene scene = new Scene(loader.load());
       scene.getStylesheets().add(CSS.toExternalForm());
-      Stage stage = new Stage();
-      stage.setTitle("错误");
       stage.setScene(scene);
       ThrowableDialogViewModel viewModel = loader.getController();
       viewModel.errorDialogTitle.setText(title);

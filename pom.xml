@@ -120,8 +120,7 @@
           <version>8.8.3</version>
           <configuration>
             <vendor>Youth M2</vendor>
-            <!-- 这里为了一键打包，随便填了个入口类 -->
-            <mainClass>root.Root</mainClass>
+            <mainClass>youthm2.bootstrap.Bootstrap</mainClass>
           </configuration>
         </plugin>
       </plugins>

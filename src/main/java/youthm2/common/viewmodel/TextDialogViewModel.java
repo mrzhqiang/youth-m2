@@ -15,16 +15,18 @@ import javafx.stage.Stage;
  * @author qiang.zhang
  */
 public final class TextDialogViewModel {
-  private static final URL FXML = TextDialogViewModel.class.getResource("/text-dialog.fxml");
-  private static final URL CSS = TextDialogViewModel.class.getResource("/common.css");
+  private static final URL FXML =
+      TextDialogViewModel.class.getResource("/youthm2/common/text-dialog.fxml");
+  private static final URL CSS =
+      TextDialogViewModel.class.getResource("/youthm2/common/common.css");
 
   public static void show(String text) {
     try {
+      Stage stage = new Stage();
+      stage.setTitle("详情");
       FXMLLoader loader = new FXMLLoader(FXML);
       Scene scene = new Scene(loader.load());
       scene.getStylesheets().add(CSS.toExternalForm());
-      Stage stage = new Stage();
-      stage.setTitle("详情");
       stage.setScene(scene);
       TextDialogViewModel viewModel = loader.getController();
       viewModel.stage = stage;
