@@ -1,6 +1,8 @@
 package youthm2.bootstrap.viewmodel;
 
 import com.google.common.base.Strings;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -25,10 +27,11 @@ import youthm2.bootstrap.model.ConfigModel;
 import youthm2.bootstrap.model.config.BootstrapConfig;
 import youthm2.bootstrap.model.program.Program;
 import youthm2.common.Monitor;
-import youthm2.common.viewmodel.AlertViewModel;
-import youthm2.common.viewmodel.ChooserViewModel;
 import youthm2.common.model.LoggerModel;
 import youthm2.common.model.NetworkModel;
+import youthm2.common.viewmodel.AlertViewModel;
+import youthm2.common.viewmodel.ChooserViewModel;
+import youthm2.common.viewmodel.ThrowableDialogViewModel;
 
 /**
  * 引导程序的视图模型。
@@ -142,6 +145,9 @@ public final class BootstrapViewModel {
   /* 3. 备份管理 */
   /* 4. 数据清理 */
 
+  private final ObjectProperty<Config> config = new SimpleObjectProperty<>(ConfigFactory.load());
+  private final ObjectProperty<State> state = new SimpleObjectProperty<>(State.INITIALIZED);
+
   private final ControlViewModel controlViewModel = new ControlViewModel();
   private final SettingViewModel settingViewModel = new SettingViewModel();
 
@@ -149,7 +155,6 @@ public final class BootstrapViewModel {
   private final BootstrapModel bootstrapModel = new BootstrapModel();
   private final BackupModel backupModel = new BackupModel();
 
-  private final ObjectProperty<State> state = new SimpleObjectProperty<>();
 
   @FXML void initialize() {
     Monitor monitor = Monitor.getInstance();
@@ -238,6 +243,7 @@ public final class BootstrapViewModel {
   }
 
   @FXML void onDatabaseServerClicked() {
+
   }
 
   @FXML void onAccountServerClicked() {
@@ -293,7 +299,7 @@ public final class BootstrapViewModel {
         state.setValue(State.INITIALIZED);
         LoggerModel.BOOTSTRAP.error("等待启动时出错", throwable);
         controlViewModel.console.append(throwable.getMessage());
-        ThrowableDialog.show(throwable);
+        ThrowableDialogViewModel.show("等待启动时出错", throwable);
       }
 
       @Override public void onFinish() {
@@ -310,7 +316,7 @@ public final class BootstrapViewModel {
         state.setValue(State.INITIALIZED);
         LoggerModel.BOOTSTRAP.error("启动时出错", e);
         controlViewModel.console.append(e.getMessage());
-        ThrowableDialog.show(e);
+        ThrowableDialogViewModel.show("启动时出错", e);
       }
 
       @Override public void onStart(Program program) {
