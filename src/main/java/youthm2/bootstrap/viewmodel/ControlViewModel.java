@@ -1,6 +1,7 @@
 package youthm2.bootstrap.viewmodel;
 
 import com.google.common.base.Strings;
+import com.typesafe.config.Config;
 import helper.DateTimeHelper;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -55,6 +56,10 @@ final class ControlViewModel {
       login.checkEnabled(config.login.enabled);
       rank.checkEnabled(config.rank.enabled);
     }
+  }
+
+  public void update(Config config) {
+
   }
 
   /**

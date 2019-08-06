@@ -19,16 +19,16 @@ public final class ThrowableDialogViewModel {
   private static final URL CSS =
       ThrowableDialogViewModel.class.getResource("/youthm2/common/common.css");
 
-  public static void show(String title, Throwable throwable) {
+  public static void show(Throwable throwable) {
     try {
       Stage stage = new Stage();
-      stage.setTitle("错误");
+      //stage.setTitle("错误");
       FXMLLoader loader = new FXMLLoader(FXML);
       Scene scene = new Scene(loader.load());
       scene.getStylesheets().add(CSS.toExternalForm());
       stage.setScene(scene);
       ThrowableDialogViewModel viewModel = loader.getController();
-      viewModel.errorDialogTitle.setText(title);
+      viewModel.errorDialogTitle.setText("意料之外的错误");
       viewModel.errorDialogContent.setText(throwable.getMessage());
       viewModel.debugInfo = ThrowableModel.print(throwable);
       viewModel.stage = stage;

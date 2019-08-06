@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import youthm2.bootstrap.viewmodel.BootstrapViewModel;
 import youthm2.common.Monitor;
 import youthm2.common.model.LoggerModel;
 import youthm2.common.viewmodel.ThrowableDialogViewModel;
@@ -37,21 +38,28 @@ public final class Bootstrap extends Application {
     launch(args);
   }
 
+  private BootstrapViewModel viewModel;
+
   @Override
   public void start(Stage primaryStage) {
     try {
       Monitor monitor = Monitor.getInstance();
       primaryStage.setTitle(TITLE);
-      Parent root = FXMLLoader.load(FXML);
+      FXMLLoader loader = new FXMLLoader(FXML);
+      Parent root = loader.load();
+      viewModel = loader.getController();
       Scene scene = new Scene(root);
       scene.getStylesheets().add(CSS.toExternalForm());
       primaryStage.setScene(scene);
       primaryStage.show();
       monitor.report("bootstrap started");
     } catch (Exception e) {
-      String msg = "引导程序启动失败！";
-      LoggerModel.BOOTSTRAP.error(msg, e);
-      ThrowableDialogViewModel.show(msg, e);
+      LoggerModel.BOOTSTRAP.error("引导程序启动失败！", e);
+      ThrowableDialogViewModel.show(e);
     }
+  }
+
+  @Override public void stop() throws Exception {
+    viewModel.onDestroy();
   }
 }

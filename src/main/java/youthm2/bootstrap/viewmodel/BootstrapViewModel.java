@@ -3,6 +3,10 @@ package youthm2.bootstrap.viewmodel;
 import com.google.common.base.Strings;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.rxjavafx.observables.JavaFxObservable;
+import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
+import io.reactivex.rxjavafx.sources.Change;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -145,7 +149,7 @@ public final class BootstrapViewModel {
   /* 3. 备份管理 */
   /* 4. 数据清理 */
 
-  private final ObjectProperty<Config> config = new SimpleObjectProperty<>(ConfigFactory.load());
+  private final ObjectProperty<Config> configProperty = new SimpleObjectProperty<>(ConfigFactory.load());
   private final ObjectProperty<State> state = new SimpleObjectProperty<>(State.INITIALIZED);
 
   private final ControlViewModel controlViewModel = new ControlViewModel();
@@ -155,91 +159,16 @@ public final class BootstrapViewModel {
   private final BootstrapModel bootstrapModel = new BootstrapModel();
   private final BackupModel backupModel = new BackupModel();
 
+  private final CompositeDisposable disposable = new CompositeDisposable();
 
   @FXML void initialize() {
     Monitor monitor = Monitor.getInstance();
-    bindLayout();
-    addEvent();
-    prepareStart();
-    loadConfig();
+    disposable.add(JavaFxObservable.changesOf(configProperty)
+        .map(Change::getNewVal)
+        .observeOn(JavaFxScheduler.platform())
+        .subscribe(controlViewModel::update, ThrowableDialogViewModel::show));
     controlViewModel.console.append("启动已就绪...");
     monitor.report("initialized");
-  }
-
-  private void bindLayout() {
-    /* 控制面板 */
-    controlViewModel.database.bind(databaseServerButton, databaseServerLabel);
-    controlViewModel.account.bind(accountServerButton, accountServerLabel);
-    controlViewModel.logger.bind(loggerServerButton, loggerServerLabel);
-    controlViewModel.core.bind(coreServerButton, coreServerLabel);
-    controlViewModel.game.bind(gameGateButton, gameGateLabel);
-    controlViewModel.role.bind(roleGateButton, roleGateLabel);
-    controlViewModel.login.bind(loginGateButton, loginGateLabel);
-    controlViewModel.rank.bind(rankPlugButton, rankPlugLabel);
-    controlViewModel.startMode.bind(startModeChoiceBox, hoursSpinner, minutesSpinner);
-    controlViewModel.console.bind(consoleTextArea);
-    controlViewModel.startGame.bind(startGameButton);
-    /* 参数配置 */
-    settingViewModel.bind(homePathTextField, databaseNameTextField, gameNameTextField,
-        gameAddressTextField, backupActionCheckBox, combineActionCheckBox, wishActionCheckBox);
-    settingViewModel.database.bind(databaseXSpinner, databaseYSpinner, databaseEnabledCheckBox,
-        databasePathTextField, databasePortSpinner, databaseServerPortSpinner);
-    settingViewModel.account.bind(accountXSpinner, accountYSpinner, accountEnabledCheckBox,
-        accountPathTextField, accountPortSpinner, accountServerPortSpinner,
-        accountPublicPortSpinner);
-    settingViewModel.logger.bind(loggerXSpinner, loggerYSpinner, loggerEnabledCheckBox,
-        loggerPathTextField, loggerPortSpinner, null);
-    settingViewModel.core.bind(coreXSpinner, coreYSpinner, coreEnabledCheckBox, corePathTextField,
-        corePortSpinner, coreServerPortSpinner);
-    settingViewModel.game.bind(gameXSpinner, gameYSpinner, gameEnabledCheckBox, gamePathTextField,
-        gamePortSpinner);
-    settingViewModel.role.bind(roleXSpinner, roleYSpinner, roleEnabledCheckBox, rolePathTextField,
-        rolePortSpinner);
-    settingViewModel.login.bind(loginXSpinner, loginYSpinner, loginEnabledCheckBox,
-        loginPathTextField, loginPortSpinner);
-    settingViewModel.rank.bind(rankXSpinner, rankYSpinner, rankEnabledCheckBox, rankPathTextField);
-  }
-
-  private void addEvent() {
-    state.addListener((observable, oldValue, newValue) -> {
-      switch (newValue) {
-        case INITIALIZED:
-          controlViewModel.update(settingViewModel.config.get());
-          controlViewModel.startGame.stopped();
-          break;
-        case WAITING:
-          controlViewModel.startGame.waiting();
-          break;
-        case STARTING:
-          controlViewModel.startGame.starting();
-          break;
-        case RUNNING:
-          controlViewModel.startGame.running();
-          break;
-        case STOPPING:
-          controlViewModel.startGame.stopping();
-          break;
-      }
-    });
-  }
-
-  private void prepareStart() {
-    state.setValue(State.INITIALIZED);
-    backupModel.status = 0;
-    pageTabPane.getSelectionModel().select(0);
-    configTabPane.getSelectionModel().select(0);
-    // todo start list clear from apple m2
-  }
-
-  private void loadConfig() {
-    configModel.load(newValue -> {
-      settingViewModel.config.setValue(newValue);
-      controlViewModel.console.append("配置加载成功.");
-    });
-    backupModel.loadConfig(dataList -> {
-      // TODO: 2019/7/23 显示备份数据到表格中
-      // TODO: 2019/7/23 判断是否启动备份系统，是就去启动它
-    });
   }
 
   @FXML void onDatabaseServerClicked() {
@@ -299,7 +228,7 @@ public final class BootstrapViewModel {
         state.setValue(State.INITIALIZED);
         LoggerModel.BOOTSTRAP.error("等待启动时出错", throwable);
         controlViewModel.console.append(throwable.getMessage());
-        ThrowableDialogViewModel.show("等待启动时出错", throwable);
+        ThrowableDialogViewModel.show(throwable);
       }
 
       @Override public void onFinish() {
@@ -316,7 +245,7 @@ public final class BootstrapViewModel {
         state.setValue(State.INITIALIZED);
         LoggerModel.BOOTSTRAP.error("启动时出错", e);
         controlViewModel.console.append(e.getMessage());
-        ThrowableDialogViewModel.show("启动时出错", e);
+        ThrowableDialogViewModel.show(e);
       }
 
       @Override public void onStart(Program program) {
@@ -572,6 +501,10 @@ public final class BootstrapViewModel {
       return false;
     }
     return true;
+  }
+
+  public void onDestroy() {
+
   }
 
   public enum State {
