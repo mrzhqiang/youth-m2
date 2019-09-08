@@ -7,11 +7,8 @@ import java.io.File;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import youthm2.bootstrap.model.config.BootstrapConfig;
+import youthm2.common.dialog.ThrowableDialog;
 import youthm2.common.util.Files;
-
-//import static youthm2.common.Environment.debugDirectory;
-//import static youthm2.common.Environment.isDebug;
-//import static youthm2.common.Environment.workDirectory;
 
 /**
  * 配置模型。
@@ -39,7 +36,7 @@ public final class ConfigModel {
         .map(BootstrapConfig::of)
         // 订阅在主线程，可以更新 UI
         .observeOn(JavaFxScheduler.platform())
-        .subscribe(listener::onLoaded, e -> ThrowableDialog.show("加载配置出错", e));
+        .subscribe(listener::onLoaded, ThrowableDialog::show);
   }
 
   public void loadDefault(OnLoadListener listener) {
@@ -51,7 +48,7 @@ public final class ConfigModel {
         .map(s -> ConfigFactory.load())
         .map(BootstrapConfig::of)
         .observeOn(JavaFxScheduler.platform())
-        .subscribe(listener::onLoaded, e -> ThrowableDialog.show("加载默认配置出错", e));
+        .subscribe(listener::onLoaded, ThrowableDialog::show);
   }
 
   public void saveConfig(BootstrapConfig config, OnSaveListener listener) {
@@ -62,7 +59,7 @@ public final class ConfigModel {
         //.doOnNext(file -> FileModel.onceWrite(file, Json.prettyPrint(Json.toJson(config))))
         .map(file -> config)
         .observeOn(JavaFxScheduler.platform())
-        .subscribe(listener::onSaved, e -> ThrowableDialog.show("保存配置出错", e));
+        .subscribe(listener::onSaved, ThrowableDialog::show);
   }
 
   private File getConfigFile() {

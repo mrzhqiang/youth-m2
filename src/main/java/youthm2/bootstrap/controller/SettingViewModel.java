@@ -1,4 +1,4 @@
-package youthm2.bootstrap.viewmodel;
+package youthm2.bootstrap.controller;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -24,32 +24,32 @@ import static javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactor
  *
  * @author qiang.zhang
  */
-final class SettingViewModel {
+public final class SettingViewModel {
   private static final IntegerSpinnerValueFactory LOCATION_VALUE_FACTORY =
       new IntegerSpinnerValueFactory(0, 9999, 0);
   private static final IntegerSpinnerValueFactory PORT_VALUE_FACTORY =
       new IntegerSpinnerValueFactory(0, 65535, 0);
 
-  final StringProperty homePath = new SimpleStringProperty();
-  final StringProperty databaseName = new SimpleStringProperty();
-  final StringProperty gameName = new SimpleStringProperty();
-  final StringProperty gameHost = new SimpleStringProperty();
-  final BooleanProperty backupAction = new SimpleBooleanProperty();
-  final BooleanProperty combineAction = new SimpleBooleanProperty();
-  final BooleanProperty wishAction = new SimpleBooleanProperty();
+  public final StringProperty homePath = new SimpleStringProperty();
+  public final StringProperty databaseName = new SimpleStringProperty();
+  public final StringProperty gameName = new SimpleStringProperty();
+  public final StringProperty gameHost = new SimpleStringProperty();
+  public final BooleanProperty backupAction = new SimpleBooleanProperty();
+  public final BooleanProperty combineAction = new SimpleBooleanProperty();
+  public final BooleanProperty wishAction = new SimpleBooleanProperty();
 
-  final ServerConfigViewModel database = new ServerConfigViewModel();
-  final MonServerConfigViewModel account = new MonServerConfigViewModel();
-  final ServerConfigViewModel logger = new ServerConfigViewModel();
-  final ServerConfigViewModel core = new ServerConfigViewModel();
-  final GateConfigViewModel game = new GateConfigViewModel();
-  final GateConfigViewModel role = new GateConfigViewModel();
-  final GateConfigViewModel login = new GateConfigViewModel();
-  final ProgramConfigViewModel rank = new ProgramConfigViewModel();
+  public final ServerConfigViewModel database = new ServerConfigViewModel();
+  public final MonServerConfigViewModel account = new MonServerConfigViewModel();
+  public final ServerConfigViewModel logger = new ServerConfigViewModel();
+  public final ServerConfigViewModel core = new ServerConfigViewModel();
+  public final GateConfigViewModel game = new GateConfigViewModel();
+  public final GateConfigViewModel role = new GateConfigViewModel();
+  public final GateConfigViewModel login = new GateConfigViewModel();
+  public final ProgramConfigViewModel rank = new ProgramConfigViewModel();
 
-  final ObjectProperty<BootstrapConfig> config = new SimpleObjectProperty<>();
+  public final ObjectProperty<BootstrapConfig> config = new SimpleObjectProperty<>();
 
-  SettingViewModel() {
+  public SettingViewModel() {
     // 单方向的更新，用于加载 config 时的逻辑实现，简化外部调用
     config.addListener((observable, oldValue, newValue) -> {
       homePath.setValue(newValue.homePath);
@@ -70,7 +70,7 @@ final class SettingViewModel {
     });
   }
 
-  void bind(TextField homePath, TextField dbName, TextField gameName, TextField gameAddress,
+  public void bind(TextField homePath, TextField dbName, TextField gameName, TextField gameAddress,
       CheckBox backupAction, CheckBox combineAction, CheckBox wishAction) {
     homePath.textProperty().bindBidirectional(this.homePath);
     dbName.textProperty().bindBidirectional(this.databaseName);
@@ -86,17 +86,17 @@ final class SettingViewModel {
    *
    * @author qiang.zhang
    */
-  static class ProgramConfigViewModel {
-    final ObjectProperty<SpinnerValueFactory<Integer>> x =
+  public static class ProgramConfigViewModel {
+    public final ObjectProperty<SpinnerValueFactory<Integer>> x =
         new SimpleObjectProperty<>(LOCATION_VALUE_FACTORY);
-    final ObjectProperty<SpinnerValueFactory<Integer>> y =
+    public final ObjectProperty<SpinnerValueFactory<Integer>> y =
         new SimpleObjectProperty<>(LOCATION_VALUE_FACTORY);
-    final BooleanProperty enabled = new SimpleBooleanProperty();
-    final StringProperty path = new SimpleStringProperty();
+    public final BooleanProperty enabled = new SimpleBooleanProperty();
+    public final StringProperty path = new SimpleStringProperty();
 
-    final ObjectProperty<ProgramConfig> config = new SimpleObjectProperty<>();
+    public final ObjectProperty<ProgramConfig> config = new SimpleObjectProperty<>();
 
-    ProgramConfigViewModel() {
+    public ProgramConfigViewModel() {
       config.addListener((observable, oldValue, newValue) -> {
         x.get().setValue(newValue.x);
         y.get().setValue(newValue.y);
@@ -105,7 +105,7 @@ final class SettingViewModel {
       });
     }
 
-    void bind(Spinner<Integer> x, Spinner<Integer> y, CheckBox enabled, TextField path) {
+    public void bind(Spinner<Integer> x, Spinner<Integer> y, CheckBox enabled, TextField path) {
       x.valueFactoryProperty().bindBidirectional(this.x);
       y.valueFactoryProperty().bindBidirectional(this.y);
       enabled.selectedProperty().bindBidirectional(this.enabled);
@@ -116,13 +116,13 @@ final class SettingViewModel {
   /**
    * 网关配置视图模型。
    */
-  static class GateConfigViewModel extends ProgramConfigViewModel {
-    final ObjectProperty<SpinnerValueFactory<Integer>> port =
+  public static class GateConfigViewModel extends ProgramConfigViewModel {
+    public final ObjectProperty<SpinnerValueFactory<Integer>> port =
         new SimpleObjectProperty<>(PORT_VALUE_FACTORY);
 
-    final ObjectProperty<GateConfig> config = new SimpleObjectProperty<>();
+    public final ObjectProperty<GateConfig> config = new SimpleObjectProperty<>();
 
-    GateConfigViewModel() {
+    public GateConfigViewModel() {
       config.addListener((observable, oldValue, newValue) -> {
         x.get().setValue(newValue.x);
         y.get().setValue(newValue.y);
@@ -132,7 +132,7 @@ final class SettingViewModel {
       });
     }
 
-    void bind(Spinner<Integer> x, Spinner<Integer> y, CheckBox enabled, TextField path,
+    public void bind(Spinner<Integer> x, Spinner<Integer> y, CheckBox enabled, TextField path,
         Spinner<Integer> port) {
       super.bind(x, y, enabled, path);
       port.valueFactoryProperty().bindBidirectional(this.port);
@@ -142,15 +142,15 @@ final class SettingViewModel {
   /**
    * 服务配置视图模型。
    */
-  static class ServerConfigViewModel extends ProgramConfigViewModel {
-    final ObjectProperty<SpinnerValueFactory<Integer>> port =
+  public static class ServerConfigViewModel extends ProgramConfigViewModel {
+    public final ObjectProperty<SpinnerValueFactory<Integer>> port =
         new SimpleObjectProperty<>(PORT_VALUE_FACTORY);
-    final ObjectProperty<SpinnerValueFactory<Integer>> serverPort =
+    public final ObjectProperty<SpinnerValueFactory<Integer>> serverPort =
         new SimpleObjectProperty<>(PORT_VALUE_FACTORY);
 
-    final ObjectProperty<ServerConfig> config = new SimpleObjectProperty<>();
+    public final ObjectProperty<ServerConfig> config = new SimpleObjectProperty<>();
 
-    ServerConfigViewModel() {
+    public ServerConfigViewModel() {
       config.addListener((observable, oldValue, newValue) -> {
         x.get().setValue(newValue.x);
         y.get().setValue(newValue.y);
@@ -163,7 +163,7 @@ final class SettingViewModel {
       });
     }
 
-    void bind(Spinner<Integer> x, Spinner<Integer> y, CheckBox enabled, TextField path,
+    public void bind(Spinner<Integer> x, Spinner<Integer> y, CheckBox enabled, TextField path,
         Spinner<Integer> port, @Nullable Spinner<Integer> serverPort) {
       super.bind(x, y, enabled, path);
       port.valueFactoryProperty().bindBidirectional(this.port);
@@ -176,13 +176,13 @@ final class SettingViewModel {
   /**
    * 通用服务配置视图模型。
    */
-  static class MonServerConfigViewModel extends ServerConfigViewModel {
-    final ObjectProperty<SpinnerValueFactory<Integer>> monPort =
+  public static class MonServerConfigViewModel extends ServerConfigViewModel {
+    public final ObjectProperty<SpinnerValueFactory<Integer>> monPort =
         new SimpleObjectProperty<>(PORT_VALUE_FACTORY);
 
-    final ObjectProperty<MonServerConfig> config = new SimpleObjectProperty<>();
+    public final ObjectProperty<MonServerConfig> config = new SimpleObjectProperty<>();
 
-    MonServerConfigViewModel() {
+    public MonServerConfigViewModel() {
       config.addListener((observable, oldValue, newValue) -> {
         x.get().setValue(newValue.x);
         y.get().setValue(newValue.y);
@@ -193,7 +193,7 @@ final class SettingViewModel {
       });
     }
 
-    void bind(Spinner<Integer> x, Spinner<Integer> y, CheckBox enabled, TextField path,
+    public void bind(Spinner<Integer> x, Spinner<Integer> y, CheckBox enabled, TextField path,
         Spinner<Integer> port, Spinner<Integer> serverPort, Spinner<Integer> publicPort) {
       super.bind(x, y, enabled, path, port, serverPort);
       publicPort.valueFactoryProperty().bindBidirectional(this.monPort);

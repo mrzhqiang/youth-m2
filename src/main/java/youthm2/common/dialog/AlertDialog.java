@@ -58,7 +58,7 @@ public enum  AlertDialog {
   public static Optional<ButtonType> waitConfirm(String message, @Nullable String content) {
     Preconditions.checkNotNull(message, "message == null");
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-    alert.setTitle("确认");
+    alert.setTitle("请确认");
     alert.setHeaderText(message);
     alert.setContentText(content);
     return alert.showAndWait();

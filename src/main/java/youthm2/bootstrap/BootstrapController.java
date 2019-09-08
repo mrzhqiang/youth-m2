@@ -1,4 +1,4 @@
-package youthm2.bootstrap.viewmodel;
+package youthm2.bootstrap;
 
 import com.google.common.base.Strings;
 import com.typesafe.config.Config;
@@ -27,6 +27,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import youthm2.bootstrap.controller.ControlViewModel;
+import youthm2.bootstrap.controller.SettingViewModel;
 import youthm2.bootstrap.model.BackupModel;
 import youthm2.bootstrap.model.BootstrapModel;
 import youthm2.bootstrap.model.ConfigModel;
@@ -39,30 +41,14 @@ import youthm2.common.dialog.ChooserDialog;
 import youthm2.common.dialog.ThrowableDialog;
 
 /**
- * 引导程序的视图模型。
- * <p>
- * 所谓视图模型，就是将视图与模型进行双向绑定，以便任何一方改变时，另外一方都会同时更新。
- * <p>
- * 因此，先做一个小约定，视图模型中只存在对 视图 和 模型 的调用，通常界面相关的改动都通过双向绑定发出通知。
- * <p>
- * 比如：
- * <pre>
- * 用户与界面交互：user >>> view >>> view model >>> object property
- * 模型与界面交互：model >>> object property >>> view model >>> view
- * </pre>
- * <p>
- * MVVM 架构模式最主要的就是 view model，它相当于 MVC 中的 C，MVP 中的 P，但比它们更容易拆分。
- * <p>
- * 拆分的目的是为了面向对象，将界面逐渐解耦成一个个视图模型。
+ * 引导程序控制器。
  *
- * @author qiang.zhang
+ * @author mrzhqiang
  */
-public final class BootstrapViewModel {
+public final class BootstrapController {
   private static final Logger LOGGER = LoggerFactory.getLogger("bootstrap");
 
-  /* 1. 控制面板 */
   @FXML Button databaseServerButton;
-  /* 1.1 启动程序 */
   @FXML TabPane pageTabPane;
   @FXML Label databaseServerLabel;
   @FXML Button accountServerButton;
@@ -79,18 +65,12 @@ public final class BootstrapViewModel {
   @FXML Label loginGateLabel;
   @FXML Button rankPlugButton;
   @FXML Label rankPlugLabel;
-  /* 1.2 启动模式 */
   @FXML ChoiceBox<String> startModeChoiceBox;
   @FXML Spinner<Integer> hoursSpinner;
   @FXML Spinner<Integer> minutesSpinner;
-  /* 1.3 启动信息 */
   @FXML TextArea consoleTextArea;
-  /* 1.4 一键启动 */
   @FXML Button startGameButton;
-
-  /* 2. 参数配置 */
   @FXML TabPane configTabPane;
-  /* 2.1 基本配置 */
   @FXML TextField homePathTextField;
   @FXML TextField databaseNameTextField;
   @FXML TextField gameNameTextField;
@@ -98,14 +78,12 @@ public final class BootstrapViewModel {
   @FXML CheckBox backupActionCheckBox;
   @FXML CheckBox combineActionCheckBox;
   @FXML CheckBox wishActionCheckBox;
-  /* 2.2 数据库配置 */
   @FXML Spinner<Integer> databaseXSpinner;
   @FXML Spinner<Integer> databaseYSpinner;
   @FXML Spinner<Integer> databasePortSpinner;
   @FXML Spinner<Integer> databaseServerPortSpinner;
   @FXML CheckBox databaseEnabledCheckBox;
   @FXML TextField databasePathTextField;
-  /* 2.3 账号配置 */
   @FXML Spinner<Integer> accountXSpinner;
   @FXML Spinner<Integer> accountYSpinner;
   @FXML Spinner<Integer> accountPortSpinner;
@@ -113,44 +91,36 @@ public final class BootstrapViewModel {
   @FXML Spinner<Integer> accountPublicPortSpinner;
   @FXML CheckBox accountEnabledCheckBox;
   @FXML TextField accountPathTextField;
-  /* 2.4 日志配置 */
   @FXML Spinner<Integer> loggerXSpinner;
   @FXML Spinner<Integer> loggerYSpinner;
   @FXML Spinner<Integer> loggerPortSpinner;
   @FXML CheckBox loggerEnabledCheckBox;
   @FXML TextField loggerPathTextField;
-  /* 2.5 核心配置 */
   @FXML Spinner<Integer> coreXSpinner;
   @FXML Spinner<Integer> coreYSpinner;
   @FXML Spinner<Integer> corePortSpinner;
   @FXML Spinner<Integer> coreServerPortSpinner;
   @FXML CheckBox coreEnabledCheckBox;
   @FXML TextField corePathTextField;
-  /* 2.6 游戏配置 */
   @FXML Spinner<Integer> gameXSpinner;
   @FXML Spinner<Integer> gameYSpinner;
   @FXML Spinner<Integer> gamePortSpinner;
   @FXML CheckBox gameEnabledCheckBox;
   @FXML TextField gamePathTextField;
-  /* 2.7 角色配置 */
   @FXML Spinner<Integer> roleXSpinner;
   @FXML Spinner<Integer> roleYSpinner;
   @FXML Spinner<Integer> rolePortSpinner;
   @FXML CheckBox roleEnabledCheckBox;
   @FXML TextField rolePathTextField;
-  /* 2.8 登陆配置 */
   @FXML Spinner<Integer> loginXSpinner;
   @FXML Spinner<Integer> loginYSpinner;
   @FXML Spinner<Integer> loginPortSpinner;
   @FXML CheckBox loginEnabledCheckBox;
   @FXML TextField loginPathTextField;
-  /* 2.9 排行榜配置 */
   @FXML Spinner<Integer> rankXSpinner;
   @FXML Spinner<Integer> rankYSpinner;
   @FXML CheckBox rankEnabledCheckBox;
   @FXML TextField rankPathTextField;
-  /* 3. 备份管理 */
-  /* 4. 数据清理 */
 
   private final ObjectProperty<Config> configProperty = new SimpleObjectProperty<>(ConfigFactory.load());
   private final ObjectProperty<State> state = new SimpleObjectProperty<>(State.INITIALIZED);

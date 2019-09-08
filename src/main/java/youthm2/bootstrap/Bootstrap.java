@@ -2,15 +2,15 @@ package youthm2.bootstrap;
 
 import java.net.URL;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import youthm2.bootstrap.viewmodel.BootstrapViewModel;
 import youthm2.common.Monitor;
-import youthm2.common.dialog.ThrowableDialog;
+import youthm2.common.dialog.AlertDialog;
 
 /**
  * 引导程序。
@@ -27,6 +27,8 @@ import youthm2.common.dialog.ThrowableDialog;
  * }</pre>
  * <p>
  * 不过，反射稍微麻烦一点（需要对应的上下文），但不需要依赖具体实现。
+ * <p>
+ * 这里暂时作为入口程序启动，如果要改成真正的引导程序，那么应该是由 Launcher 程序启动它。
  */
 public final class Bootstrap extends Application {
   private static final Logger LOGGER = LoggerFactory.getLogger("bootstrap");
@@ -41,28 +43,30 @@ public final class Bootstrap extends Application {
     launch(args);
   }
 
-  private BootstrapViewModel viewModel;
+  private BootstrapController controller;
 
   @Override
   public void start(Stage primaryStage) {
+    Monitor monitor = Monitor.getInstance();
     try {
-      Monitor monitor = Monitor.getInstance();
-      primaryStage.setTitle(TITLE);
       FXMLLoader loader = new FXMLLoader(FXML);
       Parent root = loader.load();
-      viewModel = loader.getController();
+      controller = loader.getController();
       Scene scene = new Scene(root);
       scene.getStylesheets().add(CSS.toExternalForm());
+      primaryStage.setTitle(TITLE);
       primaryStage.setScene(scene);
       primaryStage.show();
       monitor.report("bootstrap started");
     } catch (Exception e) {
       LOGGER.error("引导程序启动失败！", e);
-      ThrowableDialog.show(e);
+      AlertDialog.waitConfirm("启动失败", e.getMessage())
+          .filter(AlertDialog.isOK())
+          .ifPresent(buttonType -> Platform.exit());
     }
   }
 
   @Override public void stop() throws Exception {
-    viewModel.onDestroy();
+    controller.onDestroy();
   }
 }
