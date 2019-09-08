@@ -1,4 +1,4 @@
-package youthm2.common.monitor;
+package youthm2.common.internal;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -17,14 +17,14 @@ public final class SimpleMonitor implements Monitor {
   private static final Logger LOGGER = LoggerFactory.getLogger("monitor");
 
   private final long startTime = System.currentTimeMillis();
-  private final List<Cycle> cycleList = Lists.newArrayList();
+  private final List<Period> periodList = Lists.newArrayList();
 
   @Override
   public void record(String name) {
     if (Strings.isNullOrEmpty(name)) {
       return;
     }
-    cycleList.add(new Cycle(name, System.currentTimeMillis()));
+    periodList.add(new Period(name, System.currentTimeMillis()));
   }
 
   @Override
@@ -33,26 +33,26 @@ public final class SimpleMonitor implements Monitor {
     long totalTime = entTime - startTime;
     LOGGER.info("The [{}] total time: {}(ms)", name, totalTime);
 
-    for (int i = 0; i < cycleList.size(); i++) {
-      Cycle book = cycleList.get(i);
+    for (int i = 0; i < periodList.size(); i++) {
+      Period book = periodList.get(i);
       long intervalTime;
       if (i == 0) {
         intervalTime = book.timestamp - startTime;
-      } else if (i == cycleList.size() - 1) {
+      } else if (i == periodList.size() - 1) {
         intervalTime = entTime - book.timestamp;
       } else {
-        intervalTime = cycleList.get(i + 1).timestamp - book.timestamp;
+        intervalTime = periodList.get(i + 1).timestamp - book.timestamp;
       }
       LOGGER.info("The [{}] >>> [{}] time: {}(ms)", name, book.name, intervalTime);
     }
-    cycleList.clear();
+    periodList.clear();
   }
 
-  private static final class Cycle {
+  private static final class Period {
     final String name;
     final long timestamp;
 
-    private Cycle(String name, long timestamp) {
+    private Period(String name, long timestamp) {
       this.name = name;
       this.timestamp = timestamp;
     }
