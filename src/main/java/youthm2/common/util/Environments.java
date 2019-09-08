@@ -12,6 +12,6 @@ public enum Environments {
   }
 
   public static String homework() {
-    return System.getProperty("user");
+    return System.getProperty("user.dir");
   }
 }

@@ -34,9 +34,9 @@ import youthm2.bootstrap.model.config.BootstrapConfig;
 import youthm2.bootstrap.model.program.Program;
 import youthm2.common.Monitor;
 import youthm2.common.util.Networks;
-import youthm2.common.viewmodel.AlertViewModel;
-import youthm2.common.viewmodel.ChooserViewModel;
-import youthm2.common.viewmodel.ThrowableDialogViewModel;
+import youthm2.common.dialog.AlertDialog;
+import youthm2.common.dialog.ChooserDialog;
+import youthm2.common.dialog.ThrowableDialog;
 
 /**
  * 引导程序的视图模型。
@@ -169,7 +169,7 @@ public final class BootstrapViewModel {
     disposable.add(JavaFxObservable.changesOf(configProperty)
         .map(Change::getNewVal)
         .observeOn(JavaFxScheduler.platform())
-        .subscribe(controlViewModel::update, ThrowableDialogViewModel::show));
+        .subscribe(controlViewModel::update, ThrowableDialog::show));
     controlViewModel.console.append("启动已就绪...");
     monitor.report("initialized");
   }
@@ -202,7 +202,7 @@ public final class BootstrapViewModel {
   @FXML void onStartGameClicked() {
     State state = this.state.get();
     String message = state.getMessage();
-    Optional<ButtonType> optional = AlertViewModel.waitConfirm(message).filter(AlertViewModel.isOK());
+    Optional<ButtonType> optional = AlertDialog.waitConfirm(message).filter(AlertDialog.isOK());
     switch (state) {
       case INITIALIZED:
         optional.ifPresent(buttonType -> attemptStart());
@@ -231,7 +231,7 @@ public final class BootstrapViewModel {
         state.setValue(State.INITIALIZED);
         LOGGER.error("等待启动时出错", throwable);
         controlViewModel.console.append(throwable.getMessage());
-        ThrowableDialogViewModel.show(throwable);
+        ThrowableDialog.show(throwable);
       }
 
       @Override public void onFinish() {
@@ -248,7 +248,7 @@ public final class BootstrapViewModel {
         state.setValue(State.INITIALIZED);
         LOGGER.error("启动时出错", e);
         controlViewModel.console.append(e.getMessage());
-        ThrowableDialogViewModel.show(e);
+        ThrowableDialog.show(e);
       }
 
       @Override public void onStart(Program program) {
@@ -269,47 +269,47 @@ public final class BootstrapViewModel {
   }
 
   @FXML void onFoundHomePathClicked() {
-    ChooserViewModel.directory("请选择服务端目录", new File(getHomePath()))
+    ChooserDialog.directory("请选择服务端目录", new File(getHomePath()))
         .ifPresent(file -> homePathTextField.setText(file.getPath()));
   }
 
   @FXML void onFoundDatabaseFileClicked() {
-    ChooserViewModel.file("请选择要启动的数据库服务", new File(getHomePath()), ChooserViewModel.exeFilter())
+    ChooserDialog.file("请选择要启动的数据库服务", new File(getHomePath()), ChooserDialog.exeFilter())
         .ifPresent(file -> databasePathTextField.setText(file.getPath()));
   }
 
   @FXML void onFoundAccountFileClicked() {
-    ChooserViewModel.file("请选择要启动的账号服务", new File(getHomePath()), ChooserViewModel.exeFilter())
+    ChooserDialog.file("请选择要启动的账号服务", new File(getHomePath()), ChooserDialog.exeFilter())
         .ifPresent(file -> accountPathTextField.setText(file.getPath()));
   }
 
   @FXML void onFoundLoggerFileClicked() {
-    ChooserViewModel.file("请选择要启动的日志服务", new File(getHomePath()), ChooserViewModel.exeFilter())
+    ChooserDialog.file("请选择要启动的日志服务", new File(getHomePath()), ChooserDialog.exeFilter())
         .ifPresent(file -> loggerPathTextField.setText(file.getPath()));
   }
 
   @FXML void onFoundCoreFileClicked() {
-    ChooserViewModel.file("请选择要启动的核心服务", new File(getHomePath()), ChooserViewModel.exeFilter())
+    ChooserDialog.file("请选择要启动的核心服务", new File(getHomePath()), ChooserDialog.exeFilter())
         .ifPresent(file -> corePathTextField.setText(file.getPath()));
   }
 
   @FXML void onFoundGameFileClicked() {
-    ChooserViewModel.file("请选择要启动的游戏网关", new File(getHomePath()), ChooserViewModel.exeFilter())
+    ChooserDialog.file("请选择要启动的游戏网关", new File(getHomePath()), ChooserDialog.exeFilter())
         .ifPresent(file -> gamePathTextField.setText(file.getPath()));
   }
 
   @FXML void onFoundRoleFileClicked() {
-    ChooserViewModel.file("请选择要启动的角色网关", new File(getHomePath()), ChooserViewModel.exeFilter())
+    ChooserDialog.file("请选择要启动的角色网关", new File(getHomePath()), ChooserDialog.exeFilter())
         .ifPresent(file -> rolePathTextField.setText(file.getPath()));
   }
 
   @FXML void onFoundLoginFileClicked() {
-    ChooserViewModel.file("请选择要启动的登陆网关", new File(getHomePath()), ChooserViewModel.exeFilter())
+    ChooserDialog.file("请选择要启动的登陆网关", new File(getHomePath()), ChooserDialog.exeFilter())
         .ifPresent(file -> loginPathTextField.setText(file.getPath()));
   }
 
   @FXML void onFoundRankFileClicked() {
-    ChooserViewModel.file("请选择要启动的排行榜插件", new File(getHomePath()), ChooserViewModel.exeFilter())
+    ChooserDialog.file("请选择要启动的排行榜插件", new File(getHomePath()), ChooserDialog.exeFilter())
         .ifPresent(file -> rankPathTextField.setText(file.getPath()));
   }
 

@@ -1,4 +1,4 @@
-package youthm2.common.viewmodel;
+package youthm2.common.dialog;
 
 import java.net.URL;
 import javafx.fxml.FXML;
@@ -10,30 +10,30 @@ import javafx.scene.input.ClipboardContent;
 import javafx.stage.Stage;
 
 /**
- * 文本对话框视图模型。
+ * 文本对话框。
  *
  * @author qiang.zhang
  */
-public final class TextDialogViewModel {
+public final class TextDialog {
   private static final URL FXML =
-      TextDialogViewModel.class.getResource("/youthm2/common/text-dialog.fxml");
+      TextDialog.class.getResource("/youthm2/common/text-dialog.fxml");
   private static final URL CSS =
-      TextDialogViewModel.class.getResource("/youthm2/common/common.css");
+      TextDialog.class.getResource("/youthm2/common/common.css");
 
   public static void show(String text) {
     try {
-      Stage stage = new Stage();
-      stage.setTitle("详情");
       FXMLLoader loader = new FXMLLoader(FXML);
       Scene scene = new Scene(loader.load());
       scene.getStylesheets().add(CSS.toExternalForm());
+      Stage stage = new Stage();
+      stage.setTitle("详情");
       stage.setScene(scene);
-      TextDialogViewModel viewModel = loader.getController();
-      viewModel.stage = stage;
-      viewModel.contentTextArea.setText(text);
+      TextDialog dialog = loader.getController();
+      dialog.stage = stage;
+      dialog.contentTextArea.setText(text);
       stage.showAndWait();
     } catch (Exception e) {
-      AlertViewModel.showError(e);
+      AlertDialog.showError(e);
     }
   }
 

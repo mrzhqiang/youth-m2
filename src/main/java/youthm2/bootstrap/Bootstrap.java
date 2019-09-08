@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import youthm2.bootstrap.viewmodel.BootstrapViewModel;
 import youthm2.common.Monitor;
-import youthm2.common.viewmodel.ThrowableDialogViewModel;
+import youthm2.common.dialog.ThrowableDialog;
 
 /**
  * 引导程序。
@@ -58,7 +58,7 @@ public final class Bootstrap extends Application {
       monitor.report("bootstrap started");
     } catch (Exception e) {
       LOGGER.error("引导程序启动失败！", e);
-      ThrowableDialogViewModel.show(e);
+      ThrowableDialog.show(e);
     }
   }
 

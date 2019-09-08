@@ -1,4 +1,4 @@
-package youthm2.common.viewmodel;
+package youthm2.common.dialog;
 
 import java.io.File;
 import java.util.Optional;
@@ -7,14 +7,12 @@ import javafx.stage.FileChooser;
 import javax.annotation.Nullable;
 
 /**
- * 选择弹窗视图模型。
+ * 选择对话框。
  *
- * @author qiang.zhang
+ * @author mrzhqiang
  */
-public final class ChooserViewModel {
-  private ChooserViewModel() {
-    throw new AssertionError("No instance");
-  }
+public enum  ChooserDialog {
+  ;
 
   public static Optional<File> directory(String title) {
     return directory(title, null);
@@ -57,7 +55,7 @@ public final class ChooserViewModel {
   }
 
   public static FileChooser.ExtensionFilter pngFilter() {
-    return new FileChooser.ExtensionFilter("图像文件", "*.png");
+    return new FileChooser.ExtensionFilter("图像文件", "*.png", "*.jpeg", "*.jpg");
   }
 
   public static FileChooser.ExtensionFilter txtFilter() {
