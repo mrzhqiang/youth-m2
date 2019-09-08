@@ -6,9 +6,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import youthm2.bootstrap.viewmodel.BootstrapViewModel;
 import youthm2.common.Monitor;
-import youthm2.common.model.LoggerModel;
 import youthm2.common.viewmodel.ThrowableDialogViewModel;
 
 /**
@@ -28,6 +29,8 @@ import youthm2.common.viewmodel.ThrowableDialogViewModel;
  * 不过，反射稍微麻烦一点（需要对应的上下文），但不需要依赖具体实现。
  */
 public final class Bootstrap extends Application {
+  private static final Logger LOGGER = LoggerFactory.getLogger("bootstrap");
+
   private static final String TITLE = "引导程序 - 青春引擎";
   private static final URL FXML =
       Bootstrap.class.getResource("/youthm2/bootstrap/application.fxml");
@@ -54,7 +57,7 @@ public final class Bootstrap extends Application {
       primaryStage.show();
       monitor.report("bootstrap started");
     } catch (Exception e) {
-      LoggerModel.BOOTSTRAP.error("引导程序启动失败！", e);
+      LOGGER.error("引导程序启动失败！", e);
       ThrowableDialogViewModel.show(e);
     }
   }

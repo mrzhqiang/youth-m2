@@ -1,17 +1,15 @@
-package youthm2.common.model;
+package youthm2.common.util;
 
 import com.google.common.base.Preconditions;
 import java.util.regex.Pattern;
 
 /**
- * 网络模型。
+ * 网络辅助工具。
  *
- * @author qiang.zhang
+ * @author mrzhqiang
  */
-public final class NetworkModel {
-  private NetworkModel() {
-    throw new AssertionError("This is factory class");
-  }
+public enum Networks {
+  ;
 
   private static final String REGEX_V4_ADDRESS = "([0-9]{1,3}(\\.[0-9]{1,3}){3})";
   private static final String REGEX_V6_ADDRESS = "[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7}";

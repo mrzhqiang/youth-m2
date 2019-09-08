@@ -7,7 +7,7 @@ import java.io.File;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import youthm2.bootstrap.model.config.BootstrapConfig;
-import youthm2.common.model.FileModel;
+import youthm2.common.util.Files;
 
 //import static youthm2.common.Environment.debugDirectory;
 //import static youthm2.common.Environment.isDebug;
@@ -58,7 +58,7 @@ public final class ConfigModel {
     Preconditions.checkNotNull(listener, "listener == null");
     Observable.just(getConfigFile())
         .subscribeOn(Schedulers.io())
-        .doOnNext(FileModel::createOrExists)
+        .doOnNext(Files::createOrExists)
         //.doOnNext(file -> FileModel.onceWrite(file, Json.prettyPrint(Json.toJson(config))))
         .map(file -> config)
         .observeOn(JavaFxScheduler.platform())

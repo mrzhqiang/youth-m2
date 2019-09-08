@@ -6,7 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import youthm2.common.model.ThrowableModel;
+import youthm2.common.util.Throwables;
 
 /**
  * 异常对话框视图模型。
@@ -30,7 +30,7 @@ public final class ThrowableDialogViewModel {
       ThrowableDialogViewModel viewModel = loader.getController();
       viewModel.errorDialogTitle.setText("意料之外的错误");
       viewModel.errorDialogContent.setText(throwable.getMessage());
-      viewModel.debugInfo = ThrowableModel.print(throwable);
+      viewModel.debugInfo = Throwables.print(throwable);
       viewModel.stage = stage;
       stage.showAndWait();
     } catch (Exception e) {

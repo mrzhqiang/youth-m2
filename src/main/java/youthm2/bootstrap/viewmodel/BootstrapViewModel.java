@@ -25,14 +25,15 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import youthm2.bootstrap.model.BackupModel;
 import youthm2.bootstrap.model.BootstrapModel;
 import youthm2.bootstrap.model.ConfigModel;
 import youthm2.bootstrap.model.config.BootstrapConfig;
 import youthm2.bootstrap.model.program.Program;
 import youthm2.common.Monitor;
-import youthm2.common.model.LoggerModel;
-import youthm2.common.model.NetworkModel;
+import youthm2.common.util.Networks;
 import youthm2.common.viewmodel.AlertViewModel;
 import youthm2.common.viewmodel.ChooserViewModel;
 import youthm2.common.viewmodel.ThrowableDialogViewModel;
@@ -57,6 +58,8 @@ import youthm2.common.viewmodel.ThrowableDialogViewModel;
  * @author qiang.zhang
  */
 public final class BootstrapViewModel {
+  private static final Logger LOGGER = LoggerFactory.getLogger("bootstrap");
+
   /* 1. 控制面板 */
   @FXML Button databaseServerButton;
   /* 1.1 启动程序 */
@@ -226,7 +229,7 @@ public final class BootstrapViewModel {
     bootstrapModel.waiting(time, new BootstrapModel.OnWaitingListener() {
       @Override public void onError(Throwable throwable) {
         state.setValue(State.INITIALIZED);
-        LoggerModel.BOOTSTRAP.error("等待启动时出错", throwable);
+        LOGGER.error("等待启动时出错", throwable);
         controlViewModel.console.append(throwable.getMessage());
         ThrowableDialogViewModel.show(throwable);
       }
@@ -243,7 +246,7 @@ public final class BootstrapViewModel {
     bootstrapModel.start(config, new BootstrapModel.OnStartListener() {
       @Override public void onError(Throwable e) {
         state.setValue(State.INITIALIZED);
-        LoggerModel.BOOTSTRAP.error("启动时出错", e);
+        LOGGER.error("启动时出错", e);
         controlViewModel.console.append(e.getMessage());
         ThrowableDialogViewModel.show(e);
       }
@@ -493,7 +496,7 @@ public final class BootstrapViewModel {
       return false;
     }
     String address = settingViewModel.gameHost.getValue();
-    if (Strings.isNullOrEmpty(address) || !NetworkModel.isAddressV4(address)) {
+    if (Strings.isNullOrEmpty(address) || !Networks.isAddressV4(address)) {
       Alert alert = new Alert(Alert.AlertType.WARNING);
       alert.setHeaderText("无效的游戏 IP 地址，请检查");
       alert.show();

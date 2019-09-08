@@ -1,23 +1,24 @@
-package youthm2.common.model;
+package youthm2.common.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * 异常模型。
+ * 异常辅助工具。
  *
- * @author qiang.zhang
+ * @author mrzhqiang
  */
-public final class ThrowableModel {
+public enum Throwables {
+  ;
+
   public static String print(Throwable e) {
-    // --- expandable content
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     e.printStackTrace(pw);
     return sw.toString();
   }
 
-  public static String printStackTrace() {
+  public static String stackTrace() {
     StringBuilder builder = new StringBuilder();
     for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
       if (builder.length() > 0) {

@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javax.annotation.Nullable;
-import youthm2.common.model.ThrowableModel;
+import youthm2.common.util.Throwables;
 
 /**
  * 警告视图模型。
@@ -74,7 +74,7 @@ public final class AlertViewModel {
     Alert alert = new Alert(Alert.AlertType.ERROR);
     alert.setTitle("错误");
     alert.setHeaderText(error.getMessage());
-    alert.setContentText(ThrowableModel.print(error));
+    alert.setContentText(Throwables.print(error));
     alert.show();
   }
 
