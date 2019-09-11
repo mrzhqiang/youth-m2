@@ -1,4 +1,4 @@
-package youthm2.bootstrap.viewmodel.control;
+package youthm2.bootstrap.control;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

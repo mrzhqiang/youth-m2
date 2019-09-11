@@ -1,4 +1,4 @@
-package youthm2.bootstrap.model.config;
+package youthm2.bootstrap.config;
 
 import com.typesafe.config.Config;
 

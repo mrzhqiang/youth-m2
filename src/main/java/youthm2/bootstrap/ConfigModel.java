@@ -1,11 +1,11 @@
-package youthm2.bootstrap.model;
+package youthm2.bootstrap;
 
 import com.typesafe.config.ConfigFactory;
 import io.reactivex.Observable;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
 import java.io.File;
-import youthm2.bootstrap.model.config.BootstrapConfig;
+import youthm2.bootstrap.config.BootstrapConfig;
 import youthm2.common.util.Environments;
 import youthm2.common.util.Files;
 

@@ -1,4 +1,4 @@
-package youthm2.bootstrap.model;
+package youthm2.bootstrap;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -15,7 +15,7 @@ import io.reactivex.Observable;
 import io.reactivex.Scheduler;
 //import io.reactivex.Subscriber;
 import io.reactivex.schedulers.Schedulers;
-import youthm2.bootstrap.model.backup.BackupData;
+import youthm2.bootstrap.backup.BackupData;
 //import youthm2.common.Environment;
 
 /**

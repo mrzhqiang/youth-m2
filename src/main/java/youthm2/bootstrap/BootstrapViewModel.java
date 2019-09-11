@@ -1,4 +1,4 @@
-package youthm2.bootstrap.viewmodel;
+package youthm2.bootstrap;
 
 import com.google.common.base.Strings;
 import com.typesafe.config.ConfigFactory;
@@ -18,14 +18,17 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import youthm2.bootstrap.model.ConfigModel;
-import youthm2.bootstrap.model.config.BootstrapConfig;
-import youthm2.bootstrap.viewmodel.control.ControlViewModel;
+import youthm2.bootstrap.config.BootstrapConfig;
+import youthm2.bootstrap.control.ControlViewModel;
+import youthm2.bootstrap.setting.SettingViewModel;
 import youthm2.common.Monitor;
+import youthm2.common.dialog.AlertDialog;
 import youthm2.common.dialog.ChooserDialog;
 import youthm2.common.util.Networks;
+import youthm2.database.DatabaseServer;
 
 /**
  * 引导程序视图模型。
@@ -116,6 +119,7 @@ public final class BootstrapViewModel {
 
   private ObjectProperty<BootstrapConfig> config =
       new SimpleObjectProperty<>(BootstrapConfig.of(ConfigFactory.load()));
+  private final DatabaseServer databaseServer = new DatabaseServer();
   private final ControlViewModel controlViewModel = new ControlViewModel();
   private final SettingViewModel settingViewModel = new SettingViewModel();
   private final CompositeDisposable disposable = new CompositeDisposable();
@@ -142,18 +146,40 @@ public final class BootstrapViewModel {
     controlViewModel.startMode.bind(startModeChoiceBox, hoursSpinner, minutesSpinner);
     controlViewModel.console.bind(consoleTextArea);
     controlViewModel.startGame.bind(startGameButton);
+    settingViewModel.bind(homePathTextField, databaseNameTextField, gameNameTextField,
+        gameAddressTextField, backupActionCheckBox, combineActionCheckBox, wishActionCheckBox);
+    settingViewModel.database.bind(databaseXSpinner, databaseYSpinner, databaseEnabledCheckBox,
+        databasePathTextField, databasePortSpinner, databaseServerPortSpinner);
+    settingViewModel.account.bind(accountXSpinner, accountYSpinner, accountEnabledCheckBox,
+        accountPathTextField, accountPortSpinner, accountServerPortSpinner,
+        accountPublicPortSpinner);
+    settingViewModel.logger.bind(loggerXSpinner, loggerYSpinner, loggerEnabledCheckBox, loggerPathTextField, loggerPortSpinner, null);
+    settingViewModel.core.bind(coreXSpinner, coreYSpinner, coreEnabledCheckBox, corePathTextField, corePortSpinner, coreServerPortSpinner);
+    settingViewModel.game.bind(gameXSpinner, gameYSpinner, gameEnabledCheckBox, gamePathTextField, gamePortSpinner);
+    settingViewModel.role.bind(roleXSpinner, roleYSpinner, roleEnabledCheckBox, rolePathTextField, rolePortSpinner);
+    settingViewModel.login.bind(loginXSpinner, loginYSpinner, loginEnabledCheckBox, loginPathTextField, loginPortSpinner);
+    settingViewModel.rank.bind(rankXSpinner, rankYSpinner, rankEnabledCheckBox, rankPathTextField);
   }
 
   private void initEvent() {
     config.addListener((observable, oldValue, newValue) -> {
       controlViewModel.update(newValue);
-      // todo update setting view model
+      settingViewModel.update(newValue);
     });
     disposable.add(ConfigModel.load().subscribe(config -> this.config.set(config)));
   }
 
   @FXML void onDatabaseServerClicked() {
-
+    if (config.get().database.enabled) {
+      AlertDialog.waitConfirm("是否启动数据库服务")
+          .ifPresent(buttonType -> {
+            controlViewModel.database.starting();
+            controlViewModel.console.append("正在启动数据库服务..");
+            databaseServer.start(new Stage());
+            controlViewModel.database.started();
+            controlViewModel.console.append("数据库服务启动完毕..");
+          });
+    }
   }
 
   @FXML void onAccountServerClicked() {
@@ -178,15 +204,7 @@ public final class BootstrapViewModel {
   }
 
   @FXML void onStartGameClicked() {
-  }
 
-  private void attemptStart() {
-  }
-
-  private void startServer(BootstrapConfig config) {
-  }
-
-  private void cancelWaiting() {
   }
 
   @FXML void onFoundHomePathClicked() {

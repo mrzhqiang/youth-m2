@@ -1,10 +1,10 @@
-package youthm2.bootstrap.viewmodel.control;
+package youthm2.bootstrap.control;
 
-import youthm2.bootstrap.model.config.BootstrapConfig;
-import youthm2.bootstrap.viewmodel.control.ConsoleViewModel;
-import youthm2.bootstrap.viewmodel.control.ProgramViewModel;
-import youthm2.bootstrap.viewmodel.control.StartGameViewModel;
-import youthm2.bootstrap.viewmodel.control.StartModeViewModel;
+import youthm2.bootstrap.config.BootstrapConfig;
+import youthm2.bootstrap.control.ConsoleViewModel;
+import youthm2.bootstrap.control.ProgramViewModel;
+import youthm2.bootstrap.control.StartGameViewModel;
+import youthm2.bootstrap.control.StartModeViewModel;
 
 /**
  * 控制面板视图模型。

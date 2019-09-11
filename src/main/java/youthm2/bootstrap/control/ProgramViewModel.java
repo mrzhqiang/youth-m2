@@ -1,4 +1,4 @@
-package youthm2.bootstrap.viewmodel.control;
+package youthm2.bootstrap.control;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
@@ -32,12 +32,15 @@ public final class ProgramViewModel {
   private final StringProperty text = new SimpleStringProperty(TEXT_STOPPED);
   private final Property<Paint> color = new SimpleObjectProperty<>(COLOR_STOPPED);
 
+  private Status status;
+
   public void bind(Button button, Label label) {
     // bindBidirectional 是指双向绑定，意味着数据改动会影响组件状态，同时组件状态改变会更新到数据。
     // 需要注意的是：绑定从一开始就将目标对象的值设置给调用者；解绑则只是移除了监听器。
     button.disableProperty().bindBidirectional(disable);
     label.textProperty().bindBidirectional(text);
     label.textFillProperty().bindBidirectional(color);
+    status = Status.DEFAULT;
   }
 
   public void setEnabled(boolean enabled) {
@@ -52,23 +55,35 @@ public final class ProgramViewModel {
     disable.setValue(true);
     text.setValue(TEXT_STARTING);
     color.setValue(COLOR_STARTING);
+    status = Status.STARTING;
   }
 
   public void started() {
     disable.setValue(false);
     text.setValue(TEXT_STARTED);
     color.setValue(COLOR_STARTED);
+    status = Status.RUNNING;
   }
 
   public void stopping() {
     disable.setValue(true);
     text.setValue(TEXT_STOPPING);
     color.setValue(COLOR_STOPPING);
+    status = Status.STOPPING;
   }
 
   public void stopped() {
     disable.setValue(false);
     text.setValue(TEXT_STOPPED);
     color.setValue(COLOR_STOPPED);
+    status = Status.DEFAULT;
+  }
+
+  public enum Status {
+    DEFAULT,
+    STARTING,
+    RUNNING,
+    STOPPING,
+    ;
   }
 }

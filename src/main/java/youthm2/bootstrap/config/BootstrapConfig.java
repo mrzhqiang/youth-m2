@@ -1,4 +1,4 @@
-package youthm2.bootstrap.model.config;
+package youthm2.bootstrap.config;
 
 import com.google.common.base.Preconditions;
 import com.typesafe.config.Config;

@@ -2,7 +2,6 @@ package youthm2.common.dialog;
 
 import com.google.common.base.Preconditions;
 import java.util.Optional;
-import java.util.function.Predicate;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javax.annotation.Nullable;
@@ -13,7 +12,7 @@ import youthm2.common.util.Throwables;
  *
  * @author mrzhqiang
  */
-public enum  AlertDialog {
+public enum AlertDialog {
   ;
 
   public static void showInfo(String message) {
@@ -61,10 +60,6 @@ public enum  AlertDialog {
     alert.setTitle("请确认");
     alert.setHeaderText(message);
     alert.setContentText(content);
-    return alert.showAndWait();
-  }
-
-  public static Predicate<? super ButtonType> isOK() {
-    return type -> ButtonType.OK == type;
+    return alert.showAndWait().filter(buttonType -> buttonType == ButtonType.OK);
   }
 }

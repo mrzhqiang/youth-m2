@@ -1,4 +1,4 @@
-package youthm2.bootstrap.viewmodel.control;
+package youthm2.bootstrap.control;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;

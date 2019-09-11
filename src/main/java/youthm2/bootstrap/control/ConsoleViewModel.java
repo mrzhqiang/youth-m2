@@ -1,4 +1,4 @@
-package youthm2.bootstrap.viewmodel.control;
+package youthm2.bootstrap.control;
 
 import com.google.common.base.Strings;
 import helper.DateTimeHelper;

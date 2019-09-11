@@ -9,7 +9,7 @@ import java.util.List;
 import youthm2.common.Monitor;
 
 /**
- * 最简单的监视器。
+ * 简单监视器。
  *
  * @author mrzhqiang
  */
