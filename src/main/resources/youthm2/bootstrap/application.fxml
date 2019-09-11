@@ -19,14 +19,14 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="youthm2.bootstrap.viewmodel.BootstrapViewModel">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="youthm2.bootstrap.BootstrapViewModel">
   <children>
     <TabPane fx:id="pageTabPane" layoutX="24.0" layoutY="24.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <effect>
         <Blend />
       </effect>
       <tabs>
-        <Tab text="控制面板">
+        <Tab fx:id="controlTab" text="控制面板">
           <content>
             <AnchorPane>
               <children>
@@ -129,7 +129,7 @@
                      <children>
                         <TabPane fx:id="configTabPane" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <tabs>
-                            <Tab text="1.基本">
+                            <Tab fx:id="baseConfigTab" text="1.基本">
                               <content>
                                 <AnchorPane>
                                        <children>

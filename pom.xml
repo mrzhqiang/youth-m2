@@ -4,30 +4,21 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- 项目声明 -->
   <groupId>com.github.mrzhqiang</groupId>
   <artifactId>youth-m2</artifactId>
   <version>2019.1.0</version>
 
-  <!-- 项目属性 -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- JDK 版本 -->
     <java.version>1.8</java.version>
-    <!-- 测试框架 -->
     <junit.version>4.12</junit.version>
-    <!-- 日志打印 -->
     <slf4j.version>1.7.25</slf4j.version>
     <logback.version>1.2.3</logback.version>
-    <!-- 辅助工具 -->
     <helper.version>2018.1.2</helper.version>
-    <!-- 逻辑异步处理 -->
     <rxjava2.version>2.2.10</rxjava2.version>
-    <!-- 组件异步处理 -->
     <rxjava2fx.version>2.2.2</rxjava2fx.version>
   </properties>
 
-  <!-- 依赖管理 -->
   <dependencies>
     <!-- https://mvnrepository.com/artifact/junit/junit -->
     <dependency>
@@ -36,6 +27,7 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -72,11 +64,13 @@
       <artifactId>db-redis</artifactId>
       <version>${helper.version}</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava -->
     <dependency>
       <groupId>io.reactivex.rxjava2</groupId>
       <artifactId>rxjava</artifactId>
       <version>${rxjava2.version}</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjavafx -->
     <dependency>
       <groupId>io.reactivex.rxjava2</groupId>
       <artifactId>rxjavafx</artifactId>
@@ -84,7 +78,6 @@
     </dependency>
   </dependencies>
 
-  <!-- 项目构建 -->
   <build>
     <pluginManagement>
       <plugins>
@@ -113,7 +106,7 @@
         </plugin>
         <!-- 本地化打包插件 -->
         <!-- 使用 jfx:native 在 IDEA 右侧的 Maven 中运行即可 -->
-        <!-- 或者运行全部命令：mvn jfx:native -->
+        <!-- 或者运行命令：mvn jfx:native -->
         <plugin>
           <groupId>com.zenjava</groupId>
           <artifactId>javafx-maven-plugin</artifactId>

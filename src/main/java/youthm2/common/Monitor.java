@@ -1,6 +1,7 @@
 package youthm2.common;
 
-import youthm2.common.monitor.SimpleMonitor;
+import youthm2.common.internal.SimpleMonitor;
+import youthm2.common.util.Environments;
 
 /**
  * 监视器。
@@ -16,7 +17,7 @@ public interface Monitor {
    * 注意，这个方法每次调用都返回一个新的实例，并且需要在 IDEA 中以调试模式运行，才会真正去打印时间戳。
    */
   static Monitor getInstance() {
-    if (Boolean.parseBoolean(System.getProperty("intellij.debug.agent"))) {
+    if (Environments.debugMode()) {
       return new SimpleMonitor();
     }
     return EMPTY;
