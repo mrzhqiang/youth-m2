@@ -1,21 +1,14 @@
-package youthm2.bootstrap;
+package youthm2.bootstrap.viewmodel;
 
 import com.google.common.base.Strings;
-import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.rxjavafx.observables.JavaFxObservable;
-import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
-import io.reactivex.rxjavafx.sources.Change;
 import java.io.File;
-import java.time.LocalDateTime;
-import java.util.Optional;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -27,29 +20,26 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import youthm2.bootstrap.controller.ControlViewModel;
-import youthm2.bootstrap.controller.SettingViewModel;
-import youthm2.bootstrap.model.BackupModel;
-import youthm2.bootstrap.model.BootstrapModel;
 import youthm2.bootstrap.model.ConfigModel;
 import youthm2.bootstrap.model.config.BootstrapConfig;
-import youthm2.bootstrap.model.program.Program;
+import youthm2.bootstrap.viewmodel.control.ControlViewModel;
 import youthm2.common.Monitor;
-import youthm2.common.util.Networks;
-import youthm2.common.dialog.AlertDialog;
 import youthm2.common.dialog.ChooserDialog;
-import youthm2.common.dialog.ThrowableDialog;
+import youthm2.common.util.Networks;
 
 /**
- * 引导程序控制器。
+ * 引导程序视图模型。
  *
  * @author mrzhqiang
  */
-public final class BootstrapController {
+public final class BootstrapViewModel {
   private static final Logger LOGGER = LoggerFactory.getLogger("bootstrap");
 
-  @FXML Button databaseServerButton;
+  /* root view */
   @FXML TabPane pageTabPane;
+  @FXML Tab controlTab;
+  /* control view */
+  @FXML Button databaseServerButton;
   @FXML Label databaseServerLabel;
   @FXML Button accountServerButton;
   @FXML Label accountServerLabel;
@@ -70,7 +60,9 @@ public final class BootstrapController {
   @FXML Spinner<Integer> minutesSpinner;
   @FXML TextArea consoleTextArea;
   @FXML Button startGameButton;
+  /* setting view */
   @FXML TabPane configTabPane;
+  @FXML Tab baseConfigTab;
   @FXML TextField homePathTextField;
   @FXML TextField databaseNameTextField;
   @FXML TextField gameNameTextField;
@@ -122,26 +114,42 @@ public final class BootstrapController {
   @FXML CheckBox rankEnabledCheckBox;
   @FXML TextField rankPathTextField;
 
-  private final ObjectProperty<Config> configProperty = new SimpleObjectProperty<>(ConfigFactory.load());
-  private final ObjectProperty<State> state = new SimpleObjectProperty<>(State.INITIALIZED);
-
+  private ObjectProperty<BootstrapConfig> config =
+      new SimpleObjectProperty<>(BootstrapConfig.of(ConfigFactory.load()));
   private final ControlViewModel controlViewModel = new ControlViewModel();
   private final SettingViewModel settingViewModel = new SettingViewModel();
-
-  private final ConfigModel configModel = new ConfigModel();
-  private final BootstrapModel bootstrapModel = new BootstrapModel();
-  private final BackupModel backupModel = new BackupModel();
-
   private final CompositeDisposable disposable = new CompositeDisposable();
 
   @FXML void initialize() {
     Monitor monitor = Monitor.getInstance();
-    disposable.add(JavaFxObservable.changesOf(configProperty)
-        .map(Change::getNewVal)
-        .observeOn(JavaFxScheduler.platform())
-        .subscribe(controlViewModel::update, ThrowableDialog::show));
+    pageTabPane.getSelectionModel().select(controlTab);
+    configTabPane.getSelectionModel().select(baseConfigTab);
+    bindLayout();
+    initEvent();
     controlViewModel.console.append("启动已就绪...");
     monitor.report("initialized");
+  }
+
+  private void bindLayout() {
+    controlViewModel.database.bind(databaseServerButton, databaseServerLabel);
+    controlViewModel.account.bind(accountServerButton, accountServerLabel);
+    controlViewModel.logger.bind(loggerServerButton, loggerServerLabel);
+    controlViewModel.core.bind(coreServerButton, coreServerLabel);
+    controlViewModel.game.bind(gameGateButton, gameGateLabel);
+    controlViewModel.role.bind(roleGateButton, roleGateLabel);
+    controlViewModel.login.bind(loginGateButton, loginGateLabel);
+    controlViewModel.rank.bind(rankPlugButton, rankPlugLabel);
+    controlViewModel.startMode.bind(startModeChoiceBox, hoursSpinner, minutesSpinner);
+    controlViewModel.console.bind(consoleTextArea);
+    controlViewModel.startGame.bind(startGameButton);
+  }
+
+  private void initEvent() {
+    config.addListener((observable, oldValue, newValue) -> {
+      controlViewModel.update(newValue);
+      // todo update setting view model
+    });
+    disposable.add(ConfigModel.load().subscribe(config -> this.config.set(config)));
   }
 
   @FXML void onDatabaseServerClicked() {
@@ -170,72 +178,15 @@ public final class BootstrapController {
   }
 
   @FXML void onStartGameClicked() {
-    State state = this.state.get();
-    String message = state.getMessage();
-    Optional<ButtonType> optional = AlertDialog.waitConfirm(message).filter(AlertDialog.isOK());
-    switch (state) {
-      case INITIALIZED:
-        optional.ifPresent(buttonType -> attemptStart());
-        break;
-      case WAITING:
-        optional.ifPresent(type -> cancelWaiting());
-        break;
-      case STARTING:
-        optional.ifPresent(buttonType -> cancelStartServer());
-        break;
-      case RUNNING:
-        optional.ifPresent(buttonType -> stopServer());
-        break;
-      case STOPPING:
-        optional.ifPresent(buttonType -> cancelStopServer());
-        break;
-    }
   }
 
   private void attemptStart() {
-    state.setValue(State.WAITING);
-    controlViewModel.console.append("准备一键启动..");
-    LocalDateTime time = controlViewModel.startMode.computeStartDateTime();
-    bootstrapModel.waiting(time, new BootstrapModel.OnWaitingListener() {
-      @Override public void onError(Throwable throwable) {
-        state.setValue(State.INITIALIZED);
-        LOGGER.error("等待启动时出错", throwable);
-        controlViewModel.console.append(throwable.getMessage());
-        ThrowableDialog.show(throwable);
-      }
-
-      @Override public void onFinish() {
-        BootstrapConfig config = settingViewModel.config.get();
-        startServer(config);
-      }
-    });
   }
 
   private void startServer(BootstrapConfig config) {
-    state.setValue(State.STARTING);
-    bootstrapModel.start(config, new BootstrapModel.OnStartListener() {
-      @Override public void onError(Throwable e) {
-        state.setValue(State.INITIALIZED);
-        LOGGER.error("启动时出错", e);
-        controlViewModel.console.append(e.getMessage());
-        ThrowableDialog.show(e);
-      }
-
-      @Override public void onStart(Program program) {
-        //controlViewModel.console.append(message);
-      }
-
-      @Override public void onFinish() {
-        state.setValue(State.RUNNING);
-        controlViewModel.console.append("启动完毕");
-      }
-    });
   }
 
   private void cancelWaiting() {
-    state.setValue(State.INITIALIZED);
-    bootstrapModel.stopWaiting();
-    controlViewModel.console.append("已取消启动。");
   }
 
   @FXML void onFoundHomePathClicked() {
@@ -284,7 +235,7 @@ public final class BootstrapController {
   }
 
   private String getHomePath() {
-    String home = settingViewModel.homePath.getValue();
+    String home = config.get().homePath;
     if (Strings.isNullOrEmpty(home)) {
       home = System.getProperty("user.dir");
     }
@@ -428,19 +379,6 @@ public final class BootstrapController {
     //    .ifPresent(type -> bootstrapModel.saveConfig(settingViewModel.config()));
   }
 
-  private void cancelStopServer() {
-    bootstrapModel.cancelStop();
-  }
-
-  private void stopServer() {
-    bootstrapModel.stop();
-  }
-
-  private void cancelStartServer() {
-    bootstrapModel.cancelStart();
-    //bootstrapModel.state = BootstrapModel.State.INITIALIZED;
-  }
-
   private boolean checkConfig() {
     String home = settingViewModel.homePath.getValue().trim();
     File file = new File(home);
@@ -477,32 +415,6 @@ public final class BootstrapController {
   }
 
   public void onDestroy() {
-
-  }
-
-  public enum State {
-    INITIALIZED("启动服务", "是否启动服务？"),
-    WAITING("停止等待", "是否停止等待？"),
-    STARTING("正在启动..", "正在启动，是否停止？"),
-    RUNNING("停止服务", "是否停止服务？"),
-    STOPPING("正在停止..", "正在停止，是否取消？"),
-    ;
-
-    private final String label;
-    private final String message;
-
-    State(String label, String message) {
-      this.label = label;
-      this.message = message;
-    }
-
-    public String getMessage() {
-      return message;
-    }
-
-    @Override
-    public String toString() {
-      return label;
-    }
+    disposable.dispose();
   }
 }

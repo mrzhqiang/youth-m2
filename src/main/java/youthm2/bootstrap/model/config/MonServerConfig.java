@@ -14,6 +14,8 @@ public final class MonServerConfig extends ServerConfig {
 
   @Override public void update(Config config) {
     super.update(config);
-    monPort = config.getInt(CONFIG_PUBLIC_PORT);
+    if (config.hasPath(CONFIG_PUBLIC_PORT)) {
+      monPort = config.getInt(CONFIG_PUBLIC_PORT);
+    }
   }
 }

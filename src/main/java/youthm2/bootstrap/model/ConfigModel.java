@@ -1,13 +1,12 @@
 package youthm2.bootstrap.model;
 
-import com.google.common.base.Preconditions;
 import com.typesafe.config.ConfigFactory;
-import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
-import java.io.File;
 import io.reactivex.Observable;
+import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
+import java.io.File;
 import youthm2.bootstrap.model.config.BootstrapConfig;
-import youthm2.common.dialog.ThrowableDialog;
+import youthm2.common.util.Environments;
 import youthm2.common.util.Files;
 
 /**
@@ -15,56 +14,34 @@ import youthm2.common.util.Files;
  *
  * @author qiang.zhang
  */
-public final class ConfigModel {
+public enum ConfigModel {
+  ;
+
   private static final String CONFIG_FILE = "bootstrap.json";
 
-  public interface OnLoadListener {
-    void onLoaded(BootstrapConfig config);
-  }
-
-  public interface OnSaveListener {
-    void onSaved(BootstrapConfig config);
-  }
-
-  public void load(OnLoadListener listener) {
-    Preconditions.checkNotNull(listener, "listener == null");
-    Observable.just(getConfigFile())
+  public static Observable<BootstrapConfig> load() {
+    return Observable.just(getConfigFile())
         // 丢到 IO 线程池执行，subscribeOn 方法只能被调用一次，多次调用无效
         .subscribeOn(Schedulers.io())
         .map(ConfigFactory::parseFile)
         .map(config -> config.withFallback(ConfigFactory.load()))
         .map(BootstrapConfig::of)
         // 订阅在主线程，可以更新 UI
-        .observeOn(JavaFxScheduler.platform())
-        .subscribe(listener::onLoaded, ThrowableDialog::show);
+        .observeOn(JavaFxScheduler.platform());
   }
 
-  public void loadDefault(OnLoadListener listener) {
-    Preconditions.checkNotNull(listener, "listener == null");
-    // empty 方法是为了立即执行完成回调，比如在执行过程中发现问题，立即 flatMap 一个 empty，从而结束此次任务
-    // 所以这里不能用 empty，而应该是 just 一个空串
-    Observable.just("")
-        .subscribeOn(Schedulers.io())
-        .map(s -> ConfigFactory.load())
-        .map(BootstrapConfig::of)
-        .observeOn(JavaFxScheduler.platform())
-        .subscribe(listener::onLoaded, ThrowableDialog::show);
-  }
-
-  public void saveConfig(BootstrapConfig config, OnSaveListener listener) {
-    Preconditions.checkNotNull(listener, "listener == null");
-    Observable.just(getConfigFile())
+  public static Observable save(BootstrapConfig config) {
+    return Observable.just(getConfigFile())
         .subscribeOn(Schedulers.io())
         .doOnNext(Files::createOrExists)
         //.doOnNext(file -> FileModel.onceWrite(file, Json.prettyPrint(Json.toJson(config))))
         .map(file -> config)
-        .observeOn(JavaFxScheduler.platform())
-        .subscribe(listener::onSaved, ThrowableDialog::show);
+        .observeOn(JavaFxScheduler.platform());
   }
 
-  private File getConfigFile() {
+  private static File getConfigFile() {
     // debug 模式是指，在 IDEA 中调试程序，其他 IDE 暂未支持。
-    //String parent = isDebug() ? debugDirectory() : workDirectory();
-    return new File(/*parent, */CONFIG_FILE);
+    String parent = Environments.debugMode() ? Environments.debugWork() : Environments.homework();
+    return new File(parent, CONFIG_FILE);
   }
 }

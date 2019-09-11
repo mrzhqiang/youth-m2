@@ -16,7 +16,9 @@ public class ServerConfig extends ProgramConfig {
 
   @Override public void update(Config config) {
     super.update(config);
-    port = config.getInt(CONFIG_PORT);
+    if (config.hasPath(CONFIG_PORT)) {
+      port = config.getInt(CONFIG_PORT);
+    }
     if (config.hasPath(CONFIG_SERVER_PORT)) {
       serverPort = config.getInt(CONFIG_SERVER_PORT);
     }

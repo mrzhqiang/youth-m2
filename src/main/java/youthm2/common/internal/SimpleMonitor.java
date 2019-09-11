@@ -14,7 +14,7 @@ import youthm2.common.Monitor;
  * @author mrzhqiang
  */
 public final class SimpleMonitor implements Monitor {
-  private static final Logger LOGGER = LoggerFactory.getLogger("monitor");
+  private static final Logger LOGGER = LoggerFactory.getLogger("common");
 
   private final long startTime = System.currentTimeMillis();
   private final List<Period> periodList = Lists.newArrayList();
