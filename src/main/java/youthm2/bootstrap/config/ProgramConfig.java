@@ -2,6 +2,7 @@ package youthm2.bootstrap.config;
 
 import com.google.common.base.Preconditions;
 import com.typesafe.config.Config;
+import java.nio.file.Paths;
 
 /**
  * 程序配置。
@@ -24,6 +25,6 @@ public class ProgramConfig {
     x = config.getInt(CONFIG_X);
     y = config.getInt(CONFIG_Y);
     enabled = config.getBoolean(CONFIG_ENABLED);
-    path = config.getString(CONFIG_PATH);
+    path = Paths.get(config.getString(CONFIG_PATH)).toString();
   }
 }

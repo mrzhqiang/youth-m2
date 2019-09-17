@@ -127,7 +127,7 @@
           <content>
             <AnchorPane>
                      <children>
-                        <TabPane fx:id="configTabPane" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TabPane fx:id="configTabPane" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <tabs>
                             <Tab fx:id="baseConfigTab" text="1.基本">
                               <content>
@@ -192,7 +192,7 @@
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <GridPane>
+                                                      <GridPane GridPane.rowIndex="1">
                                                         <columnConstraints>
                                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -334,9 +334,8 @@
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <VBox spacing="8.0">
+                                                      <VBox spacing="8.0" visible="false" GridPane.rowIndex="1">
                                                          <children>
-                                                            <CheckBox fx:id="databaseEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                             <Label disable="true" text="启动路径：" />
                                                             <HBox>
                                                                <children>
@@ -351,6 +350,7 @@
                                                             <Button mnemonicParsing="false" onAction="#onConfigDefaultClicked" text="默认配置" />
                                                          </children>
                                                       </HBox>
+                                                      <CheckBox fx:id="databaseEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                    </children>
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
@@ -467,9 +467,8 @@
                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <VBox spacing="8.0">
+                                                      <VBox spacing="8.0" visible="false" GridPane.rowIndex="1">
                                                          <children>
-                                                            <CheckBox fx:id="accountEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                             <Label disable="true" text="启动路径：" />
                                                             <HBox>
                                                                <children>
@@ -484,6 +483,7 @@
                                                             <Button mnemonicParsing="false" onAction="#onConfigDefaultClicked" text="默认配置" />
                                                          </children>
                                                       </HBox>
+                                                      <CheckBox fx:id="accountEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                    </children>
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
@@ -566,13 +566,13 @@
                                                                   <Spinner fx:id="loggerPortSpinner" />
                                                                </children>
                                                             </HBox>
-                                                            <HBox alignment="CENTER_LEFT">
+                                                            <HBox alignment="CENTER_LEFT" visible="false">
                                                                <children>
                                                                   <Label disable="true" text="服务端口：" />
                                                                   <Spinner disable="true" />
                                                                </children>
                                                             </HBox>
-                                                            <HBox alignment="CENTER_LEFT">
+                                                            <HBox alignment="CENTER_LEFT" visible="false">
                                                                <children>
                                                                   <Label disable="true" text="通讯端口：" />
                                                                   <Spinner disable="true" />
@@ -592,9 +592,8 @@
                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <VBox spacing="8.0">
+                                                      <VBox spacing="8.0" visible="false" GridPane.rowIndex="1">
                                                          <children>
-                                                            <CheckBox fx:id="loggerEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                             <Label disable="true" text="启动路径：" />
                                                             <HBox>
                                                                <children>
@@ -609,6 +608,7 @@
                                                             <Button mnemonicParsing="false" onAction="#onConfigDefaultClicked" text="默认配置" />
                                                          </children>
                                                       </HBox>
+                                                      <CheckBox fx:id="loggerEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                    </children>
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
@@ -697,7 +697,7 @@
                                                                   <Spinner fx:id="coreServerPortSpinner" />
                                                                </children>
                                                             </HBox>
-                                                            <HBox alignment="CENTER_LEFT">
+                                                            <HBox alignment="CENTER_LEFT" visible="false">
                                                                <children>
                                                                   <Label disable="true" text="通讯端口：" />
                                                                   <Spinner disable="true" />
@@ -717,9 +717,8 @@
                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <VBox spacing="8.0">
+                                                      <VBox spacing="8.0" visible="false" GridPane.rowIndex="1">
                                                          <children>
-                                                            <CheckBox fx:id="coreEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                             <Label disable="true" text="启动路径：" />
                                                             <HBox>
                                                                <children>
@@ -734,6 +733,7 @@
                                                             <Button mnemonicParsing="false" onAction="#onConfigDefaultClicked" text="默认配置" />
                                                          </children>
                                                       </HBox>
+                                                      <CheckBox fx:id="coreEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                    </children>
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
@@ -816,13 +816,13 @@
                                                                   <Spinner fx:id="gamePortSpinner" />
                                                                </children>
                                                             </HBox>
-                                                            <HBox alignment="CENTER_LEFT">
+                                                            <HBox alignment="CENTER_LEFT" visible="false">
                                                                <children>
                                                                   <Label disable="true" text="服务端口：" />
                                                                   <Spinner disable="true" />
                                                                </children>
                                                             </HBox>
-                                                            <HBox alignment="CENTER_LEFT">
+                                                            <HBox alignment="CENTER_LEFT" visible="false">
                                                                <children>
                                                                   <Label disable="true" text="通讯端口：" />
                                                                   <Spinner disable="true" />
@@ -842,9 +842,8 @@
                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <VBox spacing="8.0">
+                                                      <VBox spacing="8.0" visible="false" GridPane.rowIndex="1">
                                                          <children>
-                                                            <CheckBox fx:id="gameEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                             <Label disable="true" text="启动路径：" />
                                                             <HBox>
                                                                <children>
@@ -859,6 +858,7 @@
                                                             <Button mnemonicParsing="false" onAction="#onConfigDefaultClicked" text="默认配置" />
                                                          </children>
                                                       </HBox>
+                                                      <CheckBox fx:id="gameEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                    </children>
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
@@ -941,13 +941,13 @@
                                                                   <Spinner fx:id="rolePortSpinner" />
                                                                </children>
                                                             </HBox>
-                                                            <HBox alignment="CENTER_LEFT">
+                                                            <HBox alignment="CENTER_LEFT" visible="false">
                                                                <children>
                                                                   <Label disable="true" text="服务端口：" />
                                                                   <Spinner disable="true" />
                                                                </children>
                                                             </HBox>
-                                                            <HBox alignment="CENTER_LEFT">
+                                                            <HBox alignment="CENTER_LEFT" visible="false">
                                                                <children>
                                                                   <Label disable="true" text="通讯端口：" />
                                                                   <Spinner disable="true" />
@@ -967,9 +967,8 @@
                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <VBox spacing="8.0">
+                                                      <VBox spacing="8.0" visible="false" GridPane.rowIndex="1">
                                                          <children>
-                                                            <CheckBox fx:id="roleEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                             <Label disable="true" text="启动路径：" />
                                                             <HBox>
                                                                <children>
@@ -984,6 +983,7 @@
                                                             <Button mnemonicParsing="false" onAction="#onConfigDefaultClicked" text="默认配置" />
                                                          </children>
                                                       </HBox>
+                                                      <CheckBox fx:id="roleEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                    </children>
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
@@ -1066,13 +1066,13 @@
                                                                   <Spinner fx:id="loginPortSpinner" />
                                                                </children>
                                                             </HBox>
-                                                            <HBox alignment="CENTER_LEFT">
+                                                            <HBox alignment="CENTER_LEFT" visible="false">
                                                                <children>
                                                                   <Label disable="true" text="服务端口：" />
                                                                   <Spinner disable="true" />
                                                                </children>
                                                             </HBox>
-                                                            <HBox alignment="CENTER_LEFT">
+                                                            <HBox alignment="CENTER_LEFT" visible="false">
                                                                <children>
                                                                   <Label disable="true" text="通讯端口：" />
                                                                   <Spinner disable="true" />
@@ -1092,9 +1092,8 @@
                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <VBox spacing="8.0">
+                                                      <VBox spacing="8.0" visible="false" GridPane.rowIndex="1">
                                                          <children>
-                                                            <CheckBox fx:id="loginEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                             <Label disable="true" text="启动路径：" />
                                                             <HBox>
                                                                <children>
@@ -1109,6 +1108,7 @@
                                                             <Button mnemonicParsing="false" onAction="#onConfigDefaultClicked" text="默认配置" />
                                                          </children>
                                                       </HBox>
+                                                      <CheckBox fx:id="loginEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                    </children>
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
@@ -1201,9 +1201,8 @@
                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <VBox spacing="8.0">
+                                                      <VBox spacing="8.0" visible="false" GridPane.rowIndex="1">
                                                          <children>
-                                                            <CheckBox fx:id="rankEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                             <Label disable="true" text="启动路径：" />
                                                             <HBox>
                                                                <children>
@@ -1218,6 +1217,7 @@
                                                             <Button mnemonicParsing="false" onAction="#onConfigDefaultClicked" text="默认配置" />
                                                          </children>
                                                       </HBox>
+                                                      <CheckBox fx:id="rankEnabledCheckBox" mnemonicParsing="false" selected="true" text="是否开启功能" />
                                                    </children>
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />

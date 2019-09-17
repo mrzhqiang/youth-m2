@@ -3,6 +3,7 @@ package youthm2.bootstrap;
 import com.google.common.base.Strings;
 import com.typesafe.config.ConfigFactory;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import java.io.File;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -119,17 +120,23 @@ public final class BootstrapViewModel {
 
   private ObjectProperty<BootstrapConfig> config =
       new SimpleObjectProperty<>(BootstrapConfig.of(ConfigFactory.load()));
-  private final DatabaseServer databaseServer = new DatabaseServer();
+
   private final ControlViewModel controlViewModel = new ControlViewModel();
   private final SettingViewModel settingViewModel = new SettingViewModel();
+
+  private final DatabaseServer databaseServer = new DatabaseServer();
   private final CompositeDisposable disposable = new CompositeDisposable();
 
   @FXML void initialize() {
     Monitor monitor = Monitor.getInstance();
+    monitor.record("init begin");
     pageTabPane.getSelectionModel().select(controlTab);
     configTabPane.getSelectionModel().select(baseConfigTab);
+    monitor.record("layout init");
     bindLayout();
+    monitor.record("layout bind");
     initEvent();
+    monitor.record("event init");
     controlViewModel.console.append("启动已就绪...");
     monitor.report("initialized");
   }
@@ -146,6 +153,7 @@ public final class BootstrapViewModel {
     controlViewModel.startMode.bind(startModeChoiceBox, hoursSpinner, minutesSpinner);
     controlViewModel.console.bind(consoleTextArea);
     controlViewModel.startGame.bind(startGameButton);
+
     settingViewModel.bind(homePathTextField, databaseNameTextField, gameNameTextField,
         gameAddressTextField, backupActionCheckBox, combineActionCheckBox, wishActionCheckBox);
     settingViewModel.database.bind(databaseXSpinner, databaseYSpinner, databaseEnabledCheckBox,
@@ -153,20 +161,29 @@ public final class BootstrapViewModel {
     settingViewModel.account.bind(accountXSpinner, accountYSpinner, accountEnabledCheckBox,
         accountPathTextField, accountPortSpinner, accountServerPortSpinner,
         accountPublicPortSpinner);
-    settingViewModel.logger.bind(loggerXSpinner, loggerYSpinner, loggerEnabledCheckBox, loggerPathTextField, loggerPortSpinner, null);
-    settingViewModel.core.bind(coreXSpinner, coreYSpinner, coreEnabledCheckBox, corePathTextField, corePortSpinner, coreServerPortSpinner);
-    settingViewModel.game.bind(gameXSpinner, gameYSpinner, gameEnabledCheckBox, gamePathTextField, gamePortSpinner);
-    settingViewModel.role.bind(roleXSpinner, roleYSpinner, roleEnabledCheckBox, rolePathTextField, rolePortSpinner);
-    settingViewModel.login.bind(loginXSpinner, loginYSpinner, loginEnabledCheckBox, loginPathTextField, loginPortSpinner);
+    settingViewModel.logger.bind(loggerXSpinner, loggerYSpinner, loggerEnabledCheckBox,
+        loggerPathTextField, loggerPortSpinner, null);
+    settingViewModel.core.bind(coreXSpinner, coreYSpinner, coreEnabledCheckBox, corePathTextField,
+        corePortSpinner, coreServerPortSpinner);
+    settingViewModel.game.bind(gameXSpinner, gameYSpinner, gameEnabledCheckBox, gamePathTextField,
+        gamePortSpinner);
+    settingViewModel.role.bind(roleXSpinner, roleYSpinner, roleEnabledCheckBox, rolePathTextField,
+        rolePortSpinner);
+    settingViewModel.login.bind(loginXSpinner, loginYSpinner, loginEnabledCheckBox,
+        loginPathTextField, loginPortSpinner);
     settingViewModel.rank.bind(rankXSpinner, rankYSpinner, rankEnabledCheckBox, rankPathTextField);
   }
 
   private void initEvent() {
-    config.addListener((observable, oldValue, newValue) -> {
-      controlViewModel.update(newValue);
-      settingViewModel.update(newValue);
-    });
-    disposable.add(ConfigModel.load().subscribe(config -> this.config.set(config)));
+    disposable.addAll(
+        JavaFxObservable.valuesOf(config)
+            .doOnNext(controlViewModel::update)
+            .doOnNext(settingViewModel::update)
+            .subscribe(),
+        ConfigModel.load()
+            .doOnNext(config -> this.config.set(config))
+            .subscribe()
+    );
   }
 
   @FXML void onDatabaseServerClicked() {
@@ -175,6 +192,10 @@ public final class BootstrapViewModel {
           .ifPresent(buttonType -> {
             controlViewModel.database.starting();
             controlViewModel.console.append("正在启动数据库服务..");
+            // todo 需要一个时钟间隔线程，检查启动状态、运行状态、停止状态的情况。
+            // 启动时，检查程序是否都启动
+            // 运行时，检查程序是否都正常
+            // 停止时，检查程序是否都停止
             databaseServer.start(new Stage());
             controlViewModel.database.started();
             controlViewModel.console.append("数据库服务启动完毕..");
@@ -204,7 +225,7 @@ public final class BootstrapViewModel {
   }
 
   @FXML void onStartGameClicked() {
-
+    // todo 启动时钟间隔线程，设置开始启动所有程序
   }
 
   @FXML void onFoundHomePathClicked() {

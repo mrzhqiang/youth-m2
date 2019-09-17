@@ -1,5 +1,6 @@
 package youthm2.bootstrap.setting;
 
+import java.nio.file.Paths;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -44,7 +45,7 @@ public final class SettingViewModel {
 
   public void update(BootstrapConfig config) {
     if (config != null) {
-      homePath.setValue(config.homePath);
+      homePath.setValue(Paths.get(config.homePath).toString());
       databaseName.setValue(config.dbName);
       gameName.setValue(config.gameName);
       gameHost.setValue(config.gameHost);

@@ -5,6 +5,8 @@
     "gameName" : "兰达尔第一季",
     "gameHost" : "127.0.0.1",
     "backupAction" : true,
+    "combineAction": false,
+    "wishAction": false,
     "database" : {
       "enabled" : true,
       "x" : "0",

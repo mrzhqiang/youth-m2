@@ -21,14 +21,14 @@ public final class DatabaseServer extends Application {
   private static final URL CSS =
       DatabaseServer.class.getResource("/youthm2/database/database.css");
 
-  private DatabaseViewModel viewModel;
+  private DatabaseViewModel databaseVM;
 
   @Override public void start(Stage primaryStage) {
     Monitor monitor = Monitor.getInstance();
     try {
       primaryStage.setTitle(TITLE);
       FXMLLoader loader = new FXMLLoader(FXML);
-      viewModel = loader.getController();
+      databaseVM = loader.getController();
       Scene scene = new Scene(loader.load());
       scene.getStylesheets().add(CSS.toExternalForm());
       primaryStage.setScene(scene);
@@ -40,8 +40,8 @@ public final class DatabaseServer extends Application {
   }
 
   @Override public void stop() {
-    if (viewModel != null) {
-      viewModel.onDestroy();
+    if (databaseVM != null) {
+      databaseVM.onDestroy();
     }
   }
 }

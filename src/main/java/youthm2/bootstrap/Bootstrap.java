@@ -37,7 +37,7 @@ public final class Bootstrap extends Application {
     launch(args);
   }
 
-  private BootstrapViewModel viewModel;
+  private BootstrapViewModel bootstrapVM;
 
   @Override
   public void start(Stage primaryStage) {
@@ -45,7 +45,7 @@ public final class Bootstrap extends Application {
     try {
       primaryStage.setTitle(TITLE);
       FXMLLoader loader = new FXMLLoader(FXML);
-      viewModel = loader.getController();
+      bootstrapVM = loader.getController();
       Scene scene = new Scene(loader.load());
       scene.getStylesheets().add(CSS.toExternalForm());
       primaryStage.setScene(scene);
@@ -57,8 +57,8 @@ public final class Bootstrap extends Application {
   }
 
   @Override public void stop() {
-    if (viewModel != null) {
-      viewModel.onDestroy();
+    if (bootstrapVM != null) {
+      bootstrapVM.onDestroy();
     }
   }
 }

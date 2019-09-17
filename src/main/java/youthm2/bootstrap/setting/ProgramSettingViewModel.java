@@ -18,7 +18,7 @@ import youthm2.bootstrap.config.ProgramConfig;
 public class ProgramSettingViewModel {
   static final SpinnerValueFactory.IntegerSpinnerValueFactory PORT_VALUE_FACTORY =
       new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 65535, 0);
-  static final SpinnerValueFactory.IntegerSpinnerValueFactory LOCATION_VALUE_FACTORY =
+  private static final SpinnerValueFactory.IntegerSpinnerValueFactory LOCATION_VALUE_FACTORY =
       new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 9999, 0);
 
   public final ObjectProperty<SpinnerValueFactory<Integer>> x =
