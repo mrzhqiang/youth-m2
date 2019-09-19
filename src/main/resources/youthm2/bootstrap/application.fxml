@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="youthm2.bootstrap.BootstrapViewModel">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="youthm2.bootstrap.BootstrapController">
   <children>
     <TabPane fx:id="pageTabPane" layoutX="24.0" layoutY="24.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <effect>
@@ -46,22 +46,22 @@
                     <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                   </rowConstraints>
                                  <children>
-                                    <Button fx:id="databaseServerButton" mnemonicParsing="false" onAction="#onDatabaseServerClicked" text="数据库服务" />
                                     <Label fx:id="databaseServerLabel" text="未启动" GridPane.columnIndex="1" />
-                                    <Button fx:id="accountServerButton" mnemonicParsing="false" onAction="#onAccountServerClicked" text="账号服务" GridPane.columnIndex="2" />
                                     <Label fx:id="accountServerLabel" text="未启动" GridPane.columnIndex="3" />
-                                    <Button fx:id="loggerServerButton" mnemonicParsing="false" onAction="#onLoggerServerClicked" text="日志服务" GridPane.rowIndex="1" />
                                     <Label fx:id="loggerServerLabel" text="未启动" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                    <Button fx:id="coreServerButton" mnemonicParsing="false" onAction="#onCoreServerClicked" text="核心服务" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                     <Label fx:id="coreServerLabel" text="未启动" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                    <Button fx:id="gameGateButton" mnemonicParsing="false" onAction="#onGameGateClicked" text="游戏网关" GridPane.rowIndex="2" />
                                     <Label fx:id="gameGateLabel" text="未启动" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <Button fx:id="roleGateButton" mnemonicParsing="false" onAction="#onRoleGateClicked" text="角色网关" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                     <Label fx:id="roleGateLabel" text="未启动" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                    <Button fx:id="loginGateButton" mnemonicParsing="false" onAction="#onLoginGateClicked" text="登陆网关" GridPane.rowIndex="3" />
                                     <Label fx:id="loginGateLabel" text="未启动" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                    <Button fx:id="rankPlugButton" mnemonicParsing="false" onAction="#onRankPlugClicked" text="排行榜插件" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                     <Label fx:id="rankPlugLabel" text="未启动" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                    <CheckBox fx:id="databaseCheckBox" mnemonicParsing="false" text="数据库服务" />
+                                    <CheckBox fx:id="accountCheckBox" mnemonicParsing="false" text="账号服务" GridPane.columnIndex="2" />
+                                    <CheckBox fx:id="loggerCheckBox" mnemonicParsing="false" text="日志服务" GridPane.rowIndex="1" />
+                                    <CheckBox fx:id="coreCheckBox" mnemonicParsing="false" text="核心服务" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                    <CheckBox fx:id="gameCheckBox" mnemonicParsing="false" text="游戏网关" GridPane.rowIndex="2" />
+                                    <CheckBox fx:id="roleCheckBox" mnemonicParsing="false" text="角色网关" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                    <CheckBox fx:id="loginCheckBox" mnemonicParsing="false" text="登录网关" GridPane.rowIndex="3" />
+                                    <CheckBox fx:id="rankCheckBox" mnemonicParsing="false" text="排行榜插件" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                  </children>
                                  <VBox.margin>
                                     <Insets />
@@ -104,7 +104,7 @@
                                     <Insets />
                                  </VBox.margin>
                               </HBox>
-                      <TextArea fx:id="consoleTextArea" editable="false">
+                      <TextArea fx:id="consoleTextArea" editable="false" prefWidth="608.0">
                                  <VBox.margin>
                                     <Insets />
                                  </VBox.margin>

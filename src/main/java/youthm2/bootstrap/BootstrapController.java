@@ -2,11 +2,18 @@ package youthm2.bootstrap;
 
 import com.google.common.base.Strings;
 import com.typesafe.config.ConfigFactory;
+import helper.DateTimeHelper;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import java.io.File;
+import java.nio.file.Paths;
+import java.time.Instant;
+import java.util.Date;
+import java.util.Locale;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -15,16 +22,15 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import youthm2.bootstrap.config.BootstrapConfig;
-import youthm2.bootstrap.control.ControlViewModel;
-import youthm2.bootstrap.setting.SettingViewModel;
+import youthm2.bootstrap.config.Configs;
+import youthm2.bootstrap.config.ServerConfig;
 import youthm2.common.Monitor;
 import youthm2.common.dialog.AlertDialog;
 import youthm2.common.dialog.ChooserDialog;
@@ -32,32 +38,41 @@ import youthm2.common.util.Networks;
 import youthm2.database.DatabaseServer;
 
 /**
- * 引导程序视图模型。
+ * 引导程序控制器。
  *
  * @author mrzhqiang
  */
-public final class BootstrapViewModel {
-  private static final Logger LOGGER = LoggerFactory.getLogger("bootstrap");
+public final class BootstrapController {
+  private static final String MODE_NORMAL = "正常启动";
+  private static final String MODE_DELAY = "延迟启动";
+  private static final String MODE_TIMING = "定时启动";
+  private static final ObservableList<String> START_MODE_ITEMS =
+      FXCollections.observableArrayList(MODE_NORMAL, MODE_DELAY, MODE_TIMING);
+  private static final SpinnerValueFactory.IntegerSpinnerValueFactory HOURS_VALUE_FACTORY =
+      new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 0);
+  private static final SpinnerValueFactory.IntegerSpinnerValueFactory MINUTES_VALUE_FACTORY =
+      new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0);
+  private static final String FORMAT_CONSOLE = "[%s]: %s\r\n";
 
   /* root view */
   @FXML TabPane pageTabPane;
   @FXML Tab controlTab;
   /* control view */
-  @FXML Button databaseServerButton;
+  @FXML CheckBox databaseCheckBox;
   @FXML Label databaseServerLabel;
-  @FXML Button accountServerButton;
+  @FXML CheckBox accountCheckBox;
   @FXML Label accountServerLabel;
-  @FXML Button loggerServerButton;
+  @FXML CheckBox loggerCheckBox;
   @FXML Label loggerServerLabel;
-  @FXML Button coreServerButton;
+  @FXML CheckBox coreCheckBox;
   @FXML Label coreServerLabel;
-  @FXML Button gameGateButton;
+  @FXML CheckBox gameCheckBox;
   @FXML Label gameGateLabel;
-  @FXML Button roleGateButton;
+  @FXML CheckBox roleCheckBox;
   @FXML Label roleGateLabel;
-  @FXML Button loginGateButton;
+  @FXML CheckBox loginCheckBox;
   @FXML Label loginGateLabel;
-  @FXML Button rankPlugButton;
+  @FXML CheckBox rankCheckBox;
   @FXML Label rankPlugLabel;
   @FXML ChoiceBox<String> startModeChoiceBox;
   @FXML Spinner<Integer> hoursSpinner;
@@ -118,11 +133,13 @@ public final class BootstrapViewModel {
   @FXML CheckBox rankEnabledCheckBox;
   @FXML TextField rankPathTextField;
 
-  private ObjectProperty<BootstrapConfig> config =
-      new SimpleObjectProperty<>(BootstrapConfig.of(ConfigFactory.load()));
+  // 0 -- default/stopped; 1 -- starting; 2 -- running; 3 -- stopping; 4 -- failed
+  private int startStatus;
+  // 0 -- disabled; 1 -- enabled
+  private int backupStatus;
 
-  private final ControlViewModel controlViewModel = new ControlViewModel();
-  private final SettingViewModel settingViewModel = new SettingViewModel();
+  private final ObjectProperty<BootstrapConfig> config =
+      new SimpleObjectProperty<>(BootstrapConfig.of(ConfigFactory.load()));
 
   private final DatabaseServer databaseServer = new DatabaseServer();
   private final CompositeDisposable disposable = new CompositeDisposable();
@@ -130,98 +147,36 @@ public final class BootstrapViewModel {
   @FXML void initialize() {
     Monitor monitor = Monitor.getInstance();
     monitor.record("init begin");
-    pageTabPane.getSelectionModel().select(controlTab);
-    configTabPane.getSelectionModel().select(baseConfigTab);
-    monitor.record("layout init");
-    bindLayout();
-    monitor.record("layout bind");
     initEvent();
-    monitor.record("event init");
-    controlViewModel.console.append("启动已就绪...");
-    monitor.report("initialized");
+    monitor.record("init event");
+    prepareStart();
+    monitor.record("prepare start");
+    loadConfig();
+    monitor.record("load config");
+    updateLayout();
+    monitor.record("update layout");
+    loadBackupList();
+    monitor.record("load backup config");
+    updateBackupLayout();
+    monitor.record("update backup layout");
+    monitor.report("init end");
   }
 
-  private void bindLayout() {
-    controlViewModel.database.bind(databaseServerButton, databaseServerLabel);
-    controlViewModel.account.bind(accountServerButton, accountServerLabel);
-    controlViewModel.logger.bind(loggerServerButton, loggerServerLabel);
-    controlViewModel.core.bind(coreServerButton, coreServerLabel);
-    controlViewModel.game.bind(gameGateButton, gameGateLabel);
-    controlViewModel.role.bind(roleGateButton, roleGateLabel);
-    controlViewModel.login.bind(loginGateButton, loginGateLabel);
-    controlViewModel.rank.bind(rankPlugButton, rankPlugLabel);
-    controlViewModel.startMode.bind(startModeChoiceBox, hoursSpinner, minutesSpinner);
-    controlViewModel.console.bind(consoleTextArea);
-    controlViewModel.startGame.bind(startGameButton);
-
-    settingViewModel.bind(homePathTextField, databaseNameTextField, gameNameTextField,
-        gameAddressTextField, backupActionCheckBox, combineActionCheckBox, wishActionCheckBox);
-    settingViewModel.database.bind(databaseXSpinner, databaseYSpinner, databaseEnabledCheckBox,
-        databasePathTextField, databasePortSpinner, databaseServerPortSpinner);
-    settingViewModel.account.bind(accountXSpinner, accountYSpinner, accountEnabledCheckBox,
-        accountPathTextField, accountPortSpinner, accountServerPortSpinner,
-        accountPublicPortSpinner);
-    settingViewModel.logger.bind(loggerXSpinner, loggerYSpinner, loggerEnabledCheckBox,
-        loggerPathTextField, loggerPortSpinner, null);
-    settingViewModel.core.bind(coreXSpinner, coreYSpinner, coreEnabledCheckBox, corePathTextField,
-        corePortSpinner, coreServerPortSpinner);
-    settingViewModel.game.bind(gameXSpinner, gameYSpinner, gameEnabledCheckBox, gamePathTextField,
-        gamePortSpinner);
-    settingViewModel.role.bind(roleXSpinner, roleYSpinner, roleEnabledCheckBox, rolePathTextField,
-        rolePortSpinner);
-    settingViewModel.login.bind(loginXSpinner, loginYSpinner, loginEnabledCheckBox,
-        loginPathTextField, loginPortSpinner);
-    settingViewModel.rank.bind(rankXSpinner, rankYSpinner, rankEnabledCheckBox, rankPathTextField);
-  }
-
-  private void initEvent() {
-    disposable.addAll(
-        JavaFxObservable.valuesOf(config)
-            .doOnNext(controlViewModel::update)
-            .doOnNext(settingViewModel::update)
-            .subscribe(),
-        ConfigModel.load()
-            .doOnNext(config -> this.config.set(config))
-            .subscribe()
-    );
+  void onDestroy() {
+    disposable.dispose();
   }
 
   @FXML void onDatabaseServerClicked() {
     if (config.get().database.enabled) {
       AlertDialog.waitConfirm("是否启动数据库服务")
           .ifPresent(buttonType -> {
-            controlViewModel.database.starting();
-            controlViewModel.console.append("正在启动数据库服务..");
             // todo 需要一个时钟间隔线程，检查启动状态、运行状态、停止状态的情况。
             // 启动时，检查程序是否都启动
             // 运行时，检查程序是否都正常
             // 停止时，检查程序是否都停止
             databaseServer.start(new Stage());
-            controlViewModel.database.started();
-            controlViewModel.console.append("数据库服务启动完毕..");
           });
     }
-  }
-
-  @FXML void onAccountServerClicked() {
-  }
-
-  @FXML void onLoggerServerClicked() {
-  }
-
-  @FXML void onCoreServerClicked() {
-  }
-
-  @FXML void onGameGateClicked() {
-  }
-
-  @FXML void onRoleGateClicked() {
-  }
-
-  @FXML void onLoginGateClicked() {
-  }
-
-  @FXML void onRankPlugClicked() {
   }
 
   @FXML void onStartGameClicked() {
@@ -271,14 +226,6 @@ public final class BootstrapViewModel {
   @FXML void onFoundRankFileClicked() {
     ChooserDialog.file("请选择要启动的排行榜插件", new File(getHomePath()), ChooserDialog.exeFilter())
         .ifPresent(file -> rankPathTextField.setText(file.getPath()));
-  }
-
-  private String getHomePath() {
-    String home = config.get().homePath;
-    if (Strings.isNullOrEmpty(home)) {
-      home = System.getProperty("user.dir");
-    }
-    return home;
   }
 
   @FXML void onConfigDefaultClicked() {
@@ -418,42 +365,151 @@ public final class BootstrapViewModel {
     //    .ifPresent(type -> bootstrapModel.saveConfig(settingViewModel.config()));
   }
 
-  private boolean checkConfig() {
-    String home = settingViewModel.homePath.getValue().trim();
-    File file = new File(home);
-    if (Strings.isNullOrEmpty(home) || !file.isDirectory() || !file.exists()) {
-      Alert alert = new Alert(Alert.AlertType.WARNING);
-      alert.setHeaderText("无效的服务器目录，请检查");
-      alert.show();
-      homePathTextField.requestFocus();
-      return false;
-    }
-    if (Strings.isNullOrEmpty(settingViewModel.databaseName.getValue().trim())) {
-      Alert alert = new Alert(Alert.AlertType.WARNING);
-      alert.setHeaderText("无效的数据库名称，请检查");
-      alert.show();
-      databaseNameTextField.requestFocus();
-      return false;
-    }
-    if (Strings.isNullOrEmpty(settingViewModel.gameName.getValue().trim())) {
-      Alert alert = new Alert(Alert.AlertType.WARNING);
-      alert.setHeaderText("无效的游戏名称，请检查");
-      alert.show();
-      gameNameTextField.requestFocus();
-      return false;
-    }
-    String address = settingViewModel.gameHost.getValue();
-    if (Strings.isNullOrEmpty(address) || !Networks.isAddressV4(address)) {
-      Alert alert = new Alert(Alert.AlertType.WARNING);
-      alert.setHeaderText("无效的游戏 IP 地址，请检查");
-      alert.show();
-      gameAddressTextField.requestFocus();
-      return false;
-    }
-    return true;
+  private void initEvent() {
+
   }
 
-  public void onDestroy() {
-    disposable.dispose();
+  private void prepareStart() {
+    startModeChoiceBox.setItems(START_MODE_ITEMS);
+    startModeChoiceBox.getSelectionModel().select(MODE_NORMAL);
+    hoursSpinner.valueFactoryProperty().set(HOURS_VALUE_FACTORY);
+    minutesSpinner.valueFactoryProperty().set(MINUTES_VALUE_FACTORY);
+    // from mir2-applem2
+    startStatus = 0;
+    backupStatus = 0;
+    disposable.add(JavaFxObservable.valuesOf(startModeChoiceBox.valueProperty())
+        .map(s -> s.equals(MODE_NORMAL))
+        .subscribe(disabled -> {
+          hoursSpinner.setDisable(disabled);
+          minutesSpinner.setDisable(disabled);
+        }));
+    pageTabPane.getSelectionModel().select(controlTab);
+    configTabPane.getSelectionModel().select(baseConfigTab);
+    consoleTextArea.clear();
+    // todo start list memo clear
+    consoleMessage("启动已就绪...");
+  }
+
+  private void loadConfig() {
+    disposable.add(Configs.load().subscribe(this.config::set));
+  }
+
+  private void updateLayout() {
+    disposable.add(JavaFxObservable.valuesOf(config)
+        .doOnNext(this::updateControlView)
+        .doOnNext(this::updateBaseSettingView)
+        .doOnNext(this::updateDatabaseSettingView)
+        .doOnNext(this::updateAccountSettingView)
+        .doOnNext(this::updateLoggerSettingView)
+        .doOnNext(this::updateCoreSettingView)
+        .doOnNext(this::updateGameSettingView)
+        .doOnNext(this::updateRoleSettingView)
+        .doOnNext(this::updateLoginSettingView)
+        .doOnNext(this::updateRankSettingView)
+        // todo update backup view
+        .subscribe());
+  }
+
+  private void updateRankSettingView(BootstrapConfig config) {
+    rankXSpinner.getValueFactory().setValue(config.rank.x);
+    rankYSpinner.getValueFactory().setValue(config.rank.y);
+    rankEnabledCheckBox.setSelected(config.rank.enabled);
+  }
+
+  private void updateLoginSettingView(BootstrapConfig config) {
+    loginXSpinner.getValueFactory().setValue(config.login.x);
+    loginYSpinner.getValueFactory().setValue(config.login.y);
+    loginPortSpinner.getValueFactory().setValue(config.login.port);
+    loginEnabledCheckBox.setSelected(config.login.enabled);
+  }
+
+  private void updateRoleSettingView(BootstrapConfig config) {
+    roleXSpinner.getValueFactory().setValue(config.role.x);
+    roleYSpinner.getValueFactory().setValue(config.role.y);
+    rolePortSpinner.getValueFactory().setValue(config.role.port);
+    roleEnabledCheckBox.setSelected(config.role.enabled);
+  }
+
+  private void updateGameSettingView(BootstrapConfig config) {
+    gameXSpinner.getValueFactory().setValue(config.game.x);
+    gameYSpinner.getValueFactory().setValue(config.game.y);
+    gamePortSpinner.getValueFactory().setValue(config.game.port);
+    gameEnabledCheckBox.setSelected(config.game.enabled);
+  }
+
+  private void updateCoreSettingView(BootstrapConfig config) {
+    coreXSpinner.getValueFactory().setValue(config.core.x);
+    coreYSpinner.getValueFactory().setValue(config.core.y);
+    corePortSpinner.getValueFactory().setValue(config.core.port);
+    coreServerPortSpinner.getValueFactory().setValue(config.core.serverPort);
+    coreEnabledCheckBox.setSelected(config.core.enabled);
+  }
+
+  private void updateLoggerSettingView(BootstrapConfig config) {
+    loggerXSpinner.getValueFactory().setValue(config.logger.x);
+    loggerYSpinner.getValueFactory().setValue(config.logger.y);
+    loggerPortSpinner.getValueFactory().setValue(config.logger.port);
+    loggerEnabledCheckBox.setSelected(config.logger.enabled);
+  }
+
+  private void updateAccountSettingView(BootstrapConfig config) {
+    accountXSpinner.getValueFactory().setValue(config.account.x);
+    accountYSpinner.getValueFactory().setValue(config.account.y);
+    accountPortSpinner.getValueFactory().setValue(config.account.port);
+    accountServerPortSpinner.getValueFactory().setValue(config.account.serverPort);
+    accountPublicPortSpinner.getValueFactory().setValue(config.account.monPort);
+    accountEnabledCheckBox.setSelected(config.account.enabled);
+  }
+
+  private void updateDatabaseSettingView(BootstrapConfig config) {
+    databaseXSpinner.getValueFactory().setValue(config.database.x);
+    databaseYSpinner.getValueFactory().setValue(config.database.y);
+    databasePortSpinner.getValueFactory().setValue(config.database.port);
+    databaseServerPortSpinner.getValueFactory().setValue(config.database.serverPort);
+    databaseEnabledCheckBox.setSelected(config.database.enabled);
+    //databasePathTextField.setText(config.database.path);
+  }
+
+  private void updateBaseSettingView(BootstrapConfig config) {
+    homePathTextField.setText(Paths.get(config.homePath).toString());
+    databaseNameTextField.setText(config.dbName);
+    gameNameTextField.setText(config.gameName);
+    gameAddressTextField.setText(config.gameHost);
+    backupActionCheckBox.setSelected(config.backupAction);
+    combineActionCheckBox.setSelected(config.combineAction);
+    wishActionCheckBox.setSelected(config.wishAction);
+  }
+
+  private void updateControlView(BootstrapConfig config) {
+    databaseCheckBox.setSelected(config.database.enabled);
+    accountCheckBox.setSelected(config.account.enabled);
+    loggerCheckBox.setSelected(config.logger.enabled);
+    coreCheckBox.setSelected(config.core.enabled);
+    gameCheckBox.setSelected(config.game.enabled);
+    roleCheckBox.setSelected(config.role.enabled);
+    loginCheckBox.setSelected(config.login.enabled);
+    rankCheckBox.setSelected(config.rank.enabled);
+  }
+
+  private void loadBackupList() {
+
+  }
+
+  private void updateBackupLayout() {
+
+  }
+
+  private void consoleMessage(String message) {
+    String timestamp = DateTimeHelper.format(Date.from(Instant.now()));
+    String console = String.format(Locale.getDefault(), FORMAT_CONSOLE, timestamp, message);
+    consoleTextArea.appendText(console);
+  }
+
+  private String getHomePath() {
+    String home = config.get().homePath;
+    if (Strings.isNullOrEmpty(home)) {
+      home = System.getProperty("user.dir");
+    }
+    return home;
   }
 }

@@ -7,7 +7,7 @@ import com.typesafe.config.Config;
  *
  * @author qiang.zhang
  */
-public final class GateConfig extends ProgramConfig {
+public class GateConfig extends ProgramConfig {
   private static final String CONFIG_PORT = "port";
 
   public Integer port;

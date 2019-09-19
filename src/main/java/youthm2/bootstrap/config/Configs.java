@@ -1,20 +1,19 @@
-package youthm2.bootstrap;
+package youthm2.bootstrap.config;
 
 import com.typesafe.config.ConfigFactory;
 import io.reactivex.Observable;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
 import java.io.File;
-import youthm2.bootstrap.config.BootstrapConfig;
 import youthm2.common.util.Environments;
 import youthm2.common.util.Files;
 
 /**
- * 配置模型。
+ * 配置辅助工具。
  *
  * @author qiang.zhang
  */
-public enum ConfigModel {
+public enum Configs {
   ;
 
   private static final String CONFIG_FILE = "bootstrap.json";

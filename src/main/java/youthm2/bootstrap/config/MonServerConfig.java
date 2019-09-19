@@ -7,7 +7,7 @@ import com.typesafe.config.Config;
  *
  * @author qiang.zhang
  */
-public final class MonServerConfig extends ServerConfig {
+public class MonServerConfig extends ServerConfig {
   private static final String CONFIG_PUBLIC_PORT = "monPort";
 
   public Integer monPort;

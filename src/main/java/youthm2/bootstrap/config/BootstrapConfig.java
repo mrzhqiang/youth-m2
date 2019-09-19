@@ -43,7 +43,7 @@ public final class BootstrapConfig {
   public final GateConfig game = new GateConfig();
   public final GateConfig role = new GateConfig();
   public final GateConfig login = new GateConfig();
-  public final ProgramConfig rank = new GateConfig();
+  public final ProgramConfig rank = new ProgramConfig();
 
   public static BootstrapConfig of(Config config) {
     Preconditions.checkNotNull(config, "config == null");
