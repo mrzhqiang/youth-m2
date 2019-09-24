@@ -1376,7 +1376,7 @@
               </GridPane>
             </AnchorPane>
           </Tab>
-        </TabPane>k
+        </TabPane>
       </AnchorPane>
     </Tab>
     <Tab text="备份管理">
