@@ -15,7 +15,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -30,11 +29,10 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import youthm2.bootstrap.config.BootstrapConfig;
 import youthm2.bootstrap.config.Configs;
-import youthm2.bootstrap.config.ServerConfig;
 import youthm2.common.Monitor;
 import youthm2.common.dialog.AlertDialog;
 import youthm2.common.dialog.ChooserDialog;
-import youthm2.common.util.Networks;
+import youthm2.common.dialog.ThrowableDialog;
 import youthm2.database.DatabaseServer;
 
 /**
@@ -54,10 +52,10 @@ public final class BootstrapController {
       new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0);
   private static final String FORMAT_CONSOLE = "[%s]: %s\r\n";
 
-  /* root view */
+  /* root layout */
   @FXML TabPane pageTabPane;
   @FXML Tab controlTab;
-  /* control view */
+  /* control layout */
   @FXML CheckBox databaseCheckBox;
   @FXML Label databaseServerLabel;
   @FXML CheckBox accountCheckBox;
@@ -79,7 +77,7 @@ public final class BootstrapController {
   @FXML Spinner<Integer> minutesSpinner;
   @FXML TextArea consoleTextArea;
   @FXML Button startGameButton;
-  /* setting view */
+  /* setting layout */
   @FXML TabPane configTabPane;
   @FXML Tab baseConfigTab;
   @FXML TextField homePathTextField;
@@ -144,6 +142,7 @@ public final class BootstrapController {
   private final DatabaseServer databaseServer = new DatabaseServer();
   private final CompositeDisposable disposable = new CompositeDisposable();
 
+  /** javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:2566) */
   @FXML void initialize() {
     Monitor monitor = Monitor.getInstance();
     monitor.record("init begin");
@@ -396,7 +395,6 @@ public final class BootstrapController {
 
   private void updateLayout() {
     disposable.add(JavaFxObservable.valuesOf(config)
-        .doOnNext(this::updateControlView)
         .doOnNext(this::updateBaseSettingView)
         .doOnNext(this::updateDatabaseSettingView)
         .doOnNext(this::updateAccountSettingView)
@@ -407,7 +405,7 @@ public final class BootstrapController {
         .doOnNext(this::updateLoginSettingView)
         .doOnNext(this::updateRankSettingView)
         // todo update backup view
-        .subscribe());
+        .subscribe(this::updateControlView, ThrowableDialog::show));
   }
 
   private void updateRankSettingView(BootstrapConfig config) {

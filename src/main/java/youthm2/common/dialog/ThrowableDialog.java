@@ -1,6 +1,7 @@
 package youthm2.common.dialog;
 
 import java.net.URL;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -50,5 +51,6 @@ public final class ThrowableDialog {
 
   @FXML void onCloseClicked() {
     stage.close();
+    Platform.exit();
   }
 }
