@@ -1,0 +1,33 @@
+plugins {
+    id 'base'
+}
+
+defaultTasks('build')
+
+allprojects {
+    group = 'com.github.mrzhqiang'
+    version = "${version}"
+}
+
+subprojects {
+    repositories {
+        maven { url = uri('https://jitpack.io') }
+        maven { url "https://maven.aliyun.com/repository/public" }
+        mavenCentral()
+    }
+
+    configurations.configureEach {
+        resolutionStrategy {
+            cacheChangingModulesFor 0, 'seconds'
+            cacheDynamicVersionsFor 0, 'seconds'
+        }
+    }
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = "UTF-8"
+        options.compilerArgs.add("-parameters")
+    }
+    tasks.withType(Javadoc).configureEach {
+        options.encoding = 'UTF-8'
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
+}
