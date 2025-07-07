@@ -1,2 +1,3 @@
 rootProject.name = 'youth-m2'
+include 'youth-m2-common'
 

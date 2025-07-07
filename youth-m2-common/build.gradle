@@ -1,0 +1,24 @@
+plugins {
+    id "java-library"
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+tasks.withType(Jar).configureEach {
+    archiveBaseName.set('youth-m2-common')
+}
+
+dependencies {
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    // Unit Test
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.1'
+}
+
+test {
+    useJUnitPlatform()
+}
